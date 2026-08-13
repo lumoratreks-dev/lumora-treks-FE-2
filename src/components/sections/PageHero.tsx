@@ -4,17 +4,19 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import SearchBar from "@/components/ui/SearchBar";
+import type { CmsImage } from "@/lib/blocks";
 
 /** PageHero — reusable puzzle-image + heading + subtitle + SearchBar hero, with a
  * staggered play-once entrance. Shared by the Packages and Destinations pages
  * (Figma 118:5899 / 84:1546). */
 type PageHeroProps = {
   title: string;
-  image: string;
+  image?: CmsImage | string;
   imageAlt?: string;
   imageWidth?: number;
   imageHeight?: number;
   subtitle?: ReactNode;
+  show_search?: boolean;
 };
 
 const DEFAULT_SUBTITLE = (
@@ -34,7 +36,12 @@ export default function PageHero({
   imageWidth = 565,
   imageHeight = 457,
   subtitle = DEFAULT_SUBTITLE,
+  show_search = true,
 }: PageHeroProps) {
+  const imageSrc = typeof image === "string" ? image : image?.url;
+
+  if (!imageSrc) return null;
+
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-12 lg:px-10 lg:py-16">
       <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-16">
@@ -46,7 +53,7 @@ export default function PageHero({
           style={{ aspectRatio: `${imageWidth}/${imageHeight}`, maxWidth: imageWidth }}
         >
           <Image
-            src={image}
+            src={imageSrc}
             alt={imageAlt}
             fill
             priority
@@ -75,13 +82,13 @@ export default function PageHero({
             {subtitle}
           </motion.p>
 
-          <motion.div
+          {show_search ? <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut", delay: 0.45 }}
           >
             <SearchBar />
-          </motion.div>
+          </motion.div> : null}
         </div>
       </div>
     </section>

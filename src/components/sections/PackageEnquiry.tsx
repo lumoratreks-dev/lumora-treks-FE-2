@@ -27,7 +27,8 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-export default function PackageEnquiry({ packageData }: { packageData?: CmsPackageDetail }) {
+export default function PackageEnquiry({ packageData, package: packageFromCms }: { packageData?: CmsPackageDetail; package?: CmsPackageDetail }) {
+  const selectedPackage = packageData || packageFromCms;
   const [formStartedAt] = useState(() => Date.now() / 1000);
   const [sent, setSent] = useState(false);
   const [submitLead, { isLoading, isError }] = useSubmitLeadMutation();
@@ -43,7 +44,7 @@ export default function PackageEnquiry({ packageData }: { packageData?: CmsPacka
       message: String(data.get("message") || ""),
       travel_date: String(data.get("travel_date") || ""),
       travelers: String(data.get("travelers") || ""),
-      package_id: packageData ? Number(packageData.id) : undefined,
+      package_id: selectedPackage ? Number(selectedPackage.id) : undefined,
       consent: data.get("privacy_consent") === "yes",
       form_started_at: Number(e.currentTarget.dataset.startedAt || formStartedAt),
       source_url: window.location.href,
@@ -155,8 +156,8 @@ export default function PackageEnquiry({ packageData }: { packageData?: CmsPacka
           <div className="flex items-center gap-4 border-b border-border pb-4">
             <div className="relative size-[100px] shrink-0 overflow-hidden rounded-lg">
               <Image
-                src={packageData?.image?.src || packageData?.image?.url || "/images/checkout-thumb.png"}
-                alt={packageData?.title || "Selected package"}
+                src={selectedPackage?.image?.src || selectedPackage?.image?.url || "/images/checkout-thumb.png"}
+                alt={selectedPackage?.title || "Selected package"}
                 fill
                 sizes="100px"
                 className="object-cover"
@@ -164,14 +165,14 @@ export default function PackageEnquiry({ packageData }: { packageData?: CmsPacka
             </div>
             <div className="flex flex-1 flex-col gap-2">
               <p className="font-body-alt text-lg font-medium tracking-[-0.04em] text-foreground">
-                {packageData?.title || "Select a package from the packages page"}
+                {selectedPackage?.title || "Select a package from the packages page"}
               </p>
               <div className="flex items-center gap-2">
                 <span className="font-body-alt text-base tracking-[-0.04em] text-text-secondary">
-                  {packageData?.duration || "Package details"}
+                  {selectedPackage?.duration || "Package details"}
                 </span>
                 <span className="size-1 rounded-full bg-text-secondary" />
-                  <StarRating rating={packageData?.rating ?? 4} starSize={20} />
+                  <StarRating rating={selectedPackage?.rating ?? 4} starSize={20} />
               </div>
             </div>
           </div>
@@ -180,7 +181,7 @@ export default function PackageEnquiry({ packageData }: { packageData?: CmsPacka
               Starting from
             </span>
             <span className="font-body-alt text-xl font-medium tracking-[-0.04em] text-foreground">
-              {packageData ? `${packageData.currency} ${packageData.price}` : "Quote on request"}
+              {selectedPackage ? `${selectedPackage.currency} ${selectedPackage.price}` : "Quote on request"}
             </span>
           </div>
           <p className="mt-3 font-body-alt text-sm tracking-[-0.03em] text-[#909dad]">

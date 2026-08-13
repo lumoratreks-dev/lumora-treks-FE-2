@@ -16,7 +16,7 @@ const BACKGROUND_CLASS: Record<CmsSectionSettings["background"], string> = {
  * `SectionSettingsBlock`) is applied as a thin wrapper so it doesn't disturb
  * each section's own Figma-built spacing/width.
  */
-export default function BlockRenderer({ blocks }: { blocks: CmsBlock[] }) {
+export default function BlockRenderer({ blocks, contextProps = {} }: { blocks: CmsBlock[]; contextProps?: Record<string, Record<string, unknown>> }) {
   return (
     <>
       {blocks.map((block) => {
@@ -25,6 +25,7 @@ export default function BlockRenderer({ blocks }: { blocks: CmsBlock[] }) {
         if (settings?.hidden) return null;
 
         const Component = component ? blockRegistry[component] : undefined;
+        const runtimeProps = component ? contextProps[component] : undefined;
         if (!Component) {
           if (process.env.NODE_ENV !== "production") {
             console.warn(
@@ -38,12 +39,12 @@ export default function BlockRenderer({ blocks }: { blocks: CmsBlock[] }) {
         const anchorId = settings?.anchor_id || undefined;
 
         if (!bgClass && !anchorId) {
-          return <Component key={block.id} {...props} />;
+          return <Component key={block.id} {...props} {...runtimeProps} />;
         }
 
         return (
           <div key={block.id} id={anchorId} className={bgClass || undefined}>
-            <Component {...props} />
+            <Component {...props} {...runtimeProps} />
           </div>
         );
       })}

@@ -18,10 +18,18 @@ const sectionHeading =
 export default function PackageDetail({
   reserveHref = "/checkout",
   packageData,
+  package: packageFromCms,
+  reserve_href,
 }: {
   reserveHref?: string;
-  packageData: CmsPackageDetail;
+  reserve_href?: string;
+  packageData?: CmsPackageDetail;
+  package?: CmsPackageDetail;
 }) {
+  // A Wagtail PackageDetail block always supplies `package`; direct callers
+  // supply `packageData`. Keep this resolved before hooks so hook order is stable.
+  packageData = (packageData || packageFromCms) as CmsPackageDetail;
+  reserveHref = reserve_href || reserveHref;
   const [day, setDay] = useState(0);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState<number | null>(null);
   const title = packageData.title;

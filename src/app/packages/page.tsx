@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import PackagesHero from "@/components/sections/PackagesHero";
-import PopularPackagesGrid from "@/components/sections/PopularPackagesGrid";
-import IntroStats from "@/components/sections/IntroStats";
-import CulturalDayTours from "@/components/sections/CulturalDayTours";
 import BlockRenderer from "@/components/BlockRenderer";
 import { getPageByPath } from "@/lib/cms";
 import {
@@ -53,16 +49,7 @@ export default async function PackagesPage({
     <HydrationBoundary state={dehydrate(queryClient)}>
       <main className="flex-1">
         <Navbar />
-        {page?.body && page.body.length > 0 ? (
-          <BlockRenderer blocks={page.body} />
-        ) : (
-          <>
-            <PackagesHero />
-            <PopularPackagesGrid searchLocation={location} searchDate={date} />
-            <IntroStats />
-            <CulturalDayTours />
-          </>
-        )}
+        {page?.body && page.body.length > 0 ? <BlockRenderer blocks={page.body} /> : null}
       </main>
       <Footer />
     </HydrationBoundary>

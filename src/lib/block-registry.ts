@@ -3,6 +3,15 @@ import Hero from "@/components/sections/Hero";
 import IntroStats from "@/components/sections/IntroStats";
 import PopularPackages from "@/components/sections/PopularPackages";
 import PackageGrid from "@/components/sections/PackageGrid";
+import PopularPackagesGrid from "@/components/sections/PopularPackagesGrid";
+import PageHero from "@/components/sections/PageHero";
+import DestinationsGrid from "@/components/sections/DestinationsGrid";
+import CulturalDayTours from "@/components/sections/CulturalDayTours";
+import DestinationDetail from "@/components/sections/DestinationDetail";
+import PackageDetail from "@/components/sections/PackageDetail";
+import PackageEnquiry from "@/components/sections/PackageEnquiry";
+import Checkout from "@/components/sections/Checkout";
+import PaymentSuccess from "@/components/sections/PaymentSuccess";
 import ExperienceSection from "@/components/sections/ExperienceSection";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import DestinationsBento from "@/components/sections/DestinationsBento";
@@ -35,9 +44,18 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const blockRegistry: Record<string, ComponentType<any>> = {
   Hero: Hero,
+  PageHero,
   IntroStats: IntroStats,
   PopularPackages: PopularPackages,
   PackageGrid: PackageGrid,
+  PackageListing: PopularPackagesGrid,
+  DestinationsGrid,
+  CulturalDayTours,
+  DestinationDetail,
+  PackageDetail,
+  PackageEnquiry,
+  Checkout,
+  PaymentSuccess,
   ExperienceSection: ExperienceSection,
   WhyChooseUs: WhyChooseUs,
   BentoGrid: DestinationsBento,

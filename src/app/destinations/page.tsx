@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import DestinationsGrid from "@/components/sections/DestinationsGrid";
 import BlockRenderer from "@/components/BlockRenderer";
 import { getPageByPath } from "@/lib/cms";
 
@@ -35,9 +34,7 @@ export default async function DestinationsPage() {
     <HydrationBoundary state={dehydrate(queryClient)}>
       <main className="flex-1">
         <Navbar />
-        {page?.body && page.body.length > 0 ? (
-          <BlockRenderer blocks={page.body} />
-        ) : <DestinationsGrid />}
+        {page?.body && page.body.length > 0 ? <BlockRenderer blocks={page.body} /> : null}
       </main>
       <Footer />
     </HydrationBoundary>

@@ -7,19 +7,27 @@ import CardSkeleton from "@/components/ui/CardSkeleton";
 import QueryError from "@/components/ui/QueryError";
 import { useCarousel } from "@/hooks/useCarousel";
 import { useCulturalToursQuery } from "@/features/packages/packageQueries";
+import { adaptCmsPackage, type CmsPackage } from "@/lib/adaptCmsPackage";
 import type { PackageCardData } from "@/types";
 
 /** Cultural & Day Tours — Figma node 84:1278. Embla carousel of package cards. */
 
 export default function CulturalDayTours({
   initialItems,
+  resolved_packages,
+  heading = "Cultural & Day Tours",
+  description = "",
 }: {
   initialItems?: PackageCardData[];
+  resolved_packages?: CmsPackage[];
+  heading?: string;
+  description?: string;
 }) {
   const { data, isLoading, isError, refetch } = useCulturalToursQuery();
-  const tours = data && data.length > 0 ? data : initialItems ?? [];
-  const loading = isLoading && !initialItems && !data;
-  const errored = isError && !initialItems && !data;
+  const cmsItems = resolved_packages?.map(adaptCmsPackage) ?? initialItems;
+  const tours = cmsItems ?? (data && data.length > 0 ? data : []);
+  const loading = isLoading && !cmsItems && !data;
+  const errored = isError && !cmsItems && !data;
 
 
 
@@ -32,10 +40,10 @@ export default function CulturalDayTours({
       <div className="mb-14 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-2">
           <h2 className="text-[clamp(1.75rem,3vw,32px)] font-bold tracking-[-0.04em] text-foreground">
-            Cultural &amp; Day Tours
+            {heading}
           </h2>
           <p className="font-body-alt text-[clamp(1.05rem,2vw,24px)] tracking-[-0.04em] text-text-secondary">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do .
+            {description}
           </p>
         </div>
         <CarouselNav

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import PackageCard from "@/components/ui/PackageCard";
 import CarouselNav from "@/components/ui/CarouselNav";
@@ -17,27 +17,31 @@ import type { PackageListResult } from "@/types";
  * SSR content for the first render. Dummy data. */
 
 const CATEGORIES = ["Trekking", "Sightseeing", "Paragliding"];
-const PAGE_SIZE = 6;
 
 export default function PopularPackagesGrid({
   searchLocation,
   searchDate,
   initialData,
+  heading = "Popular Packages",
+  categories = CATEGORIES,
+  page_size = 6,
+  default_category,
+  show_filters = true,
 }: {
   searchLocation?: string;
   searchDate?: string;
   initialData?: PackageListResult;
+  heading?: string;
+  categories?: string[];
+  page_size?: number;
+  default_category?: string;
+  show_filters?: boolean;
 }) {
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [category, setCategory] = useState(default_category || categories[0] || "Trekking");
   const [page, setPage] = useState(1);
-  const [activeSearchLocation, setActiveSearchLocation] = useState(searchLocation);
-  const [activeSearchDate, setActiveSearchDate] = useState(searchDate);
-
-  useEffect(() => {
-    setActiveSearchLocation(searchLocation);
-    setActiveSearchDate(searchDate);
-    setPage(1);
-  }, [searchLocation, searchDate]);
+  const [searchCleared, setSearchCleared] = useState(false);
+  const activeSearchLocation = searchCleared ? undefined : searchLocation;
+  const activeSearchDate = searchCleared ? undefined : searchDate;
 
   // Reset to page 1 the moment a new search arrives — render-phase, so the query
   // never runs with a stale page (no empty-state flash).
@@ -53,7 +57,7 @@ export default function PopularPackagesGrid({
     location: activeSearchLocation,
     date: activeSearchDate,
     page,
-    pageSize: PAGE_SIZE,
+    pageSize: page_size,
   });
 
   const result = data ?? initialData;
@@ -63,8 +67,7 @@ export default function PopularPackagesGrid({
   const errored = isError && !initialData;
 
   const clearSearchMode = () => {
-    setActiveSearchLocation(undefined);
-    setActiveSearchDate(undefined);
+    setSearchCleared(true);
     setPage(1);
     window.history.replaceState(null, "", "/packages");
   };
@@ -80,7 +83,7 @@ export default function PopularPackagesGrid({
       <div className="mb-10 flex flex-col gap-6">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-[clamp(1.75rem,3vw,32px)] font-bold tracking-[-0.04em] text-foreground">
-            Popular Packages
+            {heading}
           </h2>
           <CarouselNav
             className="shrink-0"
@@ -90,11 +93,11 @@ export default function PopularPackagesGrid({
             nextDisabled={page >= totalPages}
           />
         </div>
-        <FilterTabs
-          tabs={CATEGORIES}
+        {show_filters ? <FilterTabs
+          tabs={categories}
           defaultTab={category}
           onChange={handleCategory}
-        />
+        /> : null}
         {activeSearchLocation && (
           <p className="font-body-alt text-base text-text-secondary">
             Showing results for{" "}
@@ -137,7 +140,7 @@ export default function PopularPackagesGrid({
         <QueryError message="Couldn't load packages." onRetry={refetch} />
       ) : loading ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+          {Array.from({ length: page_size }).map((_, i) => (
             <CardSkeleton key={i} />
           ))}
         </div>

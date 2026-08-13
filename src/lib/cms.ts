@@ -15,21 +15,6 @@ import type { CmsPage } from "./blocks";
 
 const WAGTAIL_URL = process.env.NEXT_PUBLIC_WAGTAIL_URL;
 
-// The legacy landing page has a deliberate, fixed composition. CMS editors
-// can still author richer blocks on inner pages, but home must not grow extra
-// sections that change the old FE layout unexpectedly.
-const LEGACY_HOME_BLOCKS = new Set([
-  "hero",
-  "intro_stats",
-  "popular_packages",
-  "experience_showcase",
-  "why_choose_us",
-  "bento_grid",
-  "authentic_experiences",
-  "cta_banner",
-  "faq",
-]);
-
 /** Fetch a CMS page by its frontend route (e.g. "/", "/about"). Returns null
  * if there's no page there, the page isn't published, or the CMS is unreachable. */
 export async function getPageByPath(path: string): Promise<CmsPage | null> {
@@ -47,10 +32,7 @@ export async function getPageByPath(path: string): Promise<CmsPage | null> {
       id: data.id,
       title: data.title,
       slug: data.meta?.slug ?? "",
-      body:
-        path === "/"
-          ? (data.body ?? []).filter((block: { type?: string }) => LEGACY_HOME_BLOCKS.has(block.type ?? ""))
-          : data.body ?? [],
+      body: data.body ?? [],
       seo: data.seo,
     };
   } catch {
