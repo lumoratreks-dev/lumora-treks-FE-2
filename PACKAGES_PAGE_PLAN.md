@@ -1,5 +1,6 @@
 # Packages Page — Build Spec
 
+
 Working spec for the Packages page, agreed in conversation. Figma is the **single source of truth**; implement **pixel-by-pixel** against the exact Figma values (spacing, sizes, colors, fonts, tracking). This repo is the **frontend only** (Wagtail CMS lives in a separate repo).
 
 Figma file: `wQqFmHdPd7V19J9OCypUHI` · Packages page frame: **`81:473`** ("packages", 1440×4467).
