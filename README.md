@@ -2,6 +2,7 @@
 
 Next.js App Router frontend for the Lumora Treks travel site. Content is supplied by the Wagtail API in `../lumora-treks-BE`.
 
+
 ## Local setup
 
 ```bash
