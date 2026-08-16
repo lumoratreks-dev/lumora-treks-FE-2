@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { withHighlight } from "@/lib/highlightText";
 import type { CmsImage } from "@/lib/blocks";
 
 /** "Create memories" CTA band — Figma node 59:2049. Forest bg + dark overlay,
@@ -10,10 +11,8 @@ import type { CmsImage } from "@/lib/blocks";
  * Reserve Now pill. Mirrors the hero's bg/foreground layering trick.
  *
  * Props mirror the backend `CTABannerBlock` (apps/cms/blocks/sections.py).
- * `heading` has no highlight companion field on the backend block (unlike
- * IntroStats/WhyChooseUs) — so the "Journey" accent only appears for the
- * untouched default copy below (via the `??` fallback), not for CMS-authored
- * headings, which render as plain text.
+ * `heading_highlight` accents a word/phrase in the heading (italic,
+ * primary-accent green), matching IntroStats/WhyChooseUs's pattern.
  * The foreground tree cutout, like the Hero's, is a bespoke pre-cropped
  * asset — not swapped by `background_image`. */
 
@@ -21,21 +20,18 @@ export type CTAButton = { label?: string; href?: string };
 
 const DEFAULT_BUTTONS: CTAButton[] = [{ label: "Reserve Now", href: "/enquiry" }];
 
-const DEFAULT_HEADING = (
-  <>
-    Create memories that stay with you
-    <br className="hidden sm:block" /> long after the{" "}
-    <span className="italic text-primary-accent">Journey</span> Ends
-  </>
-);
+const DEFAULT_HEADING = "Create memories that stay with you long after the Journey Ends";
+const DEFAULT_HEADING_HIGHLIGHT = "Journey";
 
 export default function CTABand({
-  heading,
+  heading = DEFAULT_HEADING,
+  heading_highlight = DEFAULT_HEADING_HIGHLIGHT,
   text,
   background_image,
   buttons = DEFAULT_BUTTONS,
 }: {
   heading?: string;
+  heading_highlight?: string;
   text?: string;
   background_image?: CmsImage;
   buttons?: CTAButton[];
@@ -62,7 +58,7 @@ export default function CTABand({
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="absolute inset-x-0 top-[28%] z-10 flex flex-col items-center gap-2 px-6 text-center text-[clamp(1.75rem,5vw,50px)] font-bold leading-[1.1] tracking-[-0.04em] text-foreground"
         >
-          <span>{heading ?? DEFAULT_HEADING}</span>
+          <span>{withHighlight(heading, heading_highlight, "italic text-primary-accent")}</span>
           {text && (
             <span className="text-[clamp(1rem,2vw,20px)] font-medium tracking-[-0.02em] text-text-secondary">
               {text}

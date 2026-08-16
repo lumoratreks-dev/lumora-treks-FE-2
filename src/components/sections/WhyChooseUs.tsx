@@ -10,16 +10,17 @@ import type { CmsHeadingGroup, CmsImage } from "@/lib/blocks";
  * blocks, the middle one dark, each with a rotated rounded image peeking out.
  *
  * Props mirror the backend `WhyChooseUsBlock`/`WhyChooseUsCardBlock`
- * (apps/cms/blocks/sections.py). The per-card word-level accents (e.g.
- * "Curated **Destinations**") have no highlight field on the backend card
- * block, so CMS-authored cards render plain heading/description text —
- * only the untouched default copy below (when `cards` isn't passed at all)
- * keeps the rich per-word styling. */
+ * (apps/cms/blocks/sections.py). Each card's `heading_highlight` accents a
+ * word/phrase in italic primary-accent green; `description_highlight` accents
+ * a phrase in a theme-dependent color (dark cards: light green `#c2ffb6`,
+ * light cards: muted gray `#909dad`), matching Figma exactly. */
 
 export type WhyChooseUsCard = {
   theme?: "light" | "dark";
   heading: string;
+  heading_highlight?: string;
   description?: string;
+  description_highlight?: string;
   image?: CmsImage;
 };
 
@@ -83,7 +84,7 @@ export default function WhyChooseUs({
                       card.theme === "dark" ? "text-background" : "text-foreground"
                     )}
                   >
-                    {card.heading}
+                    {withHighlight(card.heading, card.heading_highlight, "italic text-primary-accent")}
                   </p>
                   {card.description && (
                     <p
@@ -92,7 +93,11 @@ export default function WhyChooseUs({
                         card.theme === "dark" ? "text-[#ebffe8]" : "text-text-secondary"
                       )}
                     >
-                      {card.description}
+                      {withHighlight(
+                        card.description,
+                        card.description_highlight,
+                        card.theme === "dark" ? "text-[#c2ffb6]" : "text-[#909dad]"
+                      )}
                     </p>
                   )}
                 </motion.div>
