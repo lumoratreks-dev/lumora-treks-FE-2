@@ -104,7 +104,7 @@ export default function Footer() {
           <motion.p
             initial={{ y: 160 }}
             whileInView={{ y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: true, amount: "some" }}
             transition={{ duration: 1, ease: "easeOut" }}
             className="whitespace-nowrap text-center text-[clamp(3.5rem,18vw,210px)] font-bold leading-none tracking-[-0.04em] text-[rgb(245_245_245_/_70%)]"
           >
