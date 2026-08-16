@@ -10,12 +10,30 @@ import { useSubmitLeadMutation } from "@/features/leads/leadsApi";
  * (`form_key: "contact"`) — `destination` has no dedicated backend field, it
  * rides along in `LeadSubmission.data` like any other extra form field. */
 
-const SOCIALS = [
-  { icon: "mdi:facebook", label: "Facebook" },
-  { icon: "mdi:instagram", label: "Instagram" },
-  { icon: "prime:twitter", label: "X" },
-  { icon: "mdi:whatsapp", label: "WhatsApp" },
+const DEFAULT_SOCIALS = [
+  { icon: "mdi:facebook", label: "Facebook", url: "#" },
+  { icon: "mdi:instagram", label: "Instagram", url: "#" },
+  { icon: "prime:twitter", label: "X", url: "#" },
+  { icon: "mdi:whatsapp", label: "WhatsApp", url: "#" },
 ];
+
+const DEFAULT_DESTINATIONS = [
+  "Kathmandu Valley",
+  "Pokhara",
+  "Annapurna Base Camp",
+  "Poon Hills",
+];
+
+function highlightSplit(text: string, highlight?: string) {
+  if (!highlight) return { before: text, highlighted: "", after: "" };
+  const idx = text.indexOf(highlight);
+  if (idx === -1) return { before: text, highlighted: "", after: "" };
+  return {
+    before: text.slice(0, idx),
+    highlighted: highlight,
+    after: text.slice(idx + highlight.length),
+  };
+}
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -31,9 +49,33 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 const fieldBox =
   "flex items-center justify-between gap-2 rounded-lg border border-border bg-white p-3 text-base tracking-[-0.04em]";
 
-export default function ContactForm() {
+export default function ContactForm({
+  heading = "Don't Hesitate to Contact Us",
+  heading_highlight = "Contact Us",
+  description = "Whether you have a quick question or want to book a full consultation — we're easy to reach. Fill in the form and we'll respond within one business day",
+  description_highlight = "Fill in the form and we'll respond within one business day",
+  socials,
+  destinations,
+  submit_label = "Reserve Now",
+}: {
+  heading?: string;
+  heading_highlight?: string;
+  description?: string;
+  description_highlight?: string;
+  socials?: { icon: string; label: string; url?: string }[];
+  destinations?: { title: string }[];
+  submit_label?: string;
+} = {}) {
   const [formStartedAt] = useState(() => Date.now() / 1000);
   const [submitLead, { isLoading, isSuccess, isError }] = useSubmitLeadMutation();
+
+  const headingParts = highlightSplit(heading, heading_highlight);
+  const descriptionParts = highlightSplit(description, description_highlight);
+  const socialLinks = socials && socials.length > 0 ? socials : DEFAULT_SOCIALS;
+  const destinationOptions =
+    destinations && destinations.length > 0
+      ? destinations.map((d) => d.title)
+      : DEFAULT_DESTINATIONS;
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,15 +109,18 @@ export default function ContactForm() {
         >
           <div className="flex flex-col gap-8">
             <h2 className="text-[clamp(1.75rem,3vw,32px)] font-bold tracking-[-0.04em] text-foreground">
-              Don&apos;t Hesitate to{" "}
-              <span className="italic text-primary-accent">Contact Us</span>
+              {headingParts.before}
+              {headingParts.highlighted && (
+                <span className="italic text-primary-accent">{headingParts.highlighted}</span>
+              )}
+              {headingParts.after}
             </h2>
             <p className="font-body-alt text-[clamp(1.1rem,2vw,24px)] font-medium tracking-[-0.04em] text-text-secondary">
-              Whether you have a quick question or want to book a full
-              consultation — we&apos;re easy to reach.{" "}
-              <span className="italic text-[#909dad]">
-                Fill in the form and we&apos;ll respond within one business day
-              </span>
+              {descriptionParts.before}
+              {descriptionParts.highlighted && (
+                <span className="italic text-[#909dad]">{descriptionParts.highlighted}</span>
+              )}
+              {descriptionParts.after}
             </p>
           </div>
 
@@ -84,10 +129,10 @@ export default function ContactForm() {
               Social Media :
             </p>
             <div className="flex items-center gap-5">
-              {SOCIALS.map((social) => (
+              {socialLinks.map((social) => (
                 <a
                   key={social.label}
-                  href="#"
+                  href={social.url || "#"}
                   aria-label={social.label}
                   className="text-foreground transition-transform hover:scale-110"
                 >
@@ -156,10 +201,9 @@ export default function ContactForm() {
                   <option value="" disabled>
                     Select a Destination
                   </option>
-                  <option>Kathmandu Valley</option>
-                  <option>Pokhara</option>
-                  <option>Annapurna Base Camp</option>
-                  <option>Poon Hills</option>
+                  {destinationOptions.map((title) => (
+                    <option key={title}>{title}</option>
+                  ))}
                 </select>
                 <Icon
                   icon="iconoir:nav-arrow-down"
@@ -198,7 +242,7 @@ export default function ContactForm() {
                 disabled={isLoading}
                 className="shrink-0 rounded-lg bg-foreground px-5 py-3 font-body-alt text-lg font-medium tracking-[-0.04em] text-background transition-transform hover:scale-[1.03] active:scale-95 disabled:opacity-60"
               >
-                {isLoading ? "Sending…" : "Reserve Now"}
+                {isLoading ? "Sending…" : submit_label}
               </button>
             </div>
             {isSuccess && (

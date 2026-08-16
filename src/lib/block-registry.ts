@@ -5,6 +5,8 @@ import PopularPackages from "@/components/sections/PopularPackages";
 import PackageGrid from "@/components/sections/PackageGrid";
 import PopularPackagesGrid from "@/components/sections/PopularPackagesGrid";
 import PageHero from "@/components/sections/PageHero";
+import ContactHero from "@/components/sections/ContactHero";
+import ContactForm from "@/components/sections/ContactForm";
 import DestinationsGrid from "@/components/sections/DestinationsGrid";
 import CulturalDayTours from "@/components/sections/CulturalDayTours";
 import DestinationDetail from "@/components/sections/DestinationDetail";
@@ -45,6 +47,8 @@ import {
 export const blockRegistry: Record<string, ComponentType<any>> = {
   Hero: Hero,
   PageHero,
+  ContactHero,
+  ContactForm,
   IntroStats: IntroStats,
   PopularPackages: PopularPackages,
   PackageGrid: PackageGrid,

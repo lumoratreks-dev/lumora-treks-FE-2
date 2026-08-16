@@ -1,8 +1,8 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import PaymentSuccess from "@/components/sections/PaymentSuccess";
 import BlockRenderer from "@/components/BlockRenderer";
 import { getPageByPath } from "@/lib/cms";
+import { notFound } from "next/navigation";
 
 export default async function PaymentSuccessPage({
   searchParams,
@@ -11,6 +11,7 @@ export default async function PaymentSuccessPage({
 }) {
   const { simulation, amount } = await searchParams;
   const page = await getPageByPath("/checkout/success");
+  if (!page?.body?.length) notFound();
 
 /** Booking simulation result page (`/checkout/success`) — Figma node
  * 118:4814. The verified variant will be enabled when a payment provider and
@@ -19,7 +20,7 @@ export default async function PaymentSuccessPage({
     <>
       <main className="flex-1">
         <Navbar />
-        {page?.body?.length ? <BlockRenderer blocks={page.body} contextProps={{ PaymentSuccess: { simulation: simulation === "1", amount } }} /> : <PaymentSuccess simulation={simulation === "1"} amount={amount} />}
+        <BlockRenderer blocks={page.body} contextProps={{ PaymentSuccess: { simulation: simulation === "1", amount } }} />
       </main>
       <Footer />
     </>

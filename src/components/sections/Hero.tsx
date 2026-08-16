@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import SearchBar from "@/components/ui/SearchBar";
+import { useDestinationsQuery } from "@/features/destinations/destinationQueries";
 
 /**
  * Hero — Figma node 104:1763 ("prototype").
@@ -31,6 +33,9 @@ export default function Hero({
   subheading?: string;
   show_search?: boolean;
 } = {}) {
+  const { data: destinations } = useDestinationsQuery();
+  const featured = destinations?.[0];
+
   return (
     <section className="w-full p-5">
       <div className="relative aspect-[1400/790] min-h-[560px] w-full overflow-hidden rounded-[2rem]">
@@ -48,7 +53,7 @@ export default function Hero({
         <motion.h1
           initial={{ y: 48, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
           className="absolute inset-x-0 top-[28%] z-10 px-6 text-center text-[clamp(2.5rem,8vw,100px)] font-extrabold leading-none tracking-[-0.06em] text-foreground"
         >
           {heading}
@@ -107,18 +112,22 @@ export default function Hero({
             transition={{ delay: 0.38, duration: 0.55, ease: "easeOut" }}
             className="flex w-full flex-col gap-4 rounded-2xl bg-white p-6 lg:w-[354px] lg:shrink-0"
           >
-            <div className="flex items-center justify-between">
+            <Link
+              href={featured?.href ?? "/destinations"}
+              className="flex items-center justify-between"
+            >
               <span className="text-2xl font-bold tracking-tight text-foreground">
-                Lantang Valley
+                {featured?.title ?? "Explore destinations"}
               </span>
               <Icon
                 icon="iconoir:arrow-up-right"
                 className="size-8 shrink-0 text-foreground"
               />
-            </div>
+            </Link>
             <p className="text-base font-medium leading-snug tracking-tight text-text-secondary">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              {featured?.price
+                ? `Starting from ${featured.price}`
+                : "Discover handpicked trails, cities, and hidden gems across Nepal."}
             </p>
           </motion.div>
         </div>

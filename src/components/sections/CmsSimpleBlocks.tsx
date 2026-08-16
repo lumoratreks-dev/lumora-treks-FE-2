@@ -40,15 +40,15 @@ export function EmbedSection({ heading, embed, raw_html }: { heading?: Heading; 
   );
 }
 
-export function Gallery({ heading, images = [], columns = "3" }: { heading?: Heading; images?: Array<{ image?: CmsImage; caption?: string }>; columns?: string }) {
+export function Gallery({ heading, images = [], columns = "3", layout = "grid", enable_lightbox = true }: { heading?: Heading; images?: Array<{ image?: CmsImage; caption?: string }>; columns?: string; layout?: string; enable_lightbox?: boolean }) {
   const grid = columns === "2" ? "sm:grid-cols-2" : columns === "4" ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-2 lg:grid-cols-3";
   return (
     <section className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
       {heading?.heading && <h2 className="mb-6 text-3xl font-bold text-foreground">{heading.heading}</h2>}
-      <div className={`grid gap-4 ${grid}`}>
+      <div className={layout === "carousel" ? "flex snap-x gap-4 overflow-x-auto pb-3" : `grid gap-4 ${grid}`}>
         {images.map((item, index) => (
-          <figure key={`${item.caption || "image"}-${index}`} className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface">
-            <Image src={ImageSource({ image: item.image })} alt={item.image?.alt || item.caption || ""} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+          <figure key={`${item.caption || "image"}-${index}`} className={`relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface ${layout === "carousel" ? "w-[80%] shrink-0 snap-start md:w-[45%]" : ""} ${layout === "masonry" && index % 3 === 1 ? "md:mt-8" : ""}`}>
+            <a href={enable_lightbox ? ImageSource({ image: item.image }) : undefined} target={enable_lightbox ? "_blank" : undefined} rel="noreferrer"><Image src={ImageSource({ image: item.image })} alt={item.image?.alt || item.caption || ""} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" /></a>
             {item.caption && <figcaption className="absolute inset-x-0 bottom-0 bg-black/60 p-3 text-sm text-white">{item.caption}</figcaption>}
           </figure>
         ))}
@@ -57,13 +57,13 @@ export function Gallery({ heading, images = [], columns = "3" }: { heading?: Hea
   );
 }
 
-export function VideoSection({ heading, media, aspect_ratio = "16/9", rounded = true }: { heading?: Heading; media?: { image?: CmsImage; video?: { url?: string; poster?: CmsImage }; embed?: { html?: string } }; aspect_ratio?: string; rounded?: boolean }) {
+export function VideoSection({ heading, media, aspect_ratio = "16/9", rounded = true }: { heading?: Heading; media?: { media_type?: string; image?: CmsImage; video?: { url?: string; poster?: CmsImage }; embed?: { html?: string }; alt_override?: string }; aspect_ratio?: string; rounded?: boolean }) {
   const ratio = aspect_ratio === "1/1" ? "aspect-square" : aspect_ratio === "4/3" ? "aspect-[4/3]" : aspect_ratio === "21/9" ? "aspect-[21/9]" : "aspect-video";
   return (
     <section className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
       {heading?.heading && <h2 className="mb-6 text-3xl font-bold text-foreground">{heading.heading}</h2>}
       <div className={`${ratio} relative overflow-hidden bg-secondary ${rounded ? "rounded-2xl" : ""}`}>
-        {media?.video?.url ? <video src={media.video.url} poster={ImageSource({ image: media.video.poster })} controls className="size-full object-cover" /> : media?.embed?.html ? <div className="size-full" dangerouslySetInnerHTML={{ __html: media.embed.html }} /> : <Image src={ImageSource({ image: media?.image })} alt={media?.image?.alt || ""} fill className="object-cover" />}
+        {media?.media_type === "video" && media.video?.url ? <video src={media.video.url} poster={ImageSource({ image: media.video.poster })} controls className="size-full object-cover" /> : media?.media_type === "embed" && media.embed?.html ? <div className="size-full" dangerouslySetInnerHTML={{ __html: media.embed.html }} /> : <Image src={ImageSource({ image: media?.image })} alt={media?.alt_override || media?.image?.alt || ""} fill className="object-cover" />}
       </div>
     </section>
   );

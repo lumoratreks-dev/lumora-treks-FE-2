@@ -8,6 +8,19 @@ const BACKGROUND_CLASS: Record<CmsSectionSettings["background"], string> = {
   primary: "bg-primary",
 };
 
+const SPACING_CLASS: Record<CmsSectionSettings["spacing"], string> = {
+  none: "",
+  sm: "py-4",
+  md: "py-8",
+  lg: "py-14",
+};
+
+const CONTAINER_CLASS: Record<CmsSectionSettings["container"], string> = {
+  default: "",
+  narrow: "mx-auto max-w-4xl",
+  full: "w-full",
+};
+
 /**
  * Renders a Wagtail page body: an ordered list of `{ type, value, id }` blocks.
  * `value.component` (not `type`) selects the React component from the
@@ -36,14 +49,16 @@ export default function BlockRenderer({ blocks, contextProps = {} }: { blocks: C
         }
 
         const bgClass = settings?.background ? BACKGROUND_CLASS[settings.background] : "";
+        const spacingClass = settings?.spacing ? SPACING_CLASS[settings.spacing] : "";
+        const containerClass = settings?.container ? CONTAINER_CLASS[settings.container] : "";
         const anchorId = settings?.anchor_id || undefined;
 
-        if (!bgClass && !anchorId) {
+        if (!bgClass && !spacingClass && !containerClass && !anchorId) {
           return <Component key={block.id} {...props} {...runtimeProps} />;
         }
 
         return (
-          <div key={block.id} id={anchorId} className={bgClass || undefined}>
+          <div key={block.id} id={anchorId} className={[bgClass, spacingClass, containerClass].filter(Boolean).join(" ") || undefined}>
             <Component {...props} {...runtimeProps} />
           </div>
         );
