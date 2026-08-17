@@ -31,17 +31,12 @@ export default async function Home() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <main className="flex-1">
+        <Navbar />
         {page?.body && page.body.length > 0 ? (
-          <>
-            <div className="relative">
-              <div className="absolute inset-x-0 top-3 z-50 sm:top-6">
-                <Navbar />
-              </div>
-            </div>
-            <BlockRenderer blocks={page.body} />
-          </>
+          <BlockRenderer blocks={page.body} />
         ) : null}
       </main>
+     
       <Footer />
     </HydrationBoundary>
   );

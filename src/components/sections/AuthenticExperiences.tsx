@@ -33,6 +33,7 @@ export default function AuthenticExperiences({
   items?: AuthenticExperienceItem[];
   reversed?: boolean;
 } = {}) {
+  console.log("image here", image);
   const imageSrc = image?.url || "/images/authentic-nepal.png";
   const imageAlt = image?.alt || "Ancient heritage temples in Nepal";
   const listItems = items ?? [];
@@ -40,9 +41,8 @@ export default function AuthenticExperiences({
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10">
       <div
-        className={`flex flex-col items-center gap-10 lg:gap-16 ${
-          reversed ? "lg:flex-row-reverse" : "lg:flex-row"
-        }`}
+        className={`flex flex-col items-center gap-10 lg:gap-16 ${reversed ? "lg:flex-row-reverse" : "lg:flex-row"
+          }`}
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -53,11 +53,28 @@ export default function AuthenticExperiences({
         >
           <Image
             src={imageSrc}
+            // src="/images/seasonal-1.png"
             alt={imageAlt}
             fill
             sizes="(max-width: 1024px) 100vw, 523px"
-            className="object-contain"
+            className="object-cover"
           />
+          {/* <div
+            className="absolute -left-12 bottom-0 w-64 h-64 bg-white"
+            style={{ borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' }}
+          /> */}
+          {/* <div
+            className="bg-white h-18 w-64 -start-[160px] -rotate-[20deg] absolute bottom-[30%] rounded-4xl">
+          </div> */}
+          {/* <div className="bg-white h-18 w-42 -start-[100px] -rotate-[20deg] absolute bottom-[30%] rounded-4xl"></div> */}
+
+          {/*           
+          <svg
+            className="absolute top-[97px] right-0 w-1/3 h-auto fill-white pointer-events-none"
+            viewBox="0 0 300 300"
+          >
+            <path d="M100,0 C180,20 220,120 180,180 C140,240 250,280 300,300 L300,0 Z" />
+          </svg>  */}
         </motion.div>
 
         <motion.div

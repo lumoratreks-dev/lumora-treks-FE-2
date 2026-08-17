@@ -36,17 +36,17 @@ export default function Navbar() {
       .map((item) => ({ label: item.value.label || "", href: item.value.href || "" }))
       .filter((link) => link.label && link.href);
   const links = cmsLinks?.length ? cmsLinks : [
-        { label: "Home", href: "/" },
-        { label: "Packages", href: "/packages" },
-        { label: "Destinations", href: "/destinations" },
-        { label: "Contact Us", href: "/contact" },
-      ];
+    { label: "Home", href: "/" },
+    { label: "Packages", href: "/packages" },
+    { label: "Destinations", href: "/destinations" },
+    { label: "Contact Us", href: "/contact" },
+  ];
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
 
   return (
-    <header className="w-full px-8 py-4 sm:px-12 lg:px-16">
+    <header className="sticky top-0 z-50 -mb-[73px] flex w-full items-center justify-center border-b border-border/40  px-8 py-4 backdrop-blur-md sm:-mb-[81px] sm:px-12 lg:-mb-[88px] lg:px-16">
       <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4">
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-end gap-[5px]">

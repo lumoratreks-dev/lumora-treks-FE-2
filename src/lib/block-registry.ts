@@ -33,6 +33,7 @@ import {
   TestimonialsCarousel,
   VideoSection,
 } from "@/components/sections/CmsSimpleBlocks";
+import Navbar from "@/components/layout/Navbar";
 
 /**
  * Maps a Wagtail block's `component` (`block.value.component` — PascalCase,

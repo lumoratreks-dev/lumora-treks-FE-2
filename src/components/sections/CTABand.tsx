@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { withHighlight } from "@/lib/highlightText";
 import type { CmsImage } from "@/lib/blocks";
+import { useRef } from "react";
 
 /** "Create memories" CTA band — Figma node 59:2049. Forest bg + dark overlay,
  * heading that rises from BEHIND the foreground tree layer (Figma motion), and a
@@ -20,7 +21,7 @@ export type CTAButton = { label?: string; href?: string };
 
 const DEFAULT_BUTTONS: CTAButton[] = [{ label: "Reserve Now", href: "/enquiry" }];
 
-const DEFAULT_HEADING = "Create memories that stay with you long after the Journey Ends";
+const DEFAULT_HEADING = `Create memories that stay with you \n long after the Journey Ends`;
 const DEFAULT_HEADING_HIGHLIGHT = "Journey";
 
 export default function CTABand({
@@ -38,8 +39,10 @@ export default function CTABand({
 } = {}) {
   const primaryButton = buttons[0];
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, amount: 0.4 });
   return (
-    <section className="mx-auto max-w-[1440px] px-5 py-8">
+    <section ref={containerRef} className="mx-auto max-w-[1440px] px-5 py-8">
       <div className="relative aspect-[1390/753] min-h-[420px] overflow-hidden rounded-[28px]">
         <Image
           src={background_image?.url || "/images/cta-bg.png"}
@@ -52,11 +55,10 @@ export default function CTABand({
 
         {/* Heading — behind the foreground trees, rises into place */}
         <motion.h2
-          initial={{ y: 64, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-x-0 top-[28%] z-10 flex flex-col items-center gap-2 px-6 text-center text-[clamp(1.75rem,5vw,50px)] font-bold leading-[1.1] tracking-[-0.04em] text-foreground"
+          initial={{ y: 160, opacity: 0 }}
+          animate={isInView ? { y: 60, opacity: 1 } : { y: 40, opacity: 0 }}
+          transition={{ duration: 5, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute top-[28%] inset-x-0 z-10 flex flex-col items-center gap-2 px-6 text-center text-[clamp(1.75rem,5vw,50px)] font-bold leading-[1.1] tracking-[-0.04em] text-foreground"
         >
           <span>{withHighlight(heading, heading_highlight, "italic text-primary-accent")}</span>
           {text && (

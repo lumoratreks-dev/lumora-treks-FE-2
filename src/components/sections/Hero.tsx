@@ -37,7 +37,8 @@ export default function Hero({
   const featured = destinations?.[0];
 
   return (
-    <section className="mx-auto w-full max-w-[1440px] p-5">
+    <section className="mx-auto w-full max-w-[1440px]  ">
+
       <div className="relative aspect-[1400/790] min-h-[560px] w-full overflow-hidden rounded-[2rem]">
         {/* Background scene */}
         <Image
