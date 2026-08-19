@@ -25,6 +25,11 @@ import AuthNavAction from "@/components/auth/AuthNavAction";
 
 export default function Navbar() {
   const pathname = usePathname();
+  // Only the landing page's Hero is a full-bleed photo the pill nav can float
+  // over (Figma: nav absolute over hero). Every other page's hero sits on a
+  // plain background, so the same negative-margin overlap trick there just
+  // covers the page title/search bar — keep the navbar in normal flow there.
+  const isFloating = pathname === "/";
   const isMobileNavOpen = useUIStore((s) => s.isMobileNavOpen);
   const toggleMobileNav = useUIStore((s) => s.toggleMobileNav);
   const closeMobileNav = useUIStore((s) => s.closeMobileNav);
@@ -46,8 +51,13 @@ export default function Navbar() {
 
 
   return (
-    <header className="sticky top-0 z-50 -mb-[73px] flex w-full items-center justify-center border-b border-border/40  px-8 py-4 backdrop-blur-md sm:-mb-[81px] sm:px-12 lg:-mb-[88px] lg:px-16">
-      <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4">
+    <header
+      className={clsx(
+        "relative z-50 flex w-full items-center justify-between border-b border-border/40 px-8 py-4 sm:px-12 lg:px-16",
+        isFloating && "top-10 -mb-[73px] sm:-mb-[81px] lg:-mb-[88px]"
+      )}
+    >
+      <div className="mx-auto w-full flex max-w-[1440px] items-center justify-between gap-4">
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-end gap-[5px]">
           <Image src="/logo.svg" alt={siteName} width={34} height={30} priority />

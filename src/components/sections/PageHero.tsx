@@ -8,7 +8,12 @@ import type { CmsImage } from "@/lib/blocks";
 
 /** PageHero — reusable puzzle-image + heading + subtitle + SearchBar hero, with a
  * staggered play-once entrance. Shared by the Packages and Destinations pages
- * (Figma 118:5899 / 84:1546). */
+ * (Figma 118:5899 / 84:1546). The hero image starts oversized (full-bleed,
+ * matching Figma's width keyframe) and settles down to its resting size;
+ * heading/subtitle/search-bar cascade in right after. */
+const EASE_INOUT: [number, number, number, number] = [0.5, 0, 0.5, 1];
+const EASE_EXPO_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 type PageHeroProps = {
   title: string;
   image?: CmsImage | string;
@@ -46,9 +51,9 @@ export default function PageHero({
     <section className="mx-auto max-w-[1400px] px-6 py-12 lg:px-10 lg:py-16">
       <div className="flex flex-col items-center gap-10 lg:flex-row lg:gap-16">
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          initial={{ scale: 1.32 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5, ease: EASE_EXPO_OUT }}
           className="relative w-full shrink-0"
           style={{ aspectRatio: `${imageWidth}/${imageHeight}`, maxWidth: imageWidth }}
         >
@@ -58,7 +63,7 @@ export default function PageHero({
             fill
             priority
             sizes={`(max-width: 1024px) 100vw, ${imageWidth}px`}
-            className="object-contain"
+            className="object-cover"
           />
         </motion.div>
 
@@ -66,7 +71,7 @@ export default function PageHero({
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 }}
+            transition={{ duration: 0.35, ease: EASE_INOUT, delay: 0.35 }}
             className="text-[clamp(2rem,4vw,40px)] font-bold tracking-[-0.06em] text-foreground"
           >
             {title}
@@ -76,7 +81,7 @@ export default function PageHero({
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+            transition={{ duration: 0.3, ease: EASE_INOUT, delay: 0.55 }}
             className="font-body-alt text-[clamp(1.05rem,2vw,24px)] font-medium tracking-[-0.04em] text-[#3d4c5e]"
           >
             {subtitle}
@@ -85,7 +90,7 @@ export default function PageHero({
           {show_search ? <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.45 }}
+            transition={{ duration: 0.35, ease: EASE_INOUT, delay: 0.75 }}
           >
             <SearchBar />
           </motion.div> : null}
