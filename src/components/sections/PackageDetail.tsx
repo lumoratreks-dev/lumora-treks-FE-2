@@ -7,6 +7,7 @@ import { Icon } from "@iconify/react";
 import StarRating from "@/components/ui/StarRating";
 import PackageReviews from "@/components/reviews/PackageReviews";
 import type { CmsPackageDetail } from "@/lib/blocks";
+import { sanitizePackageDescription } from "@/lib/richText";
 
 /** Package detail — Figma node 150:10819 ("Main Content"). Distinct from the
  * destination detail: overview + key facts, gallery, things included, booking
@@ -35,7 +36,6 @@ export default function PackageDetail({
   const title = packageData.title;
   const rating = packageData.rating;
   const reviewCount = packageData.review_count;
-  const overview = packageData.description || packageData.summary;
   const keyFacts = [
     { icon: "bi:suitcase", label: "Trip Style", value: packageData.category },
     { icon: "lets-icons:speed", label: "Difficulty", value: packageData.difficulty },
@@ -126,7 +126,16 @@ export default function PackageDetail({
           <div className="flex flex-col gap-6 lg:w-[644px]">
             <div className="flex flex-col gap-5 border-b border-border pb-6">
               <h2 className={sectionHeading}>Overview</h2>
-              <p className="font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary">{overview}</p>
+              {packageData.description ? (
+                <div
+                  className="font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary [&_p+p]:mt-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li+li]:mt-2 [&_a]:underline [&_a]:underline-offset-4 [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&>:first-child]:mt-0 [&>:last-child]:mb-0"
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizePackageDescription(packageData.description),
+                  }}
+                />
+              ) : (
+                <p className="font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary">{packageData.summary}</p>
+              )}
             </div>
             <div className="flex flex-col gap-5">
               <h2 className={sectionHeading}>Key Facts</h2>
