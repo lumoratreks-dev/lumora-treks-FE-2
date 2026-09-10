@@ -34,13 +34,16 @@ async function cmsBlogList(qs: string): Promise<CmsListResponse<CmsBlogPost> | n
 
 // ------------------------------------------------------------------ featured
 
-export async function fetchFeaturedPost(): Promise<BlogPostData> {
+export async function fetchFeaturedPost(): Promise<BlogPostData | null> {
   const featured = await cmsBlogList("?featured=1&limit=1");
-  if (featured?.items?.length) return adaptCmsBlogPost(featured.items[0]);
-  // No flagged feature (or CMS unreachable): use the most recent post, else dummy.
+  // `null` = CMS unreachable (dev/offline) → dummy. A response with an empty
+  // items array = CMS reachable but no posts yet → show nothing (no dummy on
+  // production).
+  if (featured === null) return selectFeaturedPost();
+  if (featured.items.length) return adaptCmsBlogPost(featured.items[0]);
+  // Reachable, but nothing flagged featured: fall back to the most recent post.
   const latest = await cmsBlogList("?limit=1");
-  if (latest?.items?.length) return adaptCmsBlogPost(latest.items[0]);
-  return selectFeaturedPost();
+  return latest?.items?.length ? adaptCmsBlogPost(latest.items[0]) : null;
 }
 
 export const featuredPostQueryOptions = () =>
@@ -106,9 +109,14 @@ export async function fetchBlogPost(slug: string): Promise<BlogPostData | undefi
         next: { revalidate: 60 },
       });
       if (res.ok) return adaptCmsBlogPost((await res.json()) as CmsBlogPost);
+      // Reachable but no such post → genuinely not found (don't mask a 404 with
+      // a dummy article on production).
+      if (res.status === 404) return undefined;
     } catch {
-      // fall through to dummy
+      // Network error / CMS unreachable → dummy fallback (dev/offline).
+      return selectBlogPost(slug);
     }
+    return undefined;
   }
   return selectBlogPost(slug);
 }
