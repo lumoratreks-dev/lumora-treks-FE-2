@@ -4,6 +4,7 @@ import IntroStats from "@/components/sections/IntroStats";
 import PopularPackages from "@/components/sections/PopularPackages";
 import PackageGrid from "@/components/sections/PackageGrid";
 import PopularPackagesGrid from "@/components/sections/PopularPackagesGrid";
+import BlogGrid from "@/components/sections/BlogGrid";
 import PageHero from "@/components/sections/PageHero";
 import ContactHero from "@/components/sections/ContactHero";
 import ContactForm from "@/components/sections/ContactForm";
@@ -54,6 +55,7 @@ export const blockRegistry: Record<string, ComponentType<any>> = {
   PopularPackages: PopularPackages,
   PackageGrid: PackageGrid,
   PackageListing: PopularPackagesGrid,
+  BlogListing: BlogGrid,
   DestinationsGrid,
   CulturalDayTours,
   DestinationDetail,
