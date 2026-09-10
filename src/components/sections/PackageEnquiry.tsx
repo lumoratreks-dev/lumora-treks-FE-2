@@ -6,6 +6,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import StarRating from "@/components/ui/StarRating";
 import { useSubmitLeadMutation } from "@/features/leads/leadsApi";
+import { buildWhatsAppEnquiryUrl, openWhatsAppEnquiry } from "@/features/leads/whatsapp";
 import type { CmsPackageDetail } from "@/lib/blocks";
 
 /** Package enquiry — reached from a package detail page. A no-payment enquiry
@@ -31,26 +32,47 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
   const selectedPackage = packageData || packageFromCms;
   const [formStartedAt] = useState(() => Date.now() / 1000);
   const [sent, setSent] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState("");
   const [submitLead, { isLoading, isError }] = useSubmitLeadMutation();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
+    const fullName = String(data.get("full_name") || "");
+    const email = String(data.get("email") || "");
+    const phone = String(data.get("phone") || "");
+    const message = String(data.get("message") || "");
+    const travelDate = String(data.get("travel_date") || "");
+    const travelers = String(data.get("travelers") || "");
     submitLead({
       form_key: "enquiry",
-      name: String(data.get("full_name") || ""),
-      email: String(data.get("email") || ""),
-      phone: String(data.get("phone") || ""),
-      message: String(data.get("message") || ""),
-      travel_date: String(data.get("travel_date") || ""),
-      travelers: String(data.get("travelers") || ""),
+      name: fullName,
+      email,
+      phone,
+      message,
+      travel_date: travelDate,
+      travelers,
       package_id: selectedPackage ? Number(selectedPackage.id) : undefined,
       consent: data.get("privacy_consent") === "yes",
       form_started_at: Number(e.currentTarget.dataset.startedAt || formStartedAt),
       source_url: window.location.href,
     })
       .unwrap()
-      .then(() => setSent(true))
+      .then(() => {
+        // Also deliver the enquiry to the team's WhatsApp via a pre-filled chat.
+        const url = buildWhatsAppEnquiryUrl("Hi Lumora Treks, I'd like to enquire about a trip.", [
+          { label: "Name", value: fullName },
+          { label: "Email", value: email },
+          { label: "Phone", value: phone },
+          { label: "Package", value: selectedPackage?.title },
+          { label: "Travel Date", value: travelDate },
+          { label: "Travelers", value: travelers },
+          { label: "Message", value: message },
+        ]);
+        setWhatsappUrl(url);
+        setSent(true);
+        openWhatsAppEnquiry(url);
+      })
       .catch(() => {});
   };
 
@@ -85,6 +107,17 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
                   Thanks — our team will get back to you within one business day.
                 </p>
               </div>
+              {whatsappUrl && (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-lg bg-[#25d366] px-5 py-3 font-body-alt text-base font-medium tracking-[-0.03em] text-white transition-transform hover:scale-[1.03] active:scale-95"
+                >
+                  <Icon icon="mdi:whatsapp" className="size-5" />
+                  Continue on WhatsApp
+                </a>
+              )}
               <Link
                 href="/packages"
                 className="rounded-lg bg-foreground px-5 py-3 font-body-alt text-base font-medium tracking-[-0.03em] text-background transition-transform hover:scale-[1.03] active:scale-95"

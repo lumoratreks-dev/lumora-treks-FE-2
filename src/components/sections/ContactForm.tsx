@@ -4,6 +4,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import { useSubmitLeadMutation } from "@/features/leads/leadsApi";
+import { buildWhatsAppEnquiryUrl, openWhatsAppEnquiry } from "@/features/leads/whatsapp";
 
 /** Contact Form — Figma node 75:690. Contact info + social (left) and the
  * "Leave your message" form (right). Submits to `/api/v2/leads/`
@@ -67,6 +68,7 @@ export default function ContactForm({
   submit_label?: string;
 } = {}) {
   const [formStartedAt] = useState(() => Date.now() / 1000);
+  const [whatsappUrl, setWhatsappUrl] = useState("");
   const [submitLead, { isLoading, isSuccess, isError }] = useSubmitLeadMutation();
 
   const headingParts = highlightSplit(heading, heading_highlight);
@@ -81,18 +83,33 @@ export default function ContactForm({
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
+    const name = String(data.get("name") || "");
+    const email = String(data.get("email") || "");
+    const message = String(data.get("message") || "");
+    const destination = String(data.get("destination") || "");
     submitLead({
       form_key: "contact",
-      name: String(data.get("name") || ""),
-      email: String(data.get("email") || ""),
-      message: String(data.get("message") || ""),
-      destination: String(data.get("destination") || ""),
+      name,
+      email,
+      message,
+      destination,
       consent: data.get("privacy_consent") === "yes",
       form_started_at: Number(form.dataset.startedAt || formStartedAt),
       source_url: window.location.href,
     })
       .unwrap()
-      .then(() => form.reset())
+      .then(() => {
+        // Also deliver the message to the team's WhatsApp via a pre-filled chat.
+        const url = buildWhatsAppEnquiryUrl("Hi Lumora Treks, I have a message for you.", [
+          { label: "Name", value: name },
+          { label: "Email", value: email },
+          { label: "Destination", value: destination },
+          { label: "Message", value: message },
+        ]);
+        setWhatsappUrl(url);
+        openWhatsAppEnquiry(url);
+        form.reset();
+      })
       .catch(() => {});
   };
 
@@ -246,9 +263,22 @@ export default function ContactForm({
               </button>
             </div>
             {isSuccess && (
-              <p className="font-body-alt text-base font-medium text-primary">
-                Thanks — we&apos;ll get back to you within one business day.
-              </p>
+              <div className="flex flex-col gap-3">
+                <p className="font-body-alt text-base font-medium text-primary">
+                  Thanks — we&apos;ll get back to you within one business day.
+                </p>
+                {whatsappUrl && (
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-fit items-center gap-2 rounded-lg bg-[#25d366] px-4 py-2.5 font-body-alt text-base font-medium tracking-[-0.04em] text-white transition-transform hover:scale-[1.03] active:scale-95"
+                  >
+                    <Icon icon="mdi:whatsapp" className="size-5" />
+                    Continue on WhatsApp
+                  </a>
+                )}
+              </div>
             )}
             {isError && (
               <p className="font-body-alt text-base font-medium text-red-600">
