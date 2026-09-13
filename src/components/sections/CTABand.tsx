@@ -43,7 +43,7 @@ export default function CTABand({
   const isInView = useInView(containerRef, { once: true, amount: 0.4 });
   return (
     <section ref={containerRef} className="mx-auto max-w-[1440px] px-5 py-8">
-      <div className="relative aspect-[1390/753] min-h-[420px] overflow-hidden rounded-[28px]">
+      <div className="relative min-h-[420px] w-full overflow-hidden rounded-[28px] sm:aspect-[1390/753]">
         <Image
           src={background_image?.url || "/images/cta-bg.png"}
           alt={background_image?.alt || "Misty forest"}

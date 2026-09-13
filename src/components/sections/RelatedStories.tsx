@@ -6,17 +6,27 @@ import type { BlogPostData } from "@/types";
 
 /** RelatedStories — a 3-up row of BlogCards below an article. Cards fade-up in
  * a light stagger as the section scrolls into view. */
-export default function RelatedStories({ posts }: { posts: BlogPostData[] }) {
+export default function RelatedStories({
+  posts,
+  heading = "Keep reading",
+  count = 3,
+}: {
+  posts: BlogPostData[];
+  heading?: string;
+  count?: number;
+}) {
   if (!posts.length) return null;
+
+  const visiblePosts = posts.slice(0, count);
 
   return (
     <section className="mx-auto max-w-[1400px] px-6 pb-20 lg:px-10">
       <div className="border-t border-border pt-14">
         <h2 className="mb-8 text-2xl font-bold tracking-[-0.05em] text-foreground sm:text-3xl">
-          Keep reading
+          {heading}
         </h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post, i) => (
+          {visiblePosts.map((post, i) => (
             <motion.div
               key={post.id}
               initial={{ opacity: 0, y: 24 }}

@@ -5,13 +5,28 @@ import PopularPackages from "@/components/sections/PopularPackages";
 import PackageGrid from "@/components/sections/PackageGrid";
 import PopularPackagesGrid from "@/components/sections/PopularPackagesGrid";
 import BlogGrid from "@/components/sections/BlogGrid";
+import ArticleHero from "@/components/sections/ArticleHero";
+import ArticleBody from "@/components/sections/ArticleBody";
+import RelatedStories from "@/components/sections/RelatedStories";
 import PageHero from "@/components/sections/PageHero";
 import ContactHero from "@/components/sections/ContactHero";
 import ContactForm from "@/components/sections/ContactForm";
 import DestinationsGrid from "@/components/sections/DestinationsGrid";
 import CulturalDayTours from "@/components/sections/CulturalDayTours";
 import DestinationDetail from "@/components/sections/DestinationDetail";
+import {
+  DestinationHeader,
+  DestinationOverview,
+  DestinationPackages,
+} from "@/components/sections/DestinationSections";
 import PackageDetail from "@/components/sections/PackageDetail";
+import {
+  PackageBooking,
+  PackageHeader,
+  PackageItinerary,
+  PackageOverview,
+  PackageReviewsSection,
+} from "@/components/sections/PackageSections";
 import PackageEnquiry from "@/components/sections/PackageEnquiry";
 import Checkout from "@/components/sections/Checkout";
 import PaymentSuccess from "@/components/sections/PaymentSuccess";
@@ -34,7 +49,6 @@ import {
   TestimonialsCarousel,
   VideoSection,
 } from "@/components/sections/CmsSimpleBlocks";
-import Navbar from "@/components/layout/Navbar";
 
 /**
  * Maps a Wagtail block's `component` (`block.value.component` — PascalCase,
@@ -56,10 +70,21 @@ export const blockRegistry: Record<string, ComponentType<any>> = {
   PackageGrid: PackageGrid,
   PackageListing: PopularPackagesGrid,
   BlogListing: BlogGrid,
+  ArticleHero,
+  ArticleBody,
+  RelatedStories,
   DestinationsGrid,
   CulturalDayTours,
   DestinationDetail,
+  DestinationHeader,
+  DestinationOverview,
+  DestinationPackages,
   PackageDetail,
+  PackageHeader,
+  PackageOverview,
+  PackageBooking,
+  PackageItinerary,
+  PackageReviewsSection,
   PackageEnquiry,
   Checkout,
   PaymentSuccess,

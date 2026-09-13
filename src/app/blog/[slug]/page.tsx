@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import BlockRenderer from "@/components/BlockRenderer";
 import ReadingProgress from "@/components/sections/ReadingProgress";
 import ArticleHero from "@/components/sections/ArticleHero";
 import ArticleBody from "@/components/sections/ArticleBody";
 import RelatedStories from "@/components/sections/RelatedStories";
 import CTABand from "@/components/sections/CTABand";
+import { getPageByPath } from "@/lib/cms";
 import {
   fetchBlogPost,
   fetchBlogSlugs,
@@ -53,17 +55,32 @@ export default async function BlogPostPage({
   const post = await fetchBlogPost(slug);
   if (!post) notFound();
 
-  const related = await fetchRelatedPosts(slug, 3);
+  const [related, page] = await Promise.all([
+    fetchRelatedPosts(slug, 6),
+    getPageByPath(`/blog/${slug}`),
+  ]);
+
+  const articleContext = {
+    ArticleHero: { post },
+    ArticleBody: { post },
+    RelatedStories: { posts: related },
+  };
 
   return (
     <>
       <ReadingProgress />
       <main className="flex-1">
         <Navbar />
-        <ArticleHero post={post} />
-        <ArticleBody post={post} />
-        <RelatedStories posts={related} />
-        <CTABand />
+        {page?.body?.length ? (
+          <BlockRenderer blocks={page.body} contextProps={articleContext} />
+        ) : (
+          <>
+            <ArticleHero post={post} />
+            <ArticleBody post={post} />
+            <RelatedStories posts={related} count={3} />
+            <CTABand />
+          </>
+        )}
       </main>
       <Footer />
     </>

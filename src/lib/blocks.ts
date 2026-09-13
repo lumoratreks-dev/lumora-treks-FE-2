@@ -138,6 +138,8 @@ export type CmsPage = {
   title: string;
   slug: string;
   body: CmsBlock[];
+  destination?: CmsDestinationDetail;
+  package?: CmsPackageDetail;
   seo?: {
     title?: string;
     description?: string;

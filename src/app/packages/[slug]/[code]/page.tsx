@@ -16,6 +16,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function CanonicalPackageDetailPage({ params }: Params) {
   const { slug, code } = await params;
   const page = await getPageByPath(`/packages/${slug}/${code}`);
-  if (!page?.body?.length) notFound();
-  return <><main className="flex-1"><Navbar /><BlockRenderer blocks={page.body} /></main><Footer /></>;
+  if (!page?.body?.length || !page.package) notFound();
+  const packageContext = {
+    PackageHeader: { packageData: page.package },
+    PackageOverview: { packageData: page.package },
+    PackageBooking: { packageData: page.package },
+    PackageItinerary: { packageData: page.package },
+    PackageReviewsSection: { packageData: page.package },
+  };
+  return <><main className="flex-1"><Navbar /><BlockRenderer blocks={page.body} contextProps={packageContext} /></main><Footer /></>;
 }

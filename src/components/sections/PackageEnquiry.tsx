@@ -204,8 +204,16 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
                 <span className="font-body-alt text-base tracking-[-0.04em] text-text-secondary">
                   {selectedPackage?.duration || "Package details"}
                 </span>
-                <span className="size-1 rounded-full bg-text-secondary" />
-                  <StarRating rating={selectedPackage?.rating ?? 4} starSize={20} />
+                {selectedPackage ? (
+                  <>
+                    <span className="size-1 rounded-full bg-text-secondary" />
+                    {selectedPackage.rating > 0 ? (
+                      <StarRating rating={selectedPackage.rating} starSize={20} />
+                    ) : (
+                      <span className="font-body-alt text-sm text-text-muted">New trip</span>
+                    )}
+                  </>
+                ) : null}
               </div>
             </div>
           </div>

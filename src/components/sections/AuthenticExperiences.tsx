@@ -33,7 +33,6 @@ export default function AuthenticExperiences({
   items?: AuthenticExperienceItem[];
   reversed?: boolean;
 } = {}) {
-  console.log("image here", image);
   const imageSrc = image?.url || "/images/authentic-nepal.png";
   const imageAlt = image?.alt || "Ancient heritage temples in Nepal";
   const listItems = items ?? [];

@@ -16,6 +16,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function DestinationDetailPage({ params }: Params) {
   const { slug } = await params;
   const page = await getPageByPath(`/destinations/${slug}`);
-  if (!page?.body?.length) notFound();
-  return <><main className="flex-1"><Navbar /><BlockRenderer blocks={page.body} /></main><Footer /></>;
+  if (!page?.body?.length || !page.destination) notFound();
+  const destinationContext = {
+    DestinationHeader: { destination: page.destination },
+    DestinationOverview: { destination: page.destination },
+    DestinationPackages: { destination: page.destination },
+  };
+  return <><main className="flex-1"><Navbar /><BlockRenderer blocks={page.body} contextProps={destinationContext} /></main><Footer /></>;
 }
