@@ -68,6 +68,11 @@ export type CmsPackageDetail = {
   price: number;
   discount_price?: number | null;
   currency: string;
+  group_pricing: Array<{
+    min_people: number;
+    max_people: number | null;
+    price_per_person: number;
+  }>;
   difficulty: string;
   href?: string;
   booking_url?: string;

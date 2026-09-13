@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import StarRating from "@/components/ui/StarRating";
 import PackageReviews from "@/components/reviews/PackageReviews";
@@ -16,9 +16,27 @@ import { sanitizePackageDescription } from "@/lib/richText";
 const sectionHeading =
   "text-2xl font-semibold tracking-[-0.04em] text-foreground";
 
+function formatPrice(currency: string, amount: number) {
+  const formattedAmount = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+
+  return `${currency || "USD"} ${formattedAmount}`;
+}
+
+function groupSizeLabel(minPeople: number, maxPeople: number | null) {
+  if (maxPeople === null) return `Group of ${minPeople}+ people`;
+  if (minPeople === maxPeople) {
+    return `Group of ${minPeople} ${minPeople === 1 ? "person" : "people"}`;
+  }
+
+  return `Group of ${minPeople} – ${maxPeople} people`;
+}
+
 export default function PackageDetail({
-  reserveHref = "/checkout",
-  packageData,
+  reserveHref: reserveHrefProp = "/checkout",
+  packageData: packageDataProp,
   package: packageFromCms,
   reserve_href,
 }: {
@@ -29,10 +47,13 @@ export default function PackageDetail({
 }) {
   // A Wagtail PackageDetail block always supplies `package`; direct callers
   // supply `packageData`. Keep this resolved before hooks so hook order is stable.
-  packageData = (packageData || packageFromCms) as CmsPackageDetail;
-  reserveHref = reserve_href || reserveHref;
+  const packageData = (packageDataProp || packageFromCms) as CmsPackageDetail;
+  const reserveHref = reserve_href || reserveHrefProp;
   const [day, setDay] = useState(0);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState<number | null>(null);
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+  const pricingTriggerRef = useRef<HTMLButtonElement>(null);
+  const pricingDialogRef = useRef<HTMLDivElement>(null);
   const title = packageData.title;
   const rating = packageData.rating;
   const reviewCount = packageData.review_count;
@@ -57,6 +78,7 @@ export default function PackageDetail({
   const galleryLarge = galleryItems.slice(0, 2);
   const gallerySmall = galleryItems.slice(2, 5);
   const itinerary = packageData.itinerary;
+  const groupPricing = packageData.group_pricing ?? [];
   const dayLabels = itinerary.map((item) => item.day_label);
   const includedItems = packageData.included_items.filter((item) => item.kind === "included");
   const excludedItems = packageData.included_items.filter((item) => item.kind === "excluded");
@@ -95,6 +117,45 @@ export default function PackageDetail({
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [activeGalleryIndex, galleryItems.length]);
+
+  useEffect(() => {
+    if (!isPricingOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const pricingTrigger = pricingTriggerRef.current;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsPricingOpen(false);
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusableElements = pricingDialogRef.current?.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusableElements?.length) return;
+
+      const first = focusableElements[0];
+      const last = focusableElements[focusableElements.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+      pricingTrigger?.focus();
+    };
+  }, [isPricingOpen]);
 
   return (
     <>
@@ -241,11 +302,26 @@ export default function PackageDetail({
 
           {/* Booking card */}
           <aside className="flex w-full flex-col gap-6 rounded-lg border border-border bg-surface p-6 lg:w-[494px] lg:shrink-0">
-            <div className="flex items-start justify-between border-b border-border pb-2">
+            <div className="flex items-start justify-between gap-4 border-b border-border pb-3">
               <span className="font-body-alt text-base tracking-[-0.03em] text-text-secondary">
                 Price per adult
               </span>
-              <span className="font-body-alt text-xl tracking-[-0.03em] text-foreground">{packageData.currency} {packageData.price}</span>
+              <div className="flex flex-col items-end gap-1">
+                <span className="font-body-alt text-xl tracking-[-0.03em] text-foreground">{packageData.currency} {packageData.price}</span>
+                {groupPricing.length > 0 && (
+                  <button
+                    ref={pricingTriggerRef}
+                    type="button"
+                    aria-haspopup="dialog"
+                    aria-expanded={isPricingOpen}
+                    aria-controls="package-pricing-dialog"
+                    onClick={() => setIsPricingOpen(true)}
+                    className="font-body-alt text-sm font-semibold text-primary-active underline decoration-1 underline-offset-4 transition-opacity hover:opacity-75"
+                  >
+                    Pricing details
+                  </button>
+                )}
+              </div>
             </div>
             <div className="flex flex-col gap-5">
               <div className="rounded-xl bg-background p-4 font-body-alt text-sm leading-relaxed text-text-secondary">Choose your dates and group size with our travel team. This trip is limited to {packageData.people_count} guests.</div>
@@ -404,6 +480,70 @@ export default function PackageDetail({
                 </div>
               </aside>
             </div>
+          </div>
+        </div>
+      )}
+
+      {isPricingOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/55 p-4 sm:p-6"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setIsPricingOpen(false);
+          }}
+        >
+          <div
+            ref={pricingDialogRef}
+            id="package-pricing-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="package-pricing-title"
+            aria-describedby="package-pricing-description"
+            className="max-h-[calc(100dvh-2rem)] w-full max-w-[650px] overflow-y-auto rounded-2xl bg-surface p-5 shadow-2xl sm:p-8"
+          >
+            <div className="flex items-start justify-between gap-5">
+              <div>
+                <h2
+                  id="package-pricing-title"
+                  className="text-[28px] font-semibold tracking-[-0.04em] text-[#65558f] sm:text-3xl"
+                >
+                  Pricing Details
+                </h2>
+                <p
+                  id="package-pricing-description"
+                  className="mt-2 font-body-alt text-base leading-relaxed tracking-[-0.02em] text-text-secondary sm:text-lg"
+                >
+                  Prices vary based on group size. All prices are per person.
+                </p>
+              </div>
+              <button
+                type="button"
+                autoFocus
+                onClick={() => setIsPricingOpen(false)}
+                aria-label="Close pricing details"
+                className="-mr-2 -mt-2 shrink-0 rounded-full p-2 text-foreground transition hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-active"
+              >
+                <Icon icon="iconoir:xmark" className="size-8" />
+              </button>
+            </div>
+
+            <h3 className="mt-8 text-xl font-semibold tracking-[-0.03em] text-[#65558f] sm:text-2xl">
+              Group Size Pricing Per Person:
+            </h3>
+            <ul className="mt-5 space-y-3" aria-label="Group prices per person">
+              {groupPricing.map((tier, index) => (
+                <li
+                  key={`${tier.min_people}-${tier.max_people ?? "plus"}-${index}`}
+                  className="flex flex-col gap-1 rounded-lg border border-border px-4 py-4 font-body-alt sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+                >
+                  <span className="text-base tracking-[-0.02em] text-text-secondary sm:text-lg">
+                    {groupSizeLabel(tier.min_people, tier.max_people)}
+                  </span>
+                  <span className="shrink-0 text-lg font-semibold tracking-[-0.03em] text-[#65558f] sm:text-xl">
+                    {formatPrice(packageData.currency, tier.price_per_person)}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
