@@ -11,8 +11,11 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "localhost", port: "8000" },
       { protocol: "http", hostname: "127.0.0.1", port: "8000" },
     ],
-
-
+    // Next 16's image optimizer refuses to fetch private-IP hosts (localhost)
+    // as an SSRF safeguard. Allow it in development so the frontend can render
+    // images from a locally-running Wagtail; never enabled in production, where
+    // the CMS is served from a public host.
+    dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
   },
 };
 

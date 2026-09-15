@@ -33,6 +33,8 @@ export async function getPageByPath(path: string): Promise<CmsPage | null> {
       title: data.title,
       slug: data.meta?.slug ?? "",
       body: data.body ?? [],
+      destination: data.destination_data,
+      package: data.package_data,
       seo: data.seo,
     };
   } catch {
@@ -74,6 +76,8 @@ export async function getPage(slug: string): Promise<CmsPage | null> {
       title: page.title,
       slug: page.meta?.slug ?? slug,
       body: page.body ?? [],
+      destination: page.destination_data,
+      package: page.package_data,
       seo: page.seo,
     };
   } catch {

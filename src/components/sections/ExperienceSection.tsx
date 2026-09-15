@@ -56,7 +56,7 @@ export default function ExperienceSection({
 
 
 
-  const queryCards: ExperienceCard[] = (destinations ?? []).map((dest: any) => ({
+  const queryCards: ExperienceCard[] = (destinations ?? []).map((dest) => ({
     title: dest.title,
     description: dest.subtitle || (dest.price ? `Starting from ${dest.price}` : undefined),
     image: dest.image ? { url: dest.image } : undefined,
@@ -64,9 +64,6 @@ export default function ExperienceSection({
   }));
 
   const cardsList = cmsCards.length > 0 ? cmsCards : queryCards;
-
-
-  console.log("cardlists here are", cardsList)
   const [activeIndex, setActiveIndex] = useState(0);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -86,7 +83,6 @@ export default function ExperienceSection({
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
     emblaApi.on("select", onSelect);
     emblaApi.on("reInit", onSelect);
     return () => {

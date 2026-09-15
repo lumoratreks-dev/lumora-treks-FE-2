@@ -7,7 +7,6 @@ import { useState, type ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import StarRating from "@/components/ui/StarRating";
 
 /** Checkout / payment — Figma node 118:5161 ("PaymentFlow"). Stepped booking
  * flow: Your Information → Payment Method → Payment Amount → confirm & pay. Each
@@ -427,8 +426,6 @@ export default function Checkout() {
                 <span className="font-body-alt text-base tracking-[-0.04em] text-text-secondary">
                   4 Days
                 </span>
-                <span className="size-1 rounded-full bg-text-secondary" />
-                <StarRating rating={4} starSize={20} />
               </div>
             </div>
           </div>

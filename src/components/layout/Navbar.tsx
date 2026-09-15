@@ -40,12 +40,23 @@ export default function Navbar() {
     site?.navigation.items
       .map((item) => ({ label: item.value.label || "", href: item.value.href || "" }))
       .filter((link) => link.label && link.href);
-  const links = cmsLinks?.length ? cmsLinks : [
+  const baseLinks = cmsLinks?.length ? cmsLinks : [
     { label: "Home", href: "/" },
     { label: "Packages", href: "/packages" },
     { label: "Destinations", href: "/destinations" },
     { label: "Contact Us", href: "/contact" },
   ];
+  // Blog is a frontend-owned route that isn't in the CMS NavigationSettings yet,
+  // so make sure it always appears — inserted before "Contact Us" when present,
+  // otherwise appended.
+  const links = baseLinks.some((l) => l.href === "/blog")
+    ? baseLinks
+    : (() => {
+        const blog = { label: "Blog", href: "/blog" };
+        const contactIdx = baseLinks.findIndex((l) => l.href.startsWith("/contact"));
+        if (contactIdx === -1) return [...baseLinks, blog];
+        return [...baseLinks.slice(0, contactIdx), blog, ...baseLinks.slice(contactIdx)];
+      })();
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
