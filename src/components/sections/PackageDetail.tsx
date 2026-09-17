@@ -52,6 +52,8 @@ export default function PackageDetail({
   const [day, setDay] = useState(0);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState<number | null>(null);
   const [isPricingOpen, setIsPricingOpen] = useState(false);
+  const [overviewExpanded, setOverviewExpanded] = useState(false);
+  const [itineraryExpanded, setItineraryExpanded] = useState(false);
   const pricingTriggerRef = useRef<HTMLButtonElement>(null);
   const pricingDialogRef = useRef<HTMLDivElement>(null);
   const title = packageData.title;
@@ -183,20 +185,28 @@ export default function PackageDetail({
         </div>
 
         {/* Overview + Key Facts | Gallery */}
-        <div className="flex flex-col gap-10 border-b border-border pb-6 lg:flex-row lg:gap-10">
+        <div className="flex flex-col gap-10 border-b border-border pb-6 lg:flex-row lg:items-start lg:gap-10">
           <div className="flex flex-col gap-6 lg:w-[644px]">
             <div className="flex flex-col gap-5 border-b border-border pb-6">
               <h2 className={sectionHeading}>Overview</h2>
               {packageData.description ? (
                 <div
-                  className="font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary [&_p+p]:mt-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li+li]:mt-2 [&_a]:underline [&_a]:underline-offset-4 [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&>:first-child]:mt-0 [&>:last-child]:mb-0"
+                  className={`font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary [&_p+p]:mt-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li+li]:mt-2 [&_a]:underline [&_a]:underline-offset-4 [&_strong]:font-semibold [&_b]:font-semibold [&_em]:italic [&_i]:italic [&>:first-child]:mt-0 [&>:last-child]:mb-0${overviewExpanded ? "" : " line-clamp-3"}`}
                   dangerouslySetInnerHTML={{
                     __html: sanitizePackageDescription(packageData.description),
                   }}
                 />
               ) : (
-                <p className="font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary">{packageData.summary}</p>
+                <p className={`font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary${overviewExpanded ? "" : " line-clamp-3"}`}>{packageData.summary}</p>
               )}
+              <button
+                type="button"
+                onClick={() => setOverviewExpanded((v) => !v)}
+                className="self-start font-body-alt text-lg font-semibold tracking-[-0.02em] text-primary-active underline underline-offset-4"
+                aria-expanded={overviewExpanded}
+              >
+                {overviewExpanded ? "See less" : "See more"}
+              </button>
             </div>
             <div className="flex flex-col gap-5">
               <h2 className={sectionHeading}>Key Facts</h2>
@@ -349,7 +359,10 @@ export default function PackageDetail({
                 <button
                   key={d}
                   type="button"
-                  onClick={() => setDay(i)}
+                  onClick={() => {
+                    setDay(i);
+                    setItineraryExpanded(false);
+                  }}
                   className={
                     i === day
                       ? "rounded bg-foreground p-3 font-body-alt text-base text-background"
@@ -368,9 +381,17 @@ export default function PackageDetail({
               </div>
               <div className="flex flex-col gap-4">
                 <p className="font-body-alt text-lg tracking-[-0.04em] text-foreground">Description</p>
-                <p className="font-body-alt text-base leading-[1.6] tracking-[-0.02em] text-text-secondary">
+                <p className={`font-body-alt text-base leading-[1.6] tracking-[-0.02em] text-text-secondary${itineraryExpanded ? "" : " line-clamp-6"}`}>
                   {itinerary[day]?.description}
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setItineraryExpanded((v) => !v)}
+                  className="self-start font-body-alt text-base font-semibold tracking-[-0.02em] text-primary-active underline underline-offset-4"
+                  aria-expanded={itineraryExpanded}
+                >
+                  {itineraryExpanded ? "See less" : "See more"}
+                </button>
               </div>
             </div>
           </div>
