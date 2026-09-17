@@ -504,7 +504,7 @@ export default function PackageDetail({
               <div>
                 <h2
                   id="package-pricing-title"
-                  className="text-[28px] font-semibold tracking-[-0.04em] text-[#65558f] sm:text-3xl"
+                  className="text-[28px] font-semibold tracking-[-0.04em] text-[#00000] sm:text-3xl"
                 >
                   Pricing Details
                 </h2>
@@ -526,7 +526,7 @@ export default function PackageDetail({
               </button>
             </div>
 
-            <h3 className="mt-8 text-xl font-semibold tracking-[-0.03em] text-[#65558f] sm:text-2xl">
+            <h3 className="mt-8 text-xl font-semibold tracking-[-0.03em] text-[#00000] sm:text-2xl">
               Group Size Pricing Per Person:
             </h3>
             <ul className="mt-5 space-y-3" aria-label="Group prices per person">
@@ -538,7 +538,7 @@ export default function PackageDetail({
                   <span className="text-base tracking-[-0.02em] text-text-secondary sm:text-lg">
                     {groupSizeLabel(tier.min_people, tier.max_people)}
                   </span>
-                  <span className="shrink-0 text-lg font-semibold tracking-[-0.03em] text-[#65558f] sm:text-xl">
+                  <span className="shrink-0 text-lg font-semibold tracking-[-0.03em] text-[#00000] sm:text-xl">
                     {formatPrice(packageData.currency, tier.price_per_person)}
                   </span>
                 </li>
