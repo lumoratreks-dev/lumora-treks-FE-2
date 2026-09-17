@@ -16,7 +16,17 @@ import type { PackageListResult } from "@/types";
  * overrides the tabs and filters by title. `initialData` (server-provided) gives
  * SSR content for the first render. Dummy data. */
 
-const CATEGORIES = ["Trekking", "Sightseeing", "Paragliding"];
+const CATEGORIES = [
+  "Trekking",
+  "Trail Run",
+  "Hiking",
+  "Day Excursions",
+  "Religious Tour",
+  "Nepal's Wild Life",
+  "6000m Peak Climbing",
+  "Sightseeing",
+  "Paragliding",
+];
 
 export default function PopularPackagesGrid({
   searchLocation,
