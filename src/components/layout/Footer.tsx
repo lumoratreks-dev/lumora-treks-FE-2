@@ -5,17 +5,45 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import { useSiteSettingsQuery } from "@/features/site/siteQueries";
+import type { CmsLink } from "@/features/site/siteApi";
+
+/** A single footer link. Honours the CMS `open_in_new_tab` flag and routes
+ * anchor/external hrefs through a plain <a>, internal paths through <Link>. */
+function FooterLink({ link, className }: { link: CmsLink; className: string }) {
+  const href = link.href || "";
+  const isExternal = /^(https?:)?\/\//.test(href) || href.startsWith("mailto:") || href.startsWith("tel:");
+  const isAnchor = href.startsWith("#");
+  const newTab = link.open_in_new_tab || isExternal;
+
+  if (isAnchor || isExternal || newTab) {
+    return (
+      <a
+        href={href}
+        className={className}
+        {...(newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
+        {link.label}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {link.label}
+    </Link>
+  );
+}
 
 /** Footer — Figma node 73:464 ("Foreground Image"). Forest bg, logo + tagline +
  * socials (left), links (right), and a giant "Lumora Treks" watermark that rises
  * into place on scroll (Figma motion: y 244→0).
  *
- * Socials, links and copyright come from `/api/v2/site/`
- * (`FooterSettings`/`BrandSettings`, backend `apps/navigation/models.py`);
- * falls back to the original Figma copy while loading, on error, or once
- * empty. `FooterSettings.columns` is grouped (heading + links) in the CMS,
- * but this design only has one flat link list — columns are flattened,
- * headings dropped, matching the current single-column layout. */
+ * Description, socials, link columns and copyright all come from
+ * `/api/v2/site/` (`FooterSettings`/`BrandSettings`, backend
+ * `apps/navigation/models.py`). `FooterSettings.columns` is grouped
+ * (heading + links) in the CMS and rendered as grouped columns here; each
+ * link honours its `open_in_new_tab` flag (see `FooterLink`). Falls back to
+ * minimal built-in copy only while loading, on error, or once empty. */
 
 export default function Footer() {
   const { data: site } = useSiteSettingsQuery();
@@ -36,17 +64,28 @@ export default function Footer() {
         { icon: "mdi:whatsapp", label: "WhatsApp", href: "#" },
       ];
 
-  const cmsLinks =
-    site?.footer?.columns
-      ?.flatMap((c) => c.value.links)
-      .map((l) => ({ label: l.label || "", href: l.href || "" }))
-      .filter((l) => l.label && l.href);
-  const links = cmsLinks?.length ? cmsLinks : [
-        { label: "Contact Us", href: "/contact" },
-        { label: "Privacy Policy", href: "/privacy" },
-        { label: "Terms & Conditions", href: "/terms" },
-        { label: "Login to Admin Portal", href: "/admin" },
+  const adminUrl = `${process.env.NEXT_PUBLIC_WAGTAIL_URL || ""}/admin/`;
+  const cmsColumns = site?.footer?.columns
+    ?.map((c) => ({
+      heading: c.value.heading || "",
+      links: (c.value.links || []).filter((l) => l.label && l.href),
+    }))
+    .filter((c) => c.links.length);
+  const columns = cmsColumns?.length ? cmsColumns : [
+        {
+          heading: "Company",
+          links: [
+            { label: "Contact Us", href: "/contact" },
+            { label: "Privacy Policy", href: "/privacy" },
+            { label: "Terms & Conditions", href: "/terms" },
+            { label: "Login to Admin Portal", href: adminUrl, open_in_new_tab: true },
+          ] as CmsLink[],
+        },
       ];
+
+  const copyright =
+    site?.footer?.copyright_text ||
+    `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`;
 
   return (
     <footer className="px-5 pb-5">
@@ -78,6 +117,7 @@ export default function Footer() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
+                  {...(social.href !== "#" ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="text-foreground transition-transform hover:scale-110"
                 >
                   <Icon icon={social.icon} className="size-8" />
@@ -86,15 +126,22 @@ export default function Footer() {
             </div>
           </div>
 
-          <nav className="flex flex-col gap-3 md:items-end md:text-right">
-            {links.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="font-body-alt text-lg tracking-[-0.04em] text-foreground transition-colors hover:text-primary-active"
-              >
-                {link.label}
-              </Link>
+          <nav className="flex flex-col gap-10 sm:flex-row sm:gap-16 md:justify-end">
+            {columns.map((column) => (
+              <div key={column.heading} className="flex flex-col gap-3">
+                {column.heading && (
+                  <h3 className="font-body-alt text-base font-semibold uppercase tracking-[0.08em] text-text-secondary">
+                    {column.heading}
+                  </h3>
+                )}
+                {column.links.map((link) => (
+                  <FooterLink
+                    key={link.label}
+                    link={link}
+                    className="font-body-alt text-lg tracking-[-0.04em] text-foreground transition-colors hover:text-primary-active"
+                  />
+                ))}
+              </div>
             ))}
           </nav>
         </div>
@@ -110,6 +157,13 @@ export default function Footer() {
           >
             {siteName}
           </motion.p>
+        </div>
+
+        {/* Copyright */}
+        <div className="relative mx-auto max-w-[1272px] px-6 pb-6">
+          <p className="font-body-alt text-sm tracking-[-0.02em] text-text-secondary">
+            {copyright}
+          </p>
         </div>
       </div>
     </footer>
