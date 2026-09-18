@@ -40,8 +40,9 @@ export default function AuthenticExperiences({
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10">
       <div
-        className={`flex flex-col items-center gap-10 lg:gap-16 ${reversed ? "lg:flex-row-reverse" : "lg:flex-row"
-          }`}
+        className={`flex flex-col items-center gap-10 lg:gap-16 ${
+          reversed ? "lg:flex-row-reverse" : "lg:flex-row"
+        }`}
       >
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -89,40 +90,42 @@ export default function AuthenticExperiences({
           </h2>
           {description && (
             <p className="font-body-alt text-[clamp(1.05rem,2vw,24px)] tracking-[-0.04em] text-text-secondary">
-              {withHighlight(description, description_highlight, "text-[#909dad]")}
+              {withHighlight(
+                description,
+                description_highlight,
+                "text-[#909dad]",
+              )}
             </p>
           )}
 
           <div className="flex flex-col gap-6">
-            {listItems.length === 0 ? (
-              Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex gap-4 animate-pulse">
-                  <div className="h-8 w-8 rounded bg-muted" />
-                  <div className="flex flex-1 flex-col gap-2">
-                    <div className="h-6 w-1/3 rounded bg-muted" />
-                    <div className="h-4 w-full rounded bg-muted" />
+            {listItems.length === 0
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="flex gap-4 animate-pulse">
+                    <div className="h-8 w-8 rounded bg-muted" />
+                    <div className="flex flex-1 flex-col gap-2">
+                      <div className="h-6 w-1/3 rounded bg-muted" />
+                      <div className="h-4 w-full rounded bg-muted" />
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              listItems.map((item, index) => (
-                <div key={item.title} className="flex gap-4">
-                  <span className="text-2xl font-bold tracking-[-0.04em] text-foreground">
-                    {item.number || String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div className="flex flex-1 flex-col gap-3">
-                    <h3 className="text-2xl font-bold tracking-[-0.04em] text-foreground">
-                      {item.title}
-                    </h3>
-                    {item.description && (
-                      <p className="font-body-alt text-xl tracking-[-0.04em] text-text-secondary">
-                        {item.description}
-                      </p>
-                    )}
+                ))
+              : listItems.map((item, index) => (
+                  <div key={item.title} className="flex gap-4">
+                    <span className="text-2xl font-bold tracking-[-0.04em] text-foreground">
+                      {item.number || String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div className="flex flex-1 flex-col gap-3">
+                      <h3 className="text-2xl font-bold tracking-[-0.04em] text-foreground">
+                        {item.title}
+                      </h3>
+                      {item.description && (
+                        <p className="font-body-alt text-xl tracking-[-0.04em] text-text-secondary">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))}
           </div>
         </motion.div>
       </div>

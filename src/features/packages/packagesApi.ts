@@ -17,7 +17,8 @@ export const packagesApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getPopularPackages: builder.query<PackageCardData[], void>({
       query: () => "packages/?popular=1&limit=8",
-      transformResponse: (res: CmsListResponse<CmsPackage>) => res.items.map(adaptCmsPackage),
+      transformResponse: (res: CmsListResponse<CmsPackage>) =>
+        res.items.map(adaptCmsPackage),
       providesTags: ["Package"],
     }),
     getPackages: builder.query<PackageListResult, SelectPackagesParams | void>({
@@ -32,7 +33,11 @@ export const packagesApi = apiSlice.injectEndpoints({
         if (date) params.set("date", date);
         return `packages/?${params.toString()}`;
       },
-      transformResponse: (res: CmsListResponse<CmsPackage>, _meta, arg): PackageListResult => {
+      transformResponse: (
+        res: CmsListResponse<CmsPackage>,
+        _meta,
+        arg,
+      ): PackageListResult => {
         const { page = 1, pageSize = 6 } = arg ?? {};
         return {
           items: res.items.map(adaptCmsPackage),
@@ -46,7 +51,8 @@ export const packagesApi = apiSlice.injectEndpoints({
     }),
     getCulturalTours: builder.query<PackageCardData[], void>({
       query: () => "packages/?limit=6",
-      transformResponse: (res: CmsListResponse<CmsPackage>) => res.items.map(adaptCmsPackage),
+      transformResponse: (res: CmsListResponse<CmsPackage>) =>
+        res.items.map(adaptCmsPackage),
       providesTags: ["Package"],
     }),
   }),

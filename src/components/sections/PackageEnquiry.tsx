@@ -6,7 +6,10 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import StarRating from "@/components/ui/StarRating";
 import { useSubmitLeadMutation } from "@/features/leads/leadsApi";
-import { buildWhatsAppEnquiryUrl, openWhatsAppEnquiry } from "@/features/leads/whatsapp";
+import {
+  buildWhatsAppEnquiryUrl,
+  openWhatsAppEnquiry,
+} from "@/features/leads/whatsapp";
 import type { CmsPackageDetail } from "@/lib/blocks";
 
 /** Package enquiry — reached from a package detail page. A no-payment enquiry
@@ -28,7 +31,13 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-export default function PackageEnquiry({ packageData, package: packageFromCms }: { packageData?: CmsPackageDetail; package?: CmsPackageDetail }) {
+export default function PackageEnquiry({
+  packageData,
+  package: packageFromCms,
+}: {
+  packageData?: CmsPackageDetail;
+  package?: CmsPackageDetail;
+}) {
   const selectedPackage = packageData || packageFromCms;
   const [formStartedAt] = useState(() => Date.now() / 1000);
   const [sent, setSent] = useState(false);
@@ -54,21 +63,26 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
       travelers,
       package_id: selectedPackage ? Number(selectedPackage.id) : undefined,
       consent: data.get("privacy_consent") === "yes",
-      form_started_at: Number(e.currentTarget.dataset.startedAt || formStartedAt),
+      form_started_at: Number(
+        e.currentTarget.dataset.startedAt || formStartedAt,
+      ),
       source_url: window.location.href,
     })
       .unwrap()
       .then(() => {
         // Also deliver the enquiry to the team's WhatsApp via a pre-filled chat.
-        const url = buildWhatsAppEnquiryUrl("Hi Lumora Treks, I'd like to enquire about a trip.", [
-          { label: "Name", value: fullName },
-          { label: "Email", value: email },
-          { label: "Phone", value: phone },
-          { label: "Package", value: selectedPackage?.title },
-          { label: "Travel Date", value: travelDate },
-          { label: "Travelers", value: travelers },
-          { label: "Message", value: message },
-        ]);
+        const url = buildWhatsAppEnquiryUrl(
+          "Hi Lumora Treks, I'd like to enquire about a trip.",
+          [
+            { label: "Name", value: fullName },
+            { label: "Email", value: email },
+            { label: "Phone", value: phone },
+            { label: "Package", value: selectedPackage?.title },
+            { label: "Travel Date", value: travelDate },
+            { label: "Travelers", value: travelers },
+            { label: "Message", value: message },
+          ],
+        );
         setWhatsappUrl(url);
         setSent(true);
         openWhatsAppEnquiry(url);
@@ -97,14 +111,18 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
           {sent ? (
             <div className="flex flex-col items-center gap-5 rounded-lg border border-border p-10 text-center">
               <div className="flex size-16 items-center justify-center rounded-full bg-[#edf8ec]">
-                <Icon icon="charm:circle-tick" className="size-10 text-[#2bbf0f]" />
+                <Icon
+                  icon="charm:circle-tick"
+                  className="size-10 text-[#2bbf0f]"
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <h2 className="font-body-alt text-2xl font-semibold tracking-[-0.04em] text-foreground">
                   Enquiry sent!
                 </h2>
                 <p className="font-body-alt text-lg tracking-[-0.04em] text-text-secondary">
-                  Thanks — our team will get back to you within one business day.
+                  Thanks — our team will get back to you within one business
+                  day.
                 </p>
               </div>
               {whatsappUrl && (
@@ -133,20 +151,47 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
             >
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field label="Full Name">
-                  <input required name="full_name" type="text" placeholder="Enter your full name" className={inputBase} />
+                  <input
+                    required
+                    name="full_name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    className={inputBase}
+                  />
                 </Field>
                 <Field label="Email Address">
-                  <input required name="email" type="email" placeholder="Enter your email" className={inputBase} />
+                  <input
+                    required
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    className={inputBase}
+                  />
                 </Field>
                 <Field label="Phone Number">
-                  <input name="phone" type="tel" placeholder="Enter your phone number" className={inputBase} />
+                  <input
+                    name="phone"
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    className={inputBase}
+                  />
                 </Field>
                 <Field label="Travel Date">
-                  <input name="travel_date" type="text" placeholder="When do you want to travel?" className={inputBase} />
+                  <input
+                    name="travel_date"
+                    type="text"
+                    placeholder="When do you want to travel?"
+                    className={inputBase}
+                  />
                 </Field>
               </div>
               <Field label="Number of Travelers">
-                <input name="travelers" type="text" placeholder="e.g. 2 Adults, 1 Child" className={inputBase} />
+                <input
+                  name="travelers"
+                  type="text"
+                  placeholder="e.g. 2 Adults, 1 Child"
+                  className={inputBase}
+                />
               </Field>
               <Field label="Message">
                 <textarea
@@ -165,7 +210,11 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
                   className="size-6 shrink-0 rounded border border-[#b2bbc6] accent-foreground"
                 />
                 <span className="font-body-alt text-base tracking-[-0.04em] text-[#3d4c5e]">
-                  I agree to the <a href="/privacy" className="underline">privacy policy</a>.
+                  I agree to the{" "}
+                  <a href="/privacy" className="underline">
+                    privacy policy
+                  </a>
+                  .
                 </span>
               </label>
               {isError && (
@@ -189,7 +238,11 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
           <div className="flex items-center gap-4 border-b border-border pb-4">
             <div className="relative size-[100px] shrink-0 overflow-hidden rounded-lg">
               <Image
-                src={selectedPackage?.image?.src || selectedPackage?.image?.url || "/images/checkout-thumb.png"}
+                src={
+                  selectedPackage?.image?.src ||
+                  selectedPackage?.image?.url ||
+                  "/images/checkout-thumb.png"
+                }
                 alt={selectedPackage?.title || "Selected package"}
                 fill
                 sizes="100px"
@@ -198,7 +251,8 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
             </div>
             <div className="flex flex-1 flex-col gap-2">
               <p className="font-body-alt text-lg font-medium tracking-[-0.04em] text-foreground">
-                {selectedPackage?.title || "Select a package from the packages page"}
+                {selectedPackage?.title ||
+                  "Select a package from the packages page"}
               </p>
               <div className="flex items-center gap-2">
                 <span className="font-body-alt text-base tracking-[-0.04em] text-text-secondary">
@@ -208,9 +262,14 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
                   <>
                     <span className="size-1 rounded-full bg-text-secondary" />
                     {selectedPackage.rating > 0 ? (
-                      <StarRating rating={selectedPackage.rating} starSize={20} />
+                      <StarRating
+                        rating={selectedPackage.rating}
+                        starSize={20}
+                      />
                     ) : (
-                      <span className="font-body-alt text-sm text-text-muted">New trip</span>
+                      <span className="font-body-alt text-sm text-text-muted">
+                        New trip
+                      </span>
                     )}
                   </>
                 ) : null}
@@ -222,7 +281,9 @@ export default function PackageEnquiry({ packageData, package: packageFromCms }:
               Starting from
             </span>
             <span className="font-body-alt text-xl font-medium tracking-[-0.04em] text-foreground">
-              {selectedPackage ? `${selectedPackage.currency} ${selectedPackage.price}` : "Quote on request"}
+              {selectedPackage
+                ? `${selectedPackage.currency} ${selectedPackage.price}`
+                : "Quote on request"}
             </span>
           </div>
           <p className="mt-3 font-body-alt text-sm tracking-[-0.03em] text-[#909dad]">

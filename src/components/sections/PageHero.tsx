@@ -55,7 +55,10 @@ export default function PageHero({
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, ease: EASE_EXPO_OUT }}
           className="relative w-full shrink-0"
-          style={{ aspectRatio: `${imageWidth}/${imageHeight}`, maxWidth: imageWidth }}
+          style={{
+            aspectRatio: `${imageWidth}/${imageHeight}`,
+            maxWidth: imageWidth,
+          }}
         >
           <Image
             src={imageSrc}
@@ -87,13 +90,15 @@ export default function PageHero({
             {subtitle}
           </motion.p>
 
-          {show_search ? <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: EASE_INOUT, delay: 0.75 }}
-          >
-            <SearchBar />
-          </motion.div> : null}
+          {show_search ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: EASE_INOUT, delay: 0.75 }}
+            >
+              <SearchBar />
+            </motion.div>
+          ) : null}
         </div>
       </div>
     </section>

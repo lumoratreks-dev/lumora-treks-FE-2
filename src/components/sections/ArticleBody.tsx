@@ -2,36 +2,9 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Icon } from "@iconify/react";
+import SocialShare from "@/components/ui/SocialShare";
 import { sanitizeArticleHtml } from "@/lib/richText";
 import type { BlogBodyBlock, BlogPostData } from "@/types";
-
-/** Vertical share rail (presentational) — sticky beside the article on desktop. */
-function ShareRail() {
-  const links = [
-    { icon: "prime:twitter", label: "Share on X" },
-    { icon: "mdi:facebook", label: "Share on Facebook" },
-    { icon: "mdi:whatsapp", label: "Share on WhatsApp" },
-    { icon: "iconoir:link", label: "Copy link" },
-  ];
-  return (
-    <div className="sticky top-24 hidden h-fit flex-col items-center gap-3 lg:flex">
-      <span className="mb-1 text-xs font-semibold uppercase tracking-[0.1em] text-text-muted">
-        Share
-      </span>
-      {links.map((l) => (
-        <button
-          key={l.icon}
-          type="button"
-          aria-label={l.label}
-          className="flex size-11 items-center justify-center rounded-full border border-border bg-white text-foreground transition-colors hover:border-foreground/40 hover:bg-background"
-        >
-          <Icon icon={l.icon} className="size-5" />
-        </button>
-      ))}
-    </div>
-  );
-}
 
 /** Renders one article content block. */
 function Block({ block }: { block: BlogBodyBlock }) {
@@ -105,9 +78,14 @@ export default function ArticleBody({ post }: { post: BlogPostData }) {
 
   return (
     <section className="mx-auto flex max-w-[1000px] justify-center gap-10 px-6 py-14 lg:py-20">
-      <ShareRail />
+      <div className="sticky top-24 hidden h-fit lg:block">
+        <SocialShare title={post.title} variant="rail" />
+      </div>
 
       <article className="w-full max-w-[720px]">
+        <div className="mb-8 flex items-center justify-end lg:hidden">
+          <SocialShare title={post.title} />
+        </div>
         <div className="flex flex-col gap-5">
           {blocks.map((block, i) => (
             <Block key={i} block={block} />
@@ -131,7 +109,9 @@ export default function ArticleBody({ post }: { post: BlogPostData }) {
               {post.author.name}
             </p>
             {post.author.role ? (
-              <p className="text-sm text-text-secondary">{post.author.role} · Lumora Treks</p>
+              <p className="text-sm text-text-secondary">
+                {post.author.role} · Lumora Treks
+              </p>
             ) : null}
           </div>
         </div>

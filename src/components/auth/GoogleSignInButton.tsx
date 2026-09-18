@@ -54,7 +54,9 @@ export default function GoogleSignInButton({
   const handleCredential = useCallback(
     async (response: GoogleCredentialResponse) => {
       if (!response.credential) {
-        setError("Google did not return a sign-in credential. Please try again.");
+        setError(
+          "Google did not return a sign-in credential. Please try again.",
+        );
         return;
       }
 
@@ -89,7 +91,9 @@ export default function GoogleSignInButton({
       itp_support: true,
     });
     const renderButton = () => {
-      const availableWidth = Math.floor(container.getBoundingClientRect().width);
+      const availableWidth = Math.floor(
+        container.getBoundingClientRect().width,
+      );
       container.replaceChildren();
       googleIdentity.renderButton(container, {
         type: "standard",
@@ -115,7 +119,9 @@ export default function GoogleSignInButton({
         strategy="afterInteractive"
         onLoad={() => setScriptReady(true)}
         onReady={() => setScriptReady(true)}
-        onError={() => setError("Google sign-in could not be loaded. Check your connection.")}
+        onError={() =>
+          setError("Google sign-in could not be loaded. Check your connection.")
+        }
       />
 
       {clientId ? (
@@ -142,7 +148,10 @@ export default function GoogleSignInButton({
       )}
 
       {error && (
-        <p role="alert" className="font-body-alt text-sm font-medium leading-relaxed text-red-600">
+        <p
+          role="alert"
+          className="font-body-alt text-sm font-medium leading-relaxed text-red-600"
+        >
           {error}
         </p>
       )}

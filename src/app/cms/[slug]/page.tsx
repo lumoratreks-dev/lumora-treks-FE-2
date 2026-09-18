@@ -24,7 +24,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       : {}),
     ...(page.seo?.noindex ? { robots: { index: false, follow: false } } : {}),
     ...(page.seo?.og_image?.url
-      ? { openGraph: { images: [{ url: page.seo.og_image.url, alt: page.title }] } }
+      ? {
+          openGraph: {
+            images: [{ url: page.seo.og_image.url, alt: page.title }],
+          },
+        }
       : {}),
   };
 }

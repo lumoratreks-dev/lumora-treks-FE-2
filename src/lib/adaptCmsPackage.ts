@@ -27,7 +27,10 @@ export function adaptCmsPackage(pkg: CmsPackage): PackageCardData {
     title: pkg.title,
     image: pkg.image?.url || "",
     description: pkg.summary || "",
-    price: pkg.price != null ? `${formatCurrency(pkg.currency)}${pkg.price} per person` : "",
+    price:
+      pkg.price != null
+        ? `${formatCurrency(pkg.currency)}${pkg.price} per person`
+        : "",
     duration: pkg.duration || "",
     rating: pkg.rating != null ? pkg.rating.toFixed(1) : "",
     category: pkg.category,

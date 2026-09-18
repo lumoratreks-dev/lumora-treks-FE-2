@@ -10,7 +10,6 @@ import { useUIStore } from "@/store/useUIStore";
 import { useSiteSettingsQuery } from "@/features/site/siteQueries";
 import AuthNavAction from "@/components/auth/AuthNavAction";
 
-
 /** Navbar — Figma node 69:873.
  *
  * Nav links and the brand name come from
@@ -36,16 +35,20 @@ export default function Navbar() {
   const { data: site, isLoading } = useSiteSettingsQuery();
 
   const siteName = site?.brand.site_name || "Lumora Treks";
-  const cmsLinks =
-    site?.navigation.items
-      .map((item) => ({ label: item.value.label || "", href: item.value.href || "" }))
-      .filter((link) => link.label && link.href);
-  const baseLinks = cmsLinks?.length ? cmsLinks : [
-    { label: "Home", href: "/" },
-    { label: "Packages", href: "/packages" },
-    { label: "Destinations", href: "/destinations" },
-    { label: "Contact Us", href: "/contact" },
-  ];
+  const cmsLinks = site?.navigation.items
+    .map((item) => ({
+      label: item.value.label || "",
+      href: item.value.href || "",
+    }))
+    .filter((link) => link.label && link.href);
+  const baseLinks = cmsLinks?.length
+    ? cmsLinks
+    : [
+        { label: "Home", href: "/" },
+        { label: "Packages", href: "/packages" },
+        { label: "Destinations", href: "/destinations" },
+        { label: "Contact Us", href: "/contact" },
+      ];
   // Blog is a frontend-owned route that isn't in the CMS NavigationSettings yet,
   // so make sure it always appears — inserted before "Contact Us" when present,
   // otherwise appended.
@@ -53,25 +56,36 @@ export default function Navbar() {
     ? baseLinks
     : (() => {
         const blog = { label: "Blog", href: "/blog" };
-        const contactIdx = baseLinks.findIndex((l) => l.href.startsWith("/contact"));
+        const contactIdx = baseLinks.findIndex((l) =>
+          l.href.startsWith("/contact"),
+        );
         if (contactIdx === -1) return [...baseLinks, blog];
-        return [...baseLinks.slice(0, contactIdx), blog, ...baseLinks.slice(contactIdx)];
+        return [
+          ...baseLinks.slice(0, contactIdx),
+          blog,
+          ...baseLinks.slice(contactIdx),
+        ];
       })();
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
-
 
   return (
     <header
       className={clsx(
         "relative z-50 flex w-full items-center justify-between border-b border-border/40 px-8 py-4 sm:px-12 lg:px-16",
-        isFloating && "top-10 -mb-[73px] sm:-mb-[81px] lg:-mb-[88px]"
+        isFloating && "top-10 -mb-[73px] sm:-mb-[81px] lg:-mb-[88px]",
       )}
     >
       <div className="mx-auto w-full flex max-w-[1440px] items-center justify-between gap-4">
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-end gap-[5px]">
-          <Image src="/logo.svg" alt={siteName} width={34} height={30} priority />
+          <Image
+            src="/logo.svg"
+            alt={siteName}
+            width={34}
+            height={30}
+            priority
+          />
           <span className="text-2xl font-extrabold leading-none tracking-[-0.06em] text-foreground">
             {siteName}
           </span>
@@ -90,7 +104,11 @@ export default function Navbar() {
             links.map((link) => {
               const active = isActive(link.href);
               return (
-                <Link key={link.href} href={link.href} className="flex items-center gap-1">
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="flex items-center gap-1"
+                >
                   {active && (
                     <span className="size-1.5 shrink-0 rounded-full bg-primary-accent" />
                   )}
@@ -99,7 +117,7 @@ export default function Navbar() {
                       "text-base text-foreground",
                       active
                         ? "font-extrabold tracking-[-0.04em]"
-                        : "font-semibold tracking-[-0.06em]"
+                        : "font-semibold tracking-[-0.06em]",
                     )}
                   >
                     {link.label}
@@ -109,7 +127,6 @@ export default function Navbar() {
             })
           )}
         </nav>
-
 
         {/* Traveler account action (desktop) */}
         <AuthNavAction />
@@ -122,7 +139,10 @@ export default function Navbar() {
           aria-expanded={isMobileNavOpen}
           className="flex size-11 items-center justify-center rounded-full bg-background text-foreground lg:hidden"
         >
-          <Icon icon={isMobileNavOpen ? "iconoir:xmark" : "iconoir:menu"} className="size-6" />
+          <Icon
+            icon={isMobileNavOpen ? "iconoir:xmark" : "iconoir:menu"}
+            className="size-6"
+          />
         </button>
       </div>
 
@@ -151,7 +171,7 @@ export default function Navbar() {
                   <span
                     className={clsx(
                       "text-lg text-foreground",
-                      active ? "font-extrabold" : "font-semibold"
+                      active ? "font-extrabold" : "font-semibold",
                     )}
                   >
                     {link.label}

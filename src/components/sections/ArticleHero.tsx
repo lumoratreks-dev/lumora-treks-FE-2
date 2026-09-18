@@ -69,7 +69,10 @@ export default function ArticleHero({ post }: { post: BlogPostData }) {
                 <p className="text-sm font-semibold tracking-[-0.02em]">
                   {post.author.name}
                   {post.author.role ? (
-                    <span className="font-normal text-background/70"> · {post.author.role}</span>
+                    <span className="font-normal text-background/70">
+                      {" "}
+                      · {post.author.role}
+                    </span>
                   ) : null}
                 </p>
                 <p className="text-xs text-background/70">

@@ -23,7 +23,7 @@ export async function getPageByPath(path: string): Promise<CmsPage | null> {
   try {
     const res = await fetch(
       `${WAGTAIL_URL}/api/v2/page-by-path/?path=${encodeURIComponent(path)}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 } },
     );
     if (!res.ok) return null;
 
@@ -57,7 +57,7 @@ export async function getPage(slug: string): Promise<CmsPage | null> {
   try {
     const listRes = await fetch(
       `${WAGTAIL_URL}/api/v2/pages/?slug=${encodeURIComponent(slug)}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 } },
     );
     if (!listRes.ok) return null;
 

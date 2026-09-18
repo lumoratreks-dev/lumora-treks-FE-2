@@ -25,14 +25,17 @@ export type CmsBlockValue = {
 /** `serialize_image` (backend `apps/core/serializers.py`) — the shape every
  * image chooser field serializes to. Sections only need `url`/`alt` so far;
  * add fields here as needed rather than in each component. */
-export type CmsImage = {
-  id?: number;
-  url: string;
-  alt?: string;
-  width?: number;
-  height?: number;
-  src?: string;
-} | null | undefined;
+export type CmsImage =
+  | {
+      id?: number;
+      url: string;
+      alt?: string;
+      width?: number;
+      height?: number;
+      src?: string;
+    }
+  | null
+  | undefined;
 
 /** `HeadingGroupBlock` (backend `apps/core/blocks.py`) — the eyebrow /
  * heading / description trio most sections share. */

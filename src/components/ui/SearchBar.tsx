@@ -15,12 +15,19 @@ type DateInputWithPicker = HTMLInputElement & {
   showPicker?: () => void;
 };
 
+function localISODate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export default function SearchBar({ className }: SearchBarProps) {
   const router = useRouter();
   const dateInputRef = useRef<HTMLInputElement>(null);
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
-  const today = new Date().toISOString().split("T")[0];
+  const today = localISODate(new Date());
 
   const formattedDate = date
     ? new Intl.DateTimeFormat("en-US", {
@@ -55,7 +62,7 @@ export default function SearchBar({ className }: SearchBarProps) {
       onSubmit={handleSubmit}
       className={clsx(
         "flex flex-col gap-3 rounded-2xl border border-white/50 bg-background/90 p-3 shadow-[0_18px_60px_rgba(30,30,30,0.12)] backdrop-blur-sm sm:flex-row sm:items-center",
-        className
+        className,
       )}
     >
       <label className="flex h-[56px] flex-1 items-center justify-between rounded-xl border border-border bg-white px-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition-colors focus-within:border-primary-active">
@@ -66,7 +73,10 @@ export default function SearchBar({ className }: SearchBarProps) {
           onChange={(e) => setLocation(e.target.value)}
           className="w-full bg-transparent font-body-alt text-lg font-medium tracking-[-0.04em] text-foreground placeholder:text-foreground/70 focus:outline-none"
         />
-        <Icon icon="proicons:location" className="size-5 shrink-0 text-foreground" />
+        <Icon
+          icon="proicons:location"
+          className="size-5 shrink-0 text-foreground"
+        />
       </label>
 
       <div

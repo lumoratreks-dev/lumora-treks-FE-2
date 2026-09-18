@@ -13,7 +13,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
  */
 export const apiSlice = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.NEXT_PUBLIC_WAGTAIL_URL ?? ""}/api/v2/` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${process.env.NEXT_PUBLIC_WAGTAIL_URL ?? ""}/api/v2/`,
+  }),
   tagTypes: ["Package", "Destination", "GalleryItem", "Site"],
   endpoints: () => ({}),
 });

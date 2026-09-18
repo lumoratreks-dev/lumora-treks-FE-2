@@ -37,7 +37,9 @@ export function isSameOrigin(request: NextRequest) {
       ?.trim()
       .replace(/:$/, "");
     const allowedProtocols = new Set(
-      [forwardedProtocol, request.nextUrl.protocol.replace(/:$/, "")].filter(Boolean),
+      [forwardedProtocol, request.nextUrl.protocol.replace(/:$/, "")].filter(
+        Boolean,
+      ),
     );
 
     return (
@@ -49,10 +51,7 @@ export function isSameOrigin(request: NextRequest) {
   }
 }
 
-export async function requestAccountsApi(
-  path: string,
-  init: RequestInit = {},
-) {
+export async function requestAccountsApi(path: string, init: RequestInit = {}) {
   const response = await fetch(`${backendBaseUrl()}/api/v2/auth/${path}`, {
     ...init,
     cache: "no-store",
@@ -79,9 +78,12 @@ export async function requestBackendApi(path: string, init: RequestInit = {}) {
     },
   });
 
-  const data: unknown = response.status === 204 ? null : await response.json().catch(() => ({
-    detail: "The service returned an invalid response.",
-  }));
+  const data: unknown =
+    response.status === 204
+      ? null
+      : await response.json().catch(() => ({
+          detail: "The service returned an invalid response.",
+        }));
   return { response, data };
 }
 

@@ -17,31 +17,42 @@ export default function DestinationsGrid({
   heading = "Our Destinations",
 }: {
   initialItems?: DestinationCardData[];
-  resolved_items?: Array<DestinationCardData & { starting_price?: number | null }>;
+  resolved_items?: Array<
+    DestinationCardData & { starting_price?: number | null }
+  >;
   heading?: string;
 }) {
   const { data, isLoading, isError, refetch } = useDestinationsQuery();
   const cmsItems = resolved_items ?? initialItems;
-  const destinations: DestinationCardData[] = (cmsItems ?? data ?? []).map((item) => {
-    const cmsItem = item as unknown as {
-      id: string | number;
-      slug?: string;
-      title: string;
-      image?: string | { url?: string | null } | null;
-      price?: string;
-      starting_price?: number | null;
-      currency?: string | null;
-      href?: string;
-    };
-    return {
-      id: String(cmsItem.id),
-      slug: cmsItem.slug,
-      title: cmsItem.title,
-      image: typeof cmsItem.image === "string" ? cmsItem.image : cmsItem.image?.url || "",
-      price: cmsItem.price ?? (cmsItem.starting_price != null ? `${cmsItem.currency || "USD"} ${cmsItem.starting_price}` : undefined),
-      href: cmsItem.href,
-    };
-  });
+  const destinations: DestinationCardData[] = (cmsItems ?? data ?? []).map(
+    (item) => {
+      const cmsItem = item as unknown as {
+        id: string | number;
+        slug?: string;
+        title: string;
+        image?: string | { url?: string | null } | null;
+        price?: string;
+        starting_price?: number | null;
+        currency?: string | null;
+        href?: string;
+      };
+      return {
+        id: String(cmsItem.id),
+        slug: cmsItem.slug,
+        title: cmsItem.title,
+        image:
+          typeof cmsItem.image === "string"
+            ? cmsItem.image
+            : cmsItem.image?.url || "",
+        price:
+          cmsItem.price ??
+          (cmsItem.starting_price != null
+            ? `${cmsItem.currency || "USD"} ${cmsItem.starting_price}`
+            : undefined),
+        href: cmsItem.href,
+      };
+    },
+  );
   const loading = isLoading && !data && !cmsItems;
   const errored = isError && !data && !cmsItems;
 

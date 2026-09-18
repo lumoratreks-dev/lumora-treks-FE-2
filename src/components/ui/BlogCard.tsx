@@ -26,7 +26,11 @@ type BlogCardProps = {
   className?: string;
 };
 
-export default function BlogCard({ post, variant = "default", className }: BlogCardProps) {
+export default function BlogCard({
+  post,
+  variant = "default",
+  className,
+}: BlogCardProps) {
   const wide = variant === "wide";
 
   return (
@@ -39,20 +43,24 @@ export default function BlogCard({ post, variant = "default", className }: BlogC
         href={`/blog/${post.slug}`}
         className={clsx(
           "flex h-full overflow-hidden rounded-2xl border border-border bg-white",
-          wide ? "flex-col sm:flex-row" : "flex-col"
+          wide ? "flex-col sm:flex-row" : "flex-col",
         )}
       >
         <div
           className={clsx(
             "relative shrink-0 overflow-hidden",
-            wide ? "aspect-[16/10] sm:aspect-auto sm:w-1/2" : "aspect-[16/10]"
+            wide ? "aspect-[16/10] sm:aspect-auto sm:w-1/2" : "aspect-[16/10]",
           )}
         >
           <Image
             src={post.image}
             alt={post.title}
             fill
-            sizes={wide ? "(max-width: 640px) 100vw, 40vw" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
+            sizes={
+              wide
+                ? "(max-width: 640px) 100vw, 40vw"
+                : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            }
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
           <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold tracking-[-0.02em] text-foreground backdrop-blur-sm">
@@ -64,7 +72,7 @@ export default function BlogCard({ post, variant = "default", className }: BlogC
           <h3
             className={clsx(
               "font-bold tracking-[-0.04em] text-foreground transition-colors group-hover:text-primary-active",
-              wide ? "text-xl" : "text-lg"
+              wide ? "text-xl" : "text-lg",
             )}
           >
             {post.title}

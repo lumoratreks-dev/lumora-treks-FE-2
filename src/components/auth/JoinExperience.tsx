@@ -8,7 +8,11 @@ import { useCallback, useEffect } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
-export default function JoinExperience({ callbackUrl }: { callbackUrl: string }) {
+export default function JoinExperience({
+  callbackUrl,
+}: {
+  callbackUrl: string;
+}) {
   const router = useRouter();
   const { status, refreshSession } = useAuth();
 
@@ -35,7 +39,8 @@ export default function JoinExperience({ callbackUrl }: { callbackUrl: string })
             Your trail, shaped around you.
           </h1>
           <p className="mt-5 max-w-md font-body-alt text-base leading-relaxed tracking-[-0.015em] text-text-secondary sm:text-[1.0625rem]">
-            Sign in to save your travel preferences and make every Lumora experience feel more personal.
+            Sign in to save your travel preferences and make every Lumora
+            experience feel more personal.
           </p>
 
           <div className="mt-9">
@@ -63,7 +68,10 @@ export default function JoinExperience({ callbackUrl }: { callbackUrl: string })
 
           <div className="mt-9 border-t border-border pt-5 font-body-alt text-sm leading-relaxed text-text-secondary">
             Prefer to ask a question first?{" "}
-            <Link href="/enquiry" className="font-bold text-primary-active underline decoration-primary-active/40 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground">
+            <Link
+              href="/enquiry"
+              className="font-bold text-primary-active underline decoration-primary-active/40 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
+            >
               Send an enquiry
             </Link>
             <span className="text-text-muted"> — no sign-in needed.</span>

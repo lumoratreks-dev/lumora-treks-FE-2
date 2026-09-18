@@ -12,7 +12,10 @@ type GoogleAuthResponse = AuthUserResponse & { token: string };
 
 export async function POST(request: NextRequest) {
   if (!isSameOrigin(request)) {
-    return NextResponse.json({ detail: "Invalid request origin." }, { status: 403 });
+    return NextResponse.json(
+      { detail: "Invalid request origin." },
+      { status: 403 },
+    );
   }
 
   const body: unknown = await request.json().catch(() => null);
@@ -42,16 +45,20 @@ export async function POST(request: NextRequest) {
     const result = data as Partial<GoogleAuthResponse>;
     if (!result.token || !result.user) {
       return NextResponse.json(
-        { detail: "The account service returned an incomplete sign-in response." },
+        {
+          detail:
+            "The account service returned an incomplete sign-in response.",
+        },
         { status: 502 },
       );
     }
 
-    const nextResponse = NextResponse.json<AuthUserResponse>({ user: result.user });
+    const nextResponse = NextResponse.json<AuthUserResponse>({
+      user: result.user,
+    });
     nextResponse.cookies.set(AUTH_COOKIE_NAME, result.token, authCookieOptions);
     return nextResponse;
   } catch {
     return NextResponse.json(accountServiceUnavailable(), { status: 502 });
   }
 }
-

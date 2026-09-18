@@ -78,7 +78,9 @@ export default function ContactHero({
             <p className="text-xl font-medium tracking-[-0.06em] text-text-secondary sm:max-w-[358px]">
               {subtitleParts.before}
               {subtitleParts.highlighted && (
-                <span className="italic text-[#909dad]">{subtitleParts.highlighted}</span>
+                <span className="italic text-[#909dad]">
+                  {subtitleParts.highlighted}
+                </span>
               )}
               {subtitleParts.after}
             </p>
@@ -87,7 +89,9 @@ export default function ContactHero({
           <p className="text-[clamp(2rem,4vw,40px)] font-extrabold tracking-[-0.04em] text-foreground">
             {taglineParts.before}
             {taglineParts.highlighted && (
-              <span className="italic text-primary-accent">{taglineParts.highlighted}</span>
+              <span className="italic text-primary-accent">
+                {taglineParts.highlighted}
+              </span>
             )}
             {taglineParts.after}
           </p>
@@ -96,7 +100,9 @@ export default function ContactHero({
             <p className="text-xl font-medium tracking-[-0.04em] text-[#3d4c5e] sm:max-w-[370px]">
               {closingParts.before}
               {closingParts.highlighted && (
-                <span className="italic text-[#909dad]">{closingParts.highlighted}</span>
+                <span className="italic text-[#909dad]">
+                  {closingParts.highlighted}
+                </span>
               )}
               {closingParts.after}
             </p>

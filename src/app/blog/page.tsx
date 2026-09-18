@@ -24,7 +24,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       page?.seo?.description ||
       "Field notes, trekking guides, and cultural stories from the Himalaya — written by the guides and travellers who know these trails best.",
-    ...(page?.seo?.canonical_url ? { alternates: { canonical: page.seo.canonical_url } } : {}),
+    ...(page?.seo?.canonical_url
+      ? { alternates: { canonical: page.seo.canonical_url } }
+      : {}),
     ...(page?.seo?.noindex ? { robots: { index: false, follow: false } } : {}),
   };
 }
@@ -39,7 +41,11 @@ export default async function BlogPage() {
   await Promise.all([
     queryClient.prefetchQuery(featuredPostQueryOptions()),
     queryClient.prefetchQuery(
-      blogPostsQueryOptions({ category: BLOG_CATEGORIES[0], page: 1, pageSize: 5 })
+      blogPostsQueryOptions({
+        category: BLOG_CATEGORIES[0],
+        page: 1,
+        pageSize: 5,
+      }),
     ),
   ]);
 

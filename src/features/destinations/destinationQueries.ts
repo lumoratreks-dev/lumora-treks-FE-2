@@ -2,7 +2,8 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import type { CmsImage } from "@/lib/blocks";
 import type { DestinationCardData } from "@/types";
 
-const WAGTAIL_URL = process.env.NEXT_PUBLIC_WAGTAIL_URL || "http://localhost:8000";
+const WAGTAIL_URL =
+  process.env.NEXT_PUBLIC_WAGTAIL_URL || "http://localhost:8000";
 export type DestinationQueryParams = {
   region?: string;
 };
@@ -19,16 +20,17 @@ type CmsDestination = {
 };
 
 export async function fetchDestinations(
-  params?: DestinationQueryParams
+  params?: DestinationQueryParams,
 ): Promise<DestinationCardData[]> {
   const queryParams = new URLSearchParams();
   queryParams.set("featured", "true");
   if (params?.region) queryParams.set("region", params.region);
 
   try {
-    const endpoint = queryParams.size > 0
-      ? `${WAGTAIL_URL}/api/v2/destinations/?${queryParams.toString()}`
-      : `${WAGTAIL_URL}/api/v2/destinations/`;
+    const endpoint =
+      queryParams.size > 0
+        ? `${WAGTAIL_URL}/api/v2/destinations/?${queryParams.toString()}`
+        : `${WAGTAIL_URL}/api/v2/destinations/`;
     const res = await fetch(endpoint, {
       next: { revalidate: 60 },
     });
@@ -42,7 +44,10 @@ export async function fetchDestinations(
         subtitle: item.subtitle ?? "",
         image: item.image?.src ?? item.image?.url ?? "",
         href: item.href ?? `/destinations/${item.slug}`,
-        price: item.starting_price == null ? undefined : `${item.currency ?? "USD"} ${item.starting_price}`,
+        price:
+          item.starting_price == null
+            ? undefined
+            : `${item.currency ?? "USD"} ${item.starting_price}`,
       }));
     }
     return [];

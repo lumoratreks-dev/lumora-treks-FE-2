@@ -21,10 +21,14 @@ import {
 
 const WAGTAIL_URL = process.env.NEXT_PUBLIC_WAGTAIL_URL;
 
-async function cmsBlogList(qs: string): Promise<CmsListResponse<CmsBlogPost> | null> {
+async function cmsBlogList(
+  qs: string,
+): Promise<CmsListResponse<CmsBlogPost> | null> {
   if (!WAGTAIL_URL) return null;
   try {
-    const res = await fetch(`${WAGTAIL_URL}/api/v2/blog/${qs}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${WAGTAIL_URL}/api/v2/blog/${qs}`, {
+      next: { revalidate: 60 },
+    });
     if (!res.ok) return null;
     return (await res.json()) as CmsListResponse<CmsBlogPost>;
   } catch {
@@ -55,7 +59,9 @@ export function useFeaturedPostQuery() {
 
 // ---------------------------------------------------------------------- list
 
-export async function fetchBlogPosts(params?: SelectBlogParams): Promise<BlogListResult> {
+export async function fetchBlogPosts(
+  params?: SelectBlogParams,
+): Promise<BlogListResult> {
   const { category, page = 1, pageSize = 6 } = params ?? {};
   const search = new URLSearchParams({
     limit: String(pageSize),
@@ -77,7 +83,10 @@ export async function fetchBlogPosts(params?: SelectBlogParams): Promise<BlogLis
 }
 
 export const blogPostsQueryOptions = (params?: SelectBlogParams) =>
-  queryOptions({ queryKey: ["blog", "list", params ?? {}], queryFn: () => fetchBlogPosts(params) });
+  queryOptions({
+    queryKey: ["blog", "list", params ?? {}],
+    queryFn: () => fetchBlogPosts(params),
+  });
 
 export function useBlogPostsQuery(params?: SelectBlogParams) {
   return useQuery(blogPostsQueryOptions(params));
@@ -85,14 +94,22 @@ export function useBlogPostsQuery(params?: SelectBlogParams) {
 
 // ------------------------------------------------------------------- related
 
-export async function fetchRelatedPosts(slug: string, count = 3): Promise<BlogPostData[]> {
-  const data = await cmsBlogList(`?exclude=${encodeURIComponent(slug)}&limit=${count}`);
+export async function fetchRelatedPosts(
+  slug: string,
+  count = 3,
+): Promise<BlogPostData[]> {
+  const data = await cmsBlogList(
+    `?exclude=${encodeURIComponent(slug)}&limit=${count}`,
+  );
   if (data) return data.items.map(adaptCmsBlogPost);
   return selectRelatedPosts(slug, count);
 }
 
 export const relatedPostsQueryOptions = (slug: string, count = 3) =>
-  queryOptions({ queryKey: ["blog", "related", slug, count], queryFn: () => fetchRelatedPosts(slug, count) });
+  queryOptions({
+    queryKey: ["blog", "related", slug, count],
+    queryFn: () => fetchRelatedPosts(slug, count),
+  });
 
 export function useRelatedPostsQuery(slug: string, count = 3) {
   return useQuery(relatedPostsQueryOptions(slug, count));
@@ -102,12 +119,17 @@ export function useRelatedPostsQuery(slug: string, count = 3) {
 
 /** A single article by slug (with its prose `body`). Returns undefined when the
  * slug is unknown both in the CMS and the dummy dataset. */
-export async function fetchBlogPost(slug: string): Promise<BlogPostData | undefined> {
+export async function fetchBlogPost(
+  slug: string,
+): Promise<BlogPostData | undefined> {
   if (WAGTAIL_URL) {
     try {
-      const res = await fetch(`${WAGTAIL_URL}/api/v2/blog/${encodeURIComponent(slug)}/`, {
-        next: { revalidate: 60 },
-      });
+      const res = await fetch(
+        `${WAGTAIL_URL}/api/v2/blog/${encodeURIComponent(slug)}/`,
+        {
+          next: { revalidate: 60 },
+        },
+      );
       if (res.ok) return adaptCmsBlogPost((await res.json()) as CmsBlogPost);
       // Reachable but no such post → genuinely not found (don't mask a 404 with
       // a dummy article on production).

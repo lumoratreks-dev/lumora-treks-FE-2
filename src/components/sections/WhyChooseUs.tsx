@@ -24,8 +24,6 @@ export type WhyChooseUsCard = {
   image?: CmsImage;
 };
 
-
-
 const DEFAULT_HEADING: CmsHeadingGroup = {
   heading: "Why Lumora Treks?",
   description:
@@ -54,7 +52,11 @@ export default function WhyChooseUs({
           )}
           {heading.description && (
             <p className="font-body-alt text-[clamp(1.05rem,2vw,24px)] font-medium tracking-[-0.04em] text-text-secondary">
-              {withHighlight(heading.description, description_highlight, "italic text-[#909dad]")}
+              {withHighlight(
+                heading.description,
+                description_highlight,
+                "italic text-[#909dad]",
+              )}
             </p>
           )}
         </div>
@@ -67,36 +69,55 @@ export default function WhyChooseUs({
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.1 }}
+                  transition={{
+                    duration: 0.5,
+                    ease: "easeOut",
+                    delay: i * 0.1,
+                  }}
                   className={clsx(
                     "relative flex h-[362px] flex-col justify-center gap-10 overflow-hidden rounded-2xl px-10 py-14",
-                    card.theme === "dark" ? "bg-foreground" : "bg-background"
+                    card.theme === "dark" ? "bg-foreground" : "bg-background",
                   )}
                 >
                   {card.image?.url && (
                     <div className="absolute -right-10 -top-16 size-52 rotate-[39deg] overflow-hidden rounded-[95px] shadow-[-4px_4px_12px_0_rgba(18,136,67,0.12)]">
-                      <Image src={card.image.url} alt="" fill className="object-cover" />
+                      <Image
+                        src={card.image.url}
+                        alt=""
+                        fill
+                        className="object-cover"
+                      />
                     </div>
                   )}
                   <p
                     className={clsx(
                       "relative text-2xl font-bold tracking-[-0.04em]",
-                      card.theme === "dark" ? "text-background" : "text-foreground"
+                      card.theme === "dark"
+                        ? "text-background"
+                        : "text-foreground",
                     )}
                   >
-                    {withHighlight(card.heading, card.heading_highlight, "italic text-primary-accent")}
+                    {withHighlight(
+                      card.heading,
+                      card.heading_highlight,
+                      "italic text-primary-accent",
+                    )}
                   </p>
                   {card.description && (
                     <p
                       className={clsx(
                         "relative font-body-alt text-base font-medium tracking-[-0.04em]",
-                        card.theme === "dark" ? "text-[#ebffe8]" : "text-text-secondary"
+                        card.theme === "dark"
+                          ? "text-[#ebffe8]"
+                          : "text-text-secondary",
                       )}
                     >
                       {withHighlight(
                         card.description,
                         card.description_highlight,
-                        card.theme === "dark" ? "text-[#c2ffb6]" : "text-[#909dad]"
+                        card.theme === "dark"
+                          ? "text-[#c2ffb6]"
+                          : "text-[#909dad]",
                       )}
                     </p>
                   )}

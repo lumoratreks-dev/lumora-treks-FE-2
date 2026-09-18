@@ -6,7 +6,9 @@ export default function NotFound() {
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-active">
         Lumora Treks
       </p>
-      <h1 className="text-4xl font-bold tracking-tight text-foreground">Page not found</h1>
+      <h1 className="text-4xl font-bold tracking-tight text-foreground">
+        Page not found
+      </h1>
       <p className="text-lg text-text-secondary">
         We couldn&apos;t find the travel page or package you requested.
       </p>

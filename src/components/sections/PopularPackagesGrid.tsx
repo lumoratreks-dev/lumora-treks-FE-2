@@ -28,6 +28,17 @@ const CATEGORIES = [
   "Paragliding",
 ];
 
+function formatSearchDate(date?: string) {
+  if (!date) return "";
+  const parsed = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) return date;
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(parsed);
+}
+
 export default function PopularPackagesGrid({
   searchLocation,
   searchDate,
@@ -47,11 +58,14 @@ export default function PopularPackagesGrid({
   default_category?: string;
   show_filters?: boolean;
 }) {
-  const [category, setCategory] = useState(default_category || categories[0] || "Trekking");
+  const [category, setCategory] = useState(
+    default_category || categories[0] || "Trekking",
+  );
   const [page, setPage] = useState(1);
   const [searchCleared, setSearchCleared] = useState(false);
   const activeSearchLocation = searchCleared ? undefined : searchLocation;
   const activeSearchDate = searchCleared ? undefined : searchDate;
+  const activeSearchDateLabel = formatSearchDate(activeSearchDate);
 
   // Reset to page 1 the moment a new search arrives — render-phase, so the query
   // never runs with a stale page (no empty-state flash).
@@ -103,11 +117,13 @@ export default function PopularPackagesGrid({
             nextDisabled={page >= totalPages}
           />
         </div>
-        {show_filters ? <FilterTabs
-          tabs={categories}
-          defaultTab={category}
-          onChange={handleCategory}
-        /> : null}
+        {show_filters ? (
+          <FilterTabs
+            tabs={categories}
+            defaultTab={category}
+            onChange={handleCategory}
+          />
+        ) : null}
         {activeSearchLocation && (
           <p className="font-body-alt text-base text-text-secondary">
             Showing results for{" "}
@@ -118,7 +134,7 @@ export default function PopularPackagesGrid({
               <>
                 on{" "}
                 <span className="font-semibold text-foreground">
-                  {activeSearchDate}
+                  {activeSearchDateLabel}
                 </span>{" "}
               </>
             ) : null}
@@ -134,7 +150,9 @@ export default function PopularPackagesGrid({
         {!activeSearchLocation && activeSearchDate && (
           <p className="font-body-alt text-base text-text-secondary">
             Showing results for{" "}
-            <span className="font-semibold text-foreground">{activeSearchDate}</span>{" "}
+            <span className="font-semibold text-foreground">
+              {activeSearchDateLabel}
+            </span>{" "}
             <button
               type="button"
               onClick={clearSearchMode}
@@ -162,7 +180,11 @@ export default function PopularPackagesGrid({
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: (i % 3) * 0.1 }}
+              transition={{
+                duration: 0.5,
+                ease: "easeOut",
+                delay: (i % 3) * 0.1,
+              }}
             >
               <PackageCard {...pkg} href={pkg.href} />
             </motion.div>
@@ -172,7 +194,10 @@ export default function PopularPackagesGrid({
         <p className="py-16 text-center font-body-alt text-lg text-text-secondary">
           No packages found
           {activeSearchLocation ? ` for “${activeSearchLocation}”` : ""}
-          {!activeSearchLocation && activeSearchDate ? ` for ${activeSearchDate}` : ""}.
+          {!activeSearchLocation && activeSearchDate
+            ? ` for ${activeSearchDateLabel}`
+            : ""}
+          .
         </p>
       )}
 

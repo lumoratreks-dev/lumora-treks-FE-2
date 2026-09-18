@@ -9,12 +9,30 @@ import type { BlogBodyBlock, BlogListResult, BlogPostData } from "@/types";
  */
 
 /** FilterTabs categories for the blog index ("All" is the reset pill). */
-export const BLOG_CATEGORIES = ["All", "Trekking", "Culture", "Food & Stays", "Guides"] as const;
+export const BLOG_CATEGORIES = [
+  "All",
+  "Trekking",
+  "Culture",
+  "Food & Stays",
+  "Guides",
+] as const;
 
 const AUTHORS = {
-  aarav: { name: "Aarav Thapa", avatar: "/images/avatar-1.png", role: "Lead Guide" },
-  mira: { name: "Mira Gurung", avatar: "/images/avatar-1.png", role: "Travel Writer" },
-  kiran: { name: "Kiran Rai", avatar: "/images/avatar-1.png", role: "Culture Editor" },
+  aarav: {
+    name: "Aarav Thapa",
+    avatar: "/images/avatar-1.png",
+    role: "Lead Guide",
+  },
+  mira: {
+    name: "Mira Gurung",
+    avatar: "/images/avatar-1.png",
+    role: "Travel Writer",
+  },
+  kiran: {
+    name: "Kiran Rai",
+    avatar: "/images/avatar-1.png",
+    role: "Culture Editor",
+  },
 };
 
 /** A reusable article body so every post renders a full reading experience. */

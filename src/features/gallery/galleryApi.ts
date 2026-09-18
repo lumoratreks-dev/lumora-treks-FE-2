@@ -2,7 +2,8 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import type { RegionHighlight, SeasonalDestination } from "@/types";
 import type { CmsImage } from "@/lib/blocks";
 
-const WAGTAIL_URL = process.env.NEXT_PUBLIC_WAGTAIL_URL || "http://localhost:8000";
+const WAGTAIL_URL =
+  process.env.NEXT_PUBLIC_WAGTAIL_URL || "http://localhost:8000";
 
 type CmsDestinationSummary = {
   id: number | string;
@@ -15,9 +16,12 @@ type DestinationListResponse = { items?: CmsDestinationSummary[] };
 
 export async function fetchRegionHighlights(): Promise<RegionHighlight[]> {
   try {
-    const res = await fetch(`${WAGTAIL_URL}/api/v2/destinations/?featured=1&limit=6`, {
-      next: { revalidate: 60 },
-    });
+    const res = await fetch(
+      `${WAGTAIL_URL}/api/v2/destinations/?featured=1&limit=6`,
+      {
+        next: { revalidate: 60 },
+      },
+    );
     if (!res.ok) return [];
     const data: DestinationListResponse = await res.json();
     if (data.items) {
@@ -44,7 +48,9 @@ export function useRegionHighlightsQuery() {
   return useQuery(regionHighlightsQueryOptions());
 }
 
-export async function fetchSeasonalDestinations(): Promise<SeasonalDestination[]> {
+export async function fetchSeasonalDestinations(): Promise<
+  SeasonalDestination[]
+> {
   try {
     const res = await fetch(`${WAGTAIL_URL}/api/v2/destinations/?limit=6`, {
       next: { revalidate: 60 },

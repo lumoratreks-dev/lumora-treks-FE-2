@@ -23,7 +23,10 @@ function buildEnquiryText(intro: string, lines: EnquiryLine[]): string {
 }
 
 /** `https://wa.me/<number>?text=<encoded message>` for the given enquiry. */
-export function buildWhatsAppEnquiryUrl(intro: string, lines: EnquiryLine[]): string {
+export function buildWhatsAppEnquiryUrl(
+  intro: string,
+  lines: EnquiryLine[],
+): string {
   const text = encodeURIComponent(buildEnquiryText(intro, lines));
   return `https://wa.me/${WHATSAPP_ENQUIRY_NUMBER}?text=${text}`;
 }
