@@ -34,7 +34,7 @@ export default function FilterTabs({
             "rounded p-3 text-lg font-semibold tracking-[-0.04em] transition-colors",
             active === tab
               ? "bg-foreground text-background"
-              : "bg-background text-foreground hover:bg-border/60"
+              : "bg-background text-foreground hover:bg-border/60",
           )}
         >
           {tab}

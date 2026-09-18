@@ -21,7 +21,11 @@ export type SubmitLeadInput = {
   [extraField: string]: unknown;
 };
 
-export type SubmitLeadResult = { ok: boolean; id?: number; errors?: Record<string, string> };
+export type SubmitLeadResult = {
+  ok: boolean;
+  id?: number;
+  errors?: Record<string, string>;
+};
 
 export const leadsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

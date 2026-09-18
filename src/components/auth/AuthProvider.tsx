@@ -15,7 +15,8 @@ import type {
   TravelerProfile,
 } from "@/features/account/types";
 
-type AuthStatus = "loading" | "authenticated" | "unauthenticated" | "unavailable";
+type AuthStatus =
+  "loading" | "authenticated" | "unauthenticated" | "unavailable";
 
 type AuthContextValue = {
   status: AuthStatus;
@@ -135,7 +136,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    const response = await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
+    const response = await fetch("/api/auth/logout", { method: "POST" }).catch(
+      () => null,
+    );
     if (!response?.ok) return;
     setUser(null);
     setDismissedUserId(null);
@@ -149,9 +152,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const openOnboarding = useCallback(() => setDismissedUserId(null), []);
   const isOnboardingOpen = Boolean(
     status === "authenticated" &&
-      user &&
-      !user.onboarding_complete &&
-      dismissedUserId !== user.id,
+    user &&
+    !user.onboarding_complete &&
+    dismissedUserId !== user.id,
   );
 
   const value = useMemo<AuthContextValue>(

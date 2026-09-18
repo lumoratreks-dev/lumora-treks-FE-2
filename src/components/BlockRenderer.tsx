@@ -29,7 +29,13 @@ const CONTAINER_CLASS: Record<CmsSectionSettings["container"], string> = {
  * `SectionSettingsBlock`) is applied as a thin wrapper so it doesn't disturb
  * each section's own Figma-built spacing/width.
  */
-export default function BlockRenderer({ blocks, contextProps = {} }: { blocks: CmsBlock[]; contextProps?: Record<string, Record<string, unknown>> }) {
+export default function BlockRenderer({
+  blocks,
+  contextProps = {},
+}: {
+  blocks: CmsBlock[];
+  contextProps?: Record<string, Record<string, unknown>>;
+}) {
   return (
     <>
       {blocks.map((block) => {
@@ -42,15 +48,21 @@ export default function BlockRenderer({ blocks, contextProps = {} }: { blocks: C
         if (!Component) {
           if (process.env.NODE_ENV !== "production") {
             console.warn(
-              `BlockRenderer: no component registered for "${component ?? block.type}"`
+              `BlockRenderer: no component registered for "${component ?? block.type}"`,
             );
           }
           return null;
         }
 
-        const bgClass = settings?.background ? BACKGROUND_CLASS[settings.background] : "";
-        const spacingClass = settings?.spacing ? SPACING_CLASS[settings.spacing] : "";
-        const containerClass = settings?.container ? CONTAINER_CLASS[settings.container] : "";
+        const bgClass = settings?.background
+          ? BACKGROUND_CLASS[settings.background]
+          : "";
+        const spacingClass = settings?.spacing
+          ? SPACING_CLASS[settings.spacing]
+          : "";
+        const containerClass = settings?.container
+          ? CONTAINER_CLASS[settings.container]
+          : "";
         const anchorId = settings?.anchor_id || undefined;
 
         if (!bgClass && !spacingClass && !containerClass && !anchorId) {
@@ -58,7 +70,15 @@ export default function BlockRenderer({ blocks, contextProps = {} }: { blocks: C
         }
 
         return (
-          <div key={block.id} id={anchorId} className={[bgClass, spacingClass, containerClass].filter(Boolean).join(" ") || undefined}>
+          <div
+            key={block.id}
+            id={anchorId}
+            className={
+              [bgClass, spacingClass, containerClass]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
+          >
             <Component {...props} {...runtimeProps} />
           </div>
         );

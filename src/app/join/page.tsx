@@ -22,7 +22,8 @@ function safeCallbackUrl(value: string | string[] | undefined) {
     const base = new URL("https://lumora.local");
     const resolved = new URL(value, base);
     if (resolved.origin !== base.origin) return "/";
-    if (resolved.pathname === "/join" || resolved.pathname.startsWith("/api/")) return "/";
+    if (resolved.pathname === "/join" || resolved.pathname.startsWith("/api/"))
+      return "/";
     return `${resolved.pathname}${resolved.search}${resolved.hash}`;
   } catch {
     return "/";

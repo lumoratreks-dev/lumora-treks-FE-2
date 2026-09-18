@@ -9,7 +9,11 @@ export type CmsArticleBlock =
   | { type: "heading"; value: string; id?: string }
   | { type: "paragraph"; value: string; id?: string }
   | { type: "quote"; value: { text: string; cite?: string }; id?: string }
-  | { type: "image"; value: { src?: string; image?: CmsImage; alt?: string; caption?: string }; id?: string };
+  | {
+      type: "image";
+      value: { src?: string; image?: CmsImage; alt?: string; caption?: string };
+      id?: string;
+    };
 
 export type CmsBlogPost = {
   id: number | string;
@@ -41,7 +45,11 @@ function adaptArticleBody(blocks: CmsArticleBlock[]): BlogBodyBlock[] {
         case "paragraph":
           return { type: "paragraph", text: block.value }; // rich-text HTML
         case "quote":
-          return { type: "quote", text: block.value.text, cite: block.value.cite || undefined };
+          return {
+            type: "quote",
+            text: block.value.text,
+            cite: block.value.cite || undefined,
+          };
         case "image":
           return {
             type: "image",

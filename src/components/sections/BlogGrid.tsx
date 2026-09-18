@@ -45,7 +45,8 @@ export default function BlogGrid({
   const { data, isLoading } = useBlogPostsQuery({ category, page, pageSize });
 
   const posts = data?.items ?? [];
-  const showFeatured = show_featured && featured && category === tabs[0] && page === 1;
+  const showFeatured =
+    show_featured && featured && category === tabs[0] && page === 1;
 
   return (
     <div className="flex flex-col gap-12">

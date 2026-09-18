@@ -48,7 +48,11 @@ export default function IntroStats({
 
           {description && (
             <p className="max-w-[840px] font-body-alt text-[clamp(1.05rem,2.2vw,24px)] font-medium leading-snug tracking-[-0.04em] text-text-secondary">
-              {withHighlight(description, description_highlight, "italic text-[#909dad]")}
+              {withHighlight(
+                description,
+                description_highlight,
+                "italic text-[#909dad]",
+              )}
             </p>
           )}
         </motion.div>
@@ -58,25 +62,29 @@ export default function IntroStats({
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
           className="flex flex-wrap items-start justify-center gap-x-20 gap-y-8"
         >
-          {statItems.length === 0 ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="flex flex-col items-center gap-2 animate-pulse">
-                <div className="h-10 w-24 rounded bg-muted" />
-                <div className="h-5 w-32 rounded bg-muted" />
-              </div>
-            ))
-          ) : (
-            statItems.map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center gap-1">
-                <span className="text-[40px] font-bold leading-tight tracking-[-0.04em] text-foreground">
-                  {stat.value}
-                </span>
-                <span className="text-xl font-medium italic tracking-[-0.04em] text-text-secondary">
-                  {stat.label}
-                </span>
-              </div>
-            ))
-          )}
+          {statItems.length === 0
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col items-center gap-2 animate-pulse"
+                >
+                  <div className="h-10 w-24 rounded bg-muted" />
+                  <div className="h-5 w-32 rounded bg-muted" />
+                </div>
+              ))
+            : statItems.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex flex-col items-center gap-1"
+                >
+                  <span className="text-[40px] font-bold leading-tight tracking-[-0.04em] text-foreground">
+                    {stat.value}
+                  </span>
+                  <span className="text-xl font-medium italic tracking-[-0.04em] text-text-secondary">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
         </motion.div>
       </div>
     </section>

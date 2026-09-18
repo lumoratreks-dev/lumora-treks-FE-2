@@ -41,7 +41,7 @@ export default function Pagination({
             "flex size-10 items-center justify-center rounded-lg border text-lg transition-colors",
             page === n
               ? "border-foreground bg-background font-semibold text-foreground"
-              : "border-border font-medium text-text-secondary hover:border-foreground/40"
+              : "border-border font-medium text-text-secondary hover:border-foreground/40",
           )}
         >
           {n}

@@ -29,8 +29,6 @@ export default function CulturalDayTours({
   const loading = isLoading && !cmsItems && !data;
   const errored = isError && !cmsItems && !data;
 
-
-
   const { emblaRef, scrollPrev, scrollNext, canPrev, canNext } = useCarousel({
     loop: true,
   });

@@ -7,21 +7,38 @@ import { motion } from "framer-motion";
 
 /** Payment success — Figma node 118:4814 ("transaction successful"). Success
  * state + booking summary card. Presentational. */
-export default function PaymentSuccess({ verified = false, simulation = false, amount }: { verified?: boolean; simulation?: boolean; amount?: string }) {
+export default function PaymentSuccess({
+  verified = false,
+  simulation = false,
+  amount,
+}: {
+  verified?: boolean;
+  simulation?: boolean;
+  amount?: string;
+}) {
   if (simulation) {
     return (
       <section className="mx-auto flex min-h-[55vh] max-w-2xl flex-col items-center justify-center gap-6 px-6 py-16 text-center">
         <div className="flex size-20 items-center justify-center rounded-full bg-primary/15">
-          <Icon icon="charm:circle-tick" className="size-12 text-primary-active" />
+          <Icon
+            icon="charm:circle-tick"
+            className="size-12 text-primary-active"
+          />
         </div>
         <p className="rounded-full bg-amber-100 px-4 py-2 text-sm font-semibold uppercase tracking-[0.15em] text-amber-900">
           Simulation only
         </p>
-        <h1 className="font-body-alt text-3xl font-semibold text-foreground">Demo payment completed</h1>
+        <h1 className="font-body-alt text-3xl font-semibold text-foreground">
+          Demo payment completed
+        </h1>
         <p className="font-body-alt text-lg text-text-secondary">
-          This simulated {amount ? `$${amount}` : "payment"} did not contact a provider, collect card data, or charge money.
+          This simulated {amount ? `$${amount}` : "payment"} did not contact a
+          provider, collect card data, or charge money.
         </p>
-        <Link href="/packages" className="rounded-lg bg-foreground px-5 py-3 font-medium text-background">
+        <Link
+          href="/packages"
+          className="rounded-lg bg-foreground px-5 py-3 font-medium text-background"
+        >
           Return to packages
         </Link>
       </section>
@@ -32,15 +49,22 @@ export default function PaymentSuccess({ verified = false, simulation = false, a
     return (
       <section className="mx-auto flex min-h-[55vh] max-w-2xl flex-col items-center justify-center gap-6 px-6 py-16 text-center">
         <div className="flex size-20 items-center justify-center rounded-full bg-amber-100">
-          <Icon icon="iconoir:warning-circle" className="size-12 text-amber-700" />
+          <Icon
+            icon="iconoir:warning-circle"
+            className="size-12 text-amber-700"
+          />
         </div>
         <h1 className="font-body-alt text-3xl font-semibold text-foreground">
           Payment confirmation is unavailable
         </h1>
         <p className="font-body-alt text-lg text-text-secondary">
-          No verified payment was found for this page. Online payment will be available once the booking provider is connected.
+          No verified payment was found for this page. Online payment will be
+          available once the booking provider is connected.
         </p>
-        <Link href="/enquiry" className="rounded-lg bg-foreground px-5 py-3 font-medium text-background">
+        <Link
+          href="/enquiry"
+          className="rounded-lg bg-foreground px-5 py-3 font-medium text-background"
+        >
           Send an enquiry instead
         </Link>
       </section>
@@ -64,7 +88,10 @@ export default function PaymentSuccess({ verified = false, simulation = false, a
               transition={{ duration: 0.4, ease: "backOut", delay: 0.1 }}
               className="flex size-20 items-center justify-center rounded-full bg-[#edf8ec]"
             >
-              <Icon icon="charm:circle-tick" className="size-12 text-[#2bbf0f]" />
+              <Icon
+                icon="charm:circle-tick"
+                className="size-12 text-[#2bbf0f]"
+              />
             </motion.div>
             <div className="flex flex-col gap-2">
               <h1 className="font-body-alt text-2xl font-semibold tracking-[-0.04em] text-foreground">
@@ -96,7 +123,10 @@ export default function PaymentSuccess({ verified = false, simulation = false, a
 
           <p className="font-body-alt text-lg tracking-[-0.04em] text-text-secondary">
             Questions about your trip?{" "}
-            <Link href="/contact" className="font-medium text-[#33e612] underline">
+            <Link
+              href="/contact"
+              className="font-medium text-[#33e612] underline"
+            >
               Chat with host
             </Link>
           </p>
@@ -126,14 +156,20 @@ export default function PaymentSuccess({ verified = false, simulation = false, a
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <span className="flex items-center gap-2">
-                  <Icon icon="iconoir:calendar" className="size-3.5 text-text-secondary" />
+                  <Icon
+                    icon="iconoir:calendar"
+                    className="size-3.5 text-text-secondary"
+                  />
                   <span className="font-body-alt text-base tracking-[-0.04em] text-text-secondary">
                     Tuesday, May 24
                   </span>
                 </span>
                 <span className="size-1 rounded-full bg-text-secondary" />
                 <span className="flex items-center gap-2">
-                  <Icon icon="ion:people-outline" className="size-4 text-text-secondary" />
+                  <Icon
+                    icon="ion:people-outline"
+                    className="size-4 text-text-secondary"
+                  />
                   <span className="font-body-alt text-base tracking-[-0.04em] text-text-secondary">
                     2 people
                   </span>

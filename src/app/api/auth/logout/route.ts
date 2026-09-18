@@ -7,16 +7,22 @@ import {
 
 export async function POST(request: NextRequest) {
   if (!isSameOrigin(request)) {
-    return NextResponse.json({ detail: "Invalid request origin." }, { status: 403 });
+    return NextResponse.json(
+      { detail: "Invalid request origin." },
+      { status: 403 },
+    );
   }
 
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
   if (token) {
     try {
-      const { response: backendResponse, data } = await requestAccountsApi("logout/", {
-        method: "POST",
-        headers: { Authorization: `Token ${token}` },
-      });
+      const { response: backendResponse, data } = await requestAccountsApi(
+        "logout/",
+        {
+          method: "POST",
+          headers: { Authorization: `Token ${token}` },
+        },
+      );
       if (!backendResponse.ok && backendResponse.status !== 401) {
         return NextResponse.json(data, { status: backendResponse.status });
       }

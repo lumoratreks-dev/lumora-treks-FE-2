@@ -13,14 +13,19 @@ export default async function PaymentSuccessPage({
   const page = await getPageByPath("/checkout/success");
   if (!page?.body?.length) notFound();
 
-/** Booking simulation result page (`/checkout/success`) — Figma node
- * 118:4814. The verified variant will be enabled when a payment provider and
- * server-side booking confirmation are connected. */
+  /** Booking simulation result page (`/checkout/success`) — Figma node
+   * 118:4814. The verified variant will be enabled when a payment provider and
+   * server-side booking confirmation are connected. */
   return (
     <>
       <main className="flex-1">
         <Navbar />
-        <BlockRenderer blocks={page.body} contextProps={{ PaymentSuccess: { simulation: simulation === "1", amount } }} />
+        <BlockRenderer
+          blocks={page.body}
+          contextProps={{
+            PaymentSuccess: { simulation: simulation === "1", amount },
+          }}
+        />
       </main>
       <Footer />
     </>

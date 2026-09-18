@@ -9,6 +9,7 @@ import ArticleBody from "@/components/sections/ArticleBody";
 import RelatedStories from "@/components/sections/RelatedStories";
 import CTABand from "@/components/sections/CTABand";
 import { getPageByPath } from "@/lib/cms";
+import { absoluteAssetUrl, absoluteSiteUrl } from "@/lib/siteUrl";
 import {
   fetchBlogPost,
   fetchBlogSlugs,
@@ -30,14 +31,25 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = await fetchBlogPost(slug);
   if (!post) return { title: "Story not found | Lumora Treks" };
+  const url = absoluteSiteUrl(`/blog/${slug}`);
+  const image = absoluteAssetUrl(post.image || "/images/hero-bg.png");
   return {
     title: `${post.title} | Lumora Treks`,
     description: post.excerpt,
+    alternates: { canonical: url },
     openGraph: {
       title: post.title,
       description: post.excerpt,
-      images: post.image ? [{ url: post.image }] : undefined,
+      url,
+      siteName: "Lumora Treks",
+      images: [{ url: image, alt: post.title }],
       type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [image],
     },
   };
 }

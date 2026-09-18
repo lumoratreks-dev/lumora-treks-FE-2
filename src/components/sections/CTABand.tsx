@@ -19,7 +19,9 @@ import { useRef } from "react";
 
 export type CTAButton = { label?: string; href?: string };
 
-const DEFAULT_BUTTONS: CTAButton[] = [{ label: "Reserve Now", href: "/enquiry" }];
+const DEFAULT_BUTTONS: CTAButton[] = [
+  { label: "Reserve Now", href: "/enquiry" },
+];
 
 const DEFAULT_HEADING = `Create memories that stay with you \n long after the Journey Ends`;
 const DEFAULT_HEADING_HIGHLIGHT = "Journey";
@@ -60,7 +62,13 @@ export default function CTABand({
           transition={{ duration: 5, ease: [0.16, 1, 0.3, 1] }}
           className="absolute top-[28%] inset-x-0 z-10 flex flex-col items-center gap-2 px-6 text-center text-[clamp(1.75rem,5vw,50px)] font-bold leading-[1.1] tracking-[-0.04em] text-foreground"
         >
-          <span>{withHighlight(heading, heading_highlight, "italic text-primary-accent")}</span>
+          <span>
+            {withHighlight(
+              heading,
+              heading_highlight,
+              "italic text-primary-accent",
+            )}
+          </span>
           {text && (
             <span className="text-[clamp(1rem,2vw,20px)] font-medium tracking-[-0.02em] text-text-secondary">
               {text}

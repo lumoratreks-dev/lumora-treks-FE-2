@@ -38,7 +38,6 @@ export default function Hero({
 
   return (
     <section className="mx-auto w-full max-w-[1440px]  ">
-
       <div className="relative aspect-[1400/790] min-h-[560px] w-full overflow-hidden rounded-[2rem]">
         {/* Background scene */}
         <Image

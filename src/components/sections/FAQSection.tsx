@@ -15,7 +15,11 @@ import type { CmsHeadingGroup } from "@/lib/blocks";
  * highlight field on the backend block, so CMS-authored copy renders plain;
  * only this file's untouched defaults keep the accent. */
 
-export type FAQItem = { question: string; answer?: string; open_by_default?: boolean };
+export type FAQItem = {
+  question: string;
+  answer?: string;
+  open_by_default?: boolean;
+};
 export type FAQButton = { label?: string; href?: string };
 
 const DEFAULT_HEADING: CmsHeadingGroup = {
@@ -41,7 +45,7 @@ export default function FAQSection({
   const faqItems = items ?? [];
   const defaultOpen = faqItems.findIndex((item) => item.open_by_default);
   const [openIndex, setOpenIndex] = useState<number | null>(
-    defaultOpen === -1 ? 0 : defaultOpen
+    defaultOpen === -1 ? 0 : defaultOpen,
   );
 
   return (
@@ -62,51 +66,55 @@ export default function FAQSection({
       <div className="flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-[60px]">
         {/* Accordion */}
         <div className="flex flex-1 flex-col gap-7">
-          {faqItems.length === 0 ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="border-b border-border pb-7 animate-pulse">
-                <div className="h-6 w-3/4 rounded bg-muted" />
-              </div>
-            ))
-          ) : (
-            faqItems.map((faq, i) => {
-              const open = openIndex === i;
-              return (
-                <div key={faq.question} className="border-b border-border pb-7">
-                  <button
-                    type="button"
-                    onClick={() => setOpenIndex(open ? null : i)}
-                    aria-expanded={open}
-                    className="flex w-full items-center justify-between gap-4 text-left"
-                  >
-                    <span className="text-xl font-semibold tracking-[-0.04em] text-foreground">
-                      {faq.question}
-                    </span>
-                    <Icon
-                      icon={open ? "charm:cross" : "tabler:plus-filled"}
-                      className="size-8 shrink-0 text-foreground"
-                    />
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {open && faq.answer && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="overflow-hidden font-body-alt text-lg tracking-[-0.04em] text-text-secondary"
-                      >
-                        <span
-                          className="mt-3 block"
-                          dangerouslySetInnerHTML={{ __html: faq.answer }}
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+          {faqItems.length === 0
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="border-b border-border pb-7 animate-pulse"
+                >
+                  <div className="h-6 w-3/4 rounded bg-muted" />
                 </div>
-              );
-            })
-          )}
+              ))
+            : faqItems.map((faq, i) => {
+                const open = openIndex === i;
+                return (
+                  <div
+                    key={faq.question}
+                    className="border-b border-border pb-7"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setOpenIndex(open ? null : i)}
+                      aria-expanded={open}
+                      className="flex w-full items-center justify-between gap-4 text-left"
+                    >
+                      <span className="text-xl font-semibold tracking-[-0.04em] text-foreground">
+                        {faq.question}
+                      </span>
+                      <Icon
+                        icon={open ? "charm:cross" : "tabler:plus-filled"}
+                        className="size-8 shrink-0 text-foreground"
+                      />
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {open && faq.answer && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
+                          className="overflow-hidden font-body-alt text-lg tracking-[-0.04em] text-text-secondary"
+                        >
+                          <span
+                            className="mt-3 block"
+                            dangerouslySetInnerHTML={{ __html: faq.answer }}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
         </div>
 
         {/* Contact card */}
@@ -123,7 +131,8 @@ export default function FAQSection({
             <p className="font-body-alt text-lg font-medium tracking-[-0.04em] text-text-secondary">
               {side_card_text ?? (
                 <>
-                  That&apos;s ok. Just drop a message and we will get back to you{" "}
+                  That&apos;s ok. Just drop a message and we will get back to
+                  you{" "}
                   <span className="uppercase text-primary-accent">asap</span>.
                 </>
               )}

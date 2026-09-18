@@ -2,7 +2,10 @@ import type { CmsDestinationDetail, CmsPackageDetail } from "./blocks";
 
 const WAGTAIL_URL = process.env.NEXT_PUBLIC_WAGTAIL_URL;
 
-async function getCatalogItem<T>(resource: string, slug: string): Promise<T | null> {
+async function getCatalogItem<T>(
+  resource: string,
+  slug: string,
+): Promise<T | null> {
   if (!WAGTAIL_URL) return null;
 
   try {

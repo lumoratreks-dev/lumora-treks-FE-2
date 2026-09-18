@@ -4,13 +4,17 @@ import { adaptCmsPackage, type CmsPackage } from "@/lib/adaptCmsPackage";
 import type { CmsListResponse } from "@/lib/blocks";
 import type { SelectPackagesParams } from "./packagesData";
 
-const WAGTAIL_URL = process.env.NEXT_PUBLIC_WAGTAIL_URL || "http://localhost:8000";
+const WAGTAIL_URL =
+  process.env.NEXT_PUBLIC_WAGTAIL_URL || "http://localhost:8000";
 
 export async function fetchPopularPackages(): Promise<PackageCardData[]> {
   try {
-    const res = await fetch(`${WAGTAIL_URL}/api/v2/packages/?popular=1&limit=8`, {
-      next: { revalidate: 60 },
-    });
+    const res = await fetch(
+      `${WAGTAIL_URL}/api/v2/packages/?popular=1&limit=8`,
+      {
+        next: { revalidate: 60 },
+      },
+    );
     if (!res.ok) return [];
     const data: CmsListResponse<CmsPackage> = await res.json();
     return data.items.map(adaptCmsPackage);
@@ -31,7 +35,7 @@ export function usePopularPackagesQuery() {
 }
 
 export async function fetchPackages(
-  params?: SelectPackagesParams
+  params?: SelectPackagesParams,
 ): Promise<PackageListResult> {
   const { category, location, date, page = 1, pageSize = 6 } = params ?? {};
   const queryParams = new URLSearchParams({
@@ -45,7 +49,7 @@ export async function fetchPackages(
   try {
     const res = await fetch(
       `${WAGTAIL_URL}/api/v2/packages/?${queryParams.toString()}`,
-      { next: { revalidate: 60 } }
+      { next: { revalidate: 60 } },
     );
     if (!res.ok) {
       return { items: [], page: 1, pageSize: 6, total: 0, totalPages: 1 };
@@ -76,9 +80,12 @@ export function usePackagesQuery(params?: SelectPackagesParams) {
 
 export async function fetchCulturalTours(): Promise<PackageCardData[]> {
   try {
-    const res = await fetch(`${WAGTAIL_URL}/api/v2/packages/?category=Sightseeing&limit=6`, {
-      next: { revalidate: 60 },
-    });
+    const res = await fetch(
+      `${WAGTAIL_URL}/api/v2/packages/?category=Sightseeing&limit=6`,
+      {
+        next: { revalidate: 60 },
+      },
+    );
     if (!res.ok) return [];
     const data: CmsListResponse<CmsPackage> = await res.json();
     return data.items.map(adaptCmsPackage);
@@ -87,7 +94,6 @@ export async function fetchCulturalTours(): Promise<PackageCardData[]> {
     return [];
   }
 }
-
 
 export const culturalToursQueryOptions = () =>
   queryOptions({

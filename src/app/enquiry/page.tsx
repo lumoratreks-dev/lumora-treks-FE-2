@@ -21,7 +21,12 @@ export default async function EnquiryPage({
     <>
       <main className="flex-1">
         <Navbar />
-        <BlockRenderer blocks={page.body} contextProps={{ PackageEnquiry: { packageData: packageData ?? undefined } }} />
+        <BlockRenderer
+          blocks={page.body}
+          contextProps={{
+            PackageEnquiry: { packageData: packageData ?? undefined },
+          }}
+        />
       </main>
       <Footer />
     </>

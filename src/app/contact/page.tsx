@@ -12,7 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: page?.seo?.title || page?.title || "Contact Lumora Treks",
     description: page?.seo?.description,
-    ...(page?.seo?.canonical_url ? { alternates: { canonical: page.seo.canonical_url } } : {}),
+    ...(page?.seo?.canonical_url
+      ? { alternates: { canonical: page.seo.canonical_url } }
+      : {}),
     ...(page?.seo?.noindex ? { robots: { index: false, follow: false } } : {}),
   };
 }
@@ -30,7 +32,7 @@ export default async function ContactPage() {
   // straight through — falling back to a default FAQ only if there are none.
   const hasForm = body.some((block) => block.type === "contact_form");
   const extraBlocks = body.filter(
-    (block) => block.type !== "contact_hero" && block.type !== "contact_form"
+    (block) => block.type !== "contact_hero" && block.type !== "contact_form",
   );
 
   return (
@@ -43,7 +45,11 @@ export default async function ContactPage() {
           <>
             <ContactHero />
             <ContactForm />
-            {extraBlocks.length > 0 ? <BlockRenderer blocks={extraBlocks} /> : <FAQSection />}
+            {extraBlocks.length > 0 ? (
+              <BlockRenderer blocks={extraBlocks} />
+            ) : (
+              <FAQSection />
+            )}
           </>
         )}
       </main>

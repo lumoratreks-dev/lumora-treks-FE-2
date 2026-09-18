@@ -1,7 +1,8 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import type { SiteSettings } from "./siteApi";
 
-const WAGTAIL_URL = process.env.NEXT_PUBLIC_WAGTAIL_URL || "http://localhost:8000";
+const WAGTAIL_URL =
+  process.env.NEXT_PUBLIC_WAGTAIL_URL || "http://localhost:8000";
 
 export async function fetchSiteSettings(): Promise<SiteSettings | null> {
   try {

@@ -4,7 +4,10 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import { useSubmitLeadMutation } from "@/features/leads/leadsApi";
-import { buildWhatsAppEnquiryUrl, openWhatsAppEnquiry } from "@/features/leads/whatsapp";
+import {
+  buildWhatsAppEnquiryUrl,
+  openWhatsAppEnquiry,
+} from "@/features/leads/whatsapp";
 
 /** Contact Form — Figma node 75:690. Contact info + social (left) and the
  * "Leave your message" form (right). Submits to `/api/v2/leads/`
@@ -69,7 +72,8 @@ export default function ContactForm({
 } = {}) {
   const [formStartedAt] = useState(() => Date.now() / 1000);
   const [whatsappUrl, setWhatsappUrl] = useState("");
-  const [submitLead, { isLoading, isSuccess, isError }] = useSubmitLeadMutation();
+  const [submitLead, { isLoading, isSuccess, isError }] =
+    useSubmitLeadMutation();
 
   const headingParts = highlightSplit(heading, heading_highlight);
   const descriptionParts = highlightSplit(description, description_highlight);
@@ -100,12 +104,15 @@ export default function ContactForm({
       .unwrap()
       .then(() => {
         // Also deliver the message to the team's WhatsApp via a pre-filled chat.
-        const url = buildWhatsAppEnquiryUrl("Hi Lumora Treks, I have a message for you.", [
-          { label: "Name", value: name },
-          { label: "Email", value: email },
-          { label: "Destination", value: destination },
-          { label: "Message", value: message },
-        ]);
+        const url = buildWhatsAppEnquiryUrl(
+          "Hi Lumora Treks, I have a message for you.",
+          [
+            { label: "Name", value: name },
+            { label: "Email", value: email },
+            { label: "Destination", value: destination },
+            { label: "Message", value: message },
+          ],
+        );
         setWhatsappUrl(url);
         openWhatsAppEnquiry(url);
         form.reset();
@@ -128,14 +135,18 @@ export default function ContactForm({
             <h2 className="text-[clamp(1.75rem,3vw,32px)] font-bold tracking-[-0.04em] text-foreground">
               {headingParts.before}
               {headingParts.highlighted && (
-                <span className="italic text-primary-accent">{headingParts.highlighted}</span>
+                <span className="italic text-primary-accent">
+                  {headingParts.highlighted}
+                </span>
               )}
               {headingParts.after}
             </h2>
             <p className="font-body-alt text-[clamp(1.1rem,2vw,24px)] font-medium tracking-[-0.04em] text-text-secondary">
               {descriptionParts.before}
               {descriptionParts.highlighted && (
-                <span className="italic text-[#909dad]">{descriptionParts.highlighted}</span>
+                <span className="italic text-[#909dad]">
+                  {descriptionParts.highlighted}
+                </span>
               )}
               {descriptionParts.after}
             </p>
@@ -161,7 +172,7 @@ export default function ContactForm({
         </motion.div>
 
         {/* Right — form */}
-          <motion.form
+        <motion.form
           data-started-at={formStartedAt}
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -171,7 +182,8 @@ export default function ContactForm({
           className="flex w-full flex-col gap-12 rounded-2xl border border-border bg-background p-8 lg:w-[536px] lg:shrink-0"
         >
           <p className="text-2xl font-semibold tracking-[-0.04em] text-foreground">
-            Leave your <span className="italic text-primary-accent">message</span>
+            Leave your{" "}
+            <span className="italic text-primary-accent">message</span>
           </p>
 
           <div className="flex flex-col gap-5">
@@ -251,7 +263,10 @@ export default function ContactForm({
                   className="size-6 shrink-0 rounded border border-border accent-foreground"
                 />
                 <span className="text-base font-semibold tracking-[-0.04em] text-foreground">
-                  I agree to the <a href="/privacy" className="underline">privacy policy</a>
+                  I agree to the{" "}
+                  <a href="/privacy" className="underline">
+                    privacy policy
+                  </a>
                 </span>
               </label>
               <button

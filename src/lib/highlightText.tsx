@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 export function withHighlight(
   text: string,
   highlight: string | undefined | null,
-  className: string
+  className: string,
 ): ReactNode {
   if (!highlight) return text;
   const index = text.indexOf(highlight);

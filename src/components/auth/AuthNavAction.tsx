@@ -33,7 +33,8 @@ export default function AuthNavAction({
     if (!menuOpen) return;
 
     const closeOnOutsideClick = (event: PointerEvent) => {
-      if (!wrapperRef.current?.contains(event.target as Node)) setMenuOpen(false);
+      if (!wrapperRef.current?.contains(event.target as Node))
+        setMenuOpen(false);
     };
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setMenuOpen(false);
@@ -51,7 +52,11 @@ export default function AuthNavAction({
     return (
       <span
         aria-label="Loading account"
-        className={mobile ? "h-12 w-full animate-pulse rounded-full bg-border" : "hidden h-10 w-32 animate-pulse rounded-full bg-border lg:block"}
+        className={
+          mobile
+            ? "h-12 w-full animate-pulse rounded-full bg-border"
+            : "hidden h-10 w-32 animate-pulse rounded-full bg-border lg:block"
+        }
       />
     );
   }
@@ -99,7 +104,9 @@ export default function AuthNavAction({
             <p className="truncate font-body-alt text-base font-semibold text-foreground">
               Hi, {firstName(user)}
             </p>
-            <p className="truncate font-body-alt text-xs text-text-secondary">{user.email}</p>
+            <p className="truncate font-body-alt text-xs text-text-secondary">
+              {user.email}
+            </p>
           </div>
         </div>
         <div className="mt-3 flex gap-2">
@@ -157,7 +164,9 @@ export default function AuthNavAction({
               <p className="truncate font-body-alt text-base font-semibold text-foreground">
                 Hi, {firstName(user)}
               </p>
-              <p className="truncate font-body-alt text-xs text-text-secondary">{user.email}</p>
+              <p className="truncate font-body-alt text-xs text-text-secondary">
+                {user.email}
+              </p>
             </div>
 
             {!user.onboarding_complete && (

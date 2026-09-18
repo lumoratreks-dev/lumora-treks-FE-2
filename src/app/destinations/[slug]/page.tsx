@@ -10,7 +10,12 @@ type Params = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const page = await getPageByPath(`/destinations/${slug}`);
-  return page ? { title: page.seo?.title || page.title, description: page.seo?.description } : { robots: { index: false } };
+  return page
+    ? {
+        title: page.seo?.title || page.title,
+        description: page.seo?.description,
+      }
+    : { robots: { index: false } };
 }
 
 export default async function DestinationDetailPage({ params }: Params) {
@@ -22,5 +27,13 @@ export default async function DestinationDetailPage({ params }: Params) {
     DestinationOverview: { destination: page.destination },
     DestinationPackages: { destination: page.destination },
   };
-  return <><main className="flex-1"><Navbar /><BlockRenderer blocks={page.body} contextProps={destinationContext} /></main><Footer /></>;
+  return (
+    <>
+      <main className="flex-1">
+        <Navbar />
+        <BlockRenderer blocks={page.body} contextProps={destinationContext} />
+      </main>
+      <Footer />
+    </>
+  );
 }

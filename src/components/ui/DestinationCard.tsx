@@ -26,16 +26,18 @@ export default function DestinationCard({
     <div
       className={clsx(
         "relative flex h-full w-full flex-col justify-end overflow-hidden rounded-2xl p-6",
-        className
+        className,
       )}
     >
-      {image && <Image
-        src={image}
-        alt={title}
-        fill
-        sizes="(max-width: 1024px) 100vw, 420px"
-        className="object-cover"
-      />}
+      {image && (
+        <Image
+          src={image}
+          alt={title}
+          fill
+          sizes="(max-width: 1024px) 100vw, 420px"
+          className="object-cover"
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
       <div className="relative flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
@@ -43,10 +45,21 @@ export default function DestinationCard({
             {title}
           </h3>
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-background">
-            <Icon icon="iconoir:arrow-up-right" className="size-4 text-foreground" />
+            <Icon
+              icon="iconoir:arrow-up-right"
+              className="size-4 text-foreground"
+            />
           </span>
         </div>
-        {price ? <p className="text-base tracking-tight text-[#ebffe8]">Starting from <span className="font-semibold">{price}</span></p> : <p className="text-base tracking-tight text-[#ebffe8]">Explore this region</p>}
+        {price ? (
+          <p className="text-base tracking-tight text-[#ebffe8]">
+            Starting from <span className="font-semibold">{price}</span>
+          </p>
+        ) : (
+          <p className="text-base tracking-tight text-[#ebffe8]">
+            Explore this region
+          </p>
+        )}
       </div>
     </div>
   );

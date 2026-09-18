@@ -37,7 +37,8 @@ const SLOT_PLACEMENT = [
 
 const DEFAULT_HEADING: CmsHeadingGroup = {
   heading: "Explore famous destinations",
-  description: "Whether you're seeking mountain adventures, wildlife encounters.",
+  description:
+    "Whether you're seeking mountain adventures, wildlife encounters.",
 };
 
 export default function DestinationsBento({
@@ -51,14 +52,18 @@ export default function DestinationsBento({
 } = {}) {
   const { data: apiDestinations, isLoading } = useDestinationsQuery();
 
-  const cmsItems = resolved_items && resolved_items.length > 0 ? resolved_items : items;
-  const apiCards: BentoItem[] = (apiDestinations ?? []).slice(0, 5).map((d) => ({
-        title: d.title,
-        image: { url: d.image },
-        href: d.href || `/destinations/${d.slug || d.id}`,
-        price: d.price,
-      }));
-  const cards: BentoItem[] = apiCards.length > 0 ? apiCards : (cmsItems || []).slice(0, 5);
+  const cmsItems =
+    resolved_items && resolved_items.length > 0 ? resolved_items : items;
+  const apiCards: BentoItem[] = (apiDestinations ?? [])
+    .slice(0, 5)
+    .map((d) => ({
+      title: d.title,
+      image: { url: d.image },
+      href: d.href || `/destinations/${d.slug || d.id}`,
+      price: d.price,
+    }));
+  const cards: BentoItem[] =
+    apiCards.length > 0 ? apiCards : (cmsItems || []).slice(0, 5);
 
   const showSkeleton = isLoading && !cmsItems && cards.length === 0;
 
@@ -80,7 +85,10 @@ export default function DestinationsBento({
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:h-[570px] lg:grid-cols-3 lg:grid-rows-2">
         {showSkeleton
           ? Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className={`h-[275px] lg:h-auto ${SLOT_PLACEMENT[i] ?? ""}`}>
+              <div
+                key={i}
+                className={`h-[275px] lg:h-auto ${SLOT_PLACEMENT[i] ?? ""}`}
+              >
                 <CardSkeleton />
               </div>
             ))

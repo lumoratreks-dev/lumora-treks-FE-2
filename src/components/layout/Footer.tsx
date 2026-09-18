@@ -11,7 +11,10 @@ import type { CmsLink } from "@/features/site/siteApi";
  * anchor/external hrefs through a plain <a>, internal paths through <Link>. */
 function FooterLink({ link, className }: { link: CmsLink; className: string }) {
   const href = link.href || "";
-  const isExternal = /^(https?:)?\/\//.test(href) || href.startsWith("mailto:") || href.startsWith("tel:");
+  const isExternal =
+    /^(https?:)?\/\//.test(href) ||
+    href.startsWith("mailto:") ||
+    href.startsWith("tel:");
   const isAnchor = href.startsWith("#");
   const newTab = link.open_in_new_tab || isExternal;
 
@@ -53,11 +56,16 @@ export default function Footer() {
     site?.footer?.description ||
     "Your trusted travel partner in Nepal. We curate authentic experiences, breathtaking destinations, and unforgettable memories.";
 
-  const cmsSocials =
-    site?.footer?.socials
-      ?.map((s) => ({ icon: s.value.icon, label: s.value.platform, href: s.value.url }))
-      .filter((s) => s.icon && s.href);
-  const socials = cmsSocials?.length ? cmsSocials : [
+  const cmsSocials = site?.footer?.socials
+    ?.map((s) => ({
+      icon: s.value.icon,
+      label: s.value.platform,
+      href: s.value.url,
+    }))
+    .filter((s) => s.icon && s.href);
+  const socials = cmsSocials?.length
+    ? cmsSocials
+    : [
         { icon: "mdi:facebook", label: "Facebook", href: "#" },
         { icon: "mdi:instagram", label: "Instagram", href: "#" },
         { icon: "prime:twitter", label: "X", href: "#" },
@@ -71,14 +79,20 @@ export default function Footer() {
       links: (c.value.links || []).filter((l) => l.label && l.href),
     }))
     .filter((c) => c.links.length);
-  const columns = cmsColumns?.length ? cmsColumns : [
+  const columns = cmsColumns?.length
+    ? cmsColumns
+    : [
         {
           heading: "Company",
           links: [
             { label: "Contact Us", href: "/contact" },
             { label: "Privacy Policy", href: "/privacy" },
             { label: "Terms & Conditions", href: "/terms" },
-            { label: "Login to Admin Portal", href: adminUrl, open_in_new_tab: true },
+            {
+              label: "Login to Admin Portal",
+              href: adminUrl,
+              open_in_new_tab: true,
+            },
           ] as CmsLink[],
         },
       ];
@@ -117,7 +131,9 @@ export default function Footer() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  {...(social.href !== "#" ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  {...(social.href !== "#"
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   className="text-foreground transition-transform hover:scale-110"
                 >
                   <Icon icon={social.icon} className="size-8" />

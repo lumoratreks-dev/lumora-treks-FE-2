@@ -16,12 +16,22 @@ import clsx from "clsx";
 const TOTAL = 428;
 
 const METHODS = [
-  { id: "card", label: "Credit or debit card", icon: "mdi:credit-card-outline" },
+  {
+    id: "card",
+    label: "Credit or debit card",
+    icon: "mdi:credit-card-outline",
+  },
   { id: "fonepay", label: "Fonepay", img: "/images/fonepay.png" },
 ] as const;
 
 const AMOUNTS = [
-  { id: "full", label: "Pay 100% now", note: "Total amount : $428", amount: TOTAL, pct: "100%" },
+  {
+    id: "full",
+    label: "Pay 100% now",
+    note: "Total amount : $428",
+    amount: TOTAL,
+    pct: "100%",
+  },
   {
     id: "half",
     label: "Pay 50% now",
@@ -103,7 +113,7 @@ function RadioRow({
       <span
         className={clsx(
           "flex size-6 shrink-0 items-center justify-center rounded-full border",
-          selected ? "border-foreground" : "border-[#b2bbc6]"
+          selected ? "border-foreground" : "border-[#b2bbc6]",
         )}
       >
         {selected && <span className="size-3 rounded-full bg-foreground" />}
@@ -119,7 +129,12 @@ export default function Checkout() {
   const [openStep, setOpenStep] = useState<number | null>(1);
   const [maxDone, setMaxDone] = useState(0);
 
-  const [info, setInfo] = useState({ fullName: "", dob: "", email: "", phone: "" });
+  const [info, setInfo] = useState({
+    fullName: "",
+    dob: "",
+    email: "",
+    phone: "",
+  });
   const [method, setMethod] = useState<string | null>(null);
   const [amount, setAmount] = useState<string | null>(null);
   const [agreed, setAgreed] = useState(false);
@@ -161,7 +176,9 @@ export default function Checkout() {
           <StepShell
             n={1}
             title="Your Information"
-            onChange={maxDone >= 1 && openStep !== 1 ? () => setOpenStep(1) : undefined}
+            onChange={
+              maxDone >= 1 && openStep !== 1 ? () => setOpenStep(1) : undefined
+            }
           >
             {openStep === 1 ? (
               <form
@@ -177,7 +194,9 @@ export default function Checkout() {
                       required
                       type="text"
                       value={info.fullName}
-                      onChange={(e) => setInfo({ ...info, fullName: e.target.value })}
+                      onChange={(e) =>
+                        setInfo({ ...info, fullName: e.target.value })
+                      }
                       placeholder="Enter your full name"
                       className={inputBase}
                     />
@@ -187,7 +206,9 @@ export default function Checkout() {
                       required
                       type="text"
                       value={info.dob}
-                      onChange={(e) => setInfo({ ...info, dob: e.target.value })}
+                      onChange={(e) =>
+                        setInfo({ ...info, dob: e.target.value })
+                      }
                       placeholder="Enter your dob"
                       className={inputBase}
                     />
@@ -199,7 +220,9 @@ export default function Checkout() {
                       required
                       type="email"
                       value={info.email}
-                      onChange={(e) => setInfo({ ...info, email: e.target.value })}
+                      onChange={(e) =>
+                        setInfo({ ...info, email: e.target.value })
+                      }
                       placeholder="Enter your email address"
                       className={inputBase}
                     />
@@ -209,7 +232,9 @@ export default function Checkout() {
                       required
                       type="tel"
                       value={info.phone}
-                      onChange={(e) => setInfo({ ...info, phone: e.target.value })}
+                      onChange={(e) =>
+                        setInfo({ ...info, phone: e.target.value })
+                      }
                       placeholder="Enter your phone number"
                       className={inputBase}
                     />
@@ -248,7 +273,9 @@ export default function Checkout() {
           <StepShell
             n={2}
             title="Payment Method"
-            onChange={maxDone >= 2 && openStep !== 2 ? () => setOpenStep(2) : undefined}
+            onChange={
+              maxDone >= 2 && openStep !== 2 ? () => setOpenStep(2) : undefined
+            }
           >
             {openStep === 2 ? (
               <>
@@ -269,7 +296,10 @@ export default function Checkout() {
                             className="size-8 shrink-0 object-contain"
                           />
                         ) : (
-                          <Icon icon={m.icon} className="size-8 shrink-0 text-[#3d4c5e]" />
+                          <Icon
+                            icon={m.icon}
+                            className="size-8 shrink-0 text-[#3d4c5e]"
+                          />
                         )}
                         <span className="flex flex-col gap-1">
                           <span className="font-body-alt text-lg tracking-[-0.04em] text-[#3d4c5e]">
@@ -306,7 +336,10 @@ export default function Checkout() {
                     className="size-8 shrink-0 object-contain"
                   />
                 ) : (
-                  <Icon icon={selectedMethod.icon} className="size-8 shrink-0 text-[#3d4c5e]" />
+                  <Icon
+                    icon={selectedMethod.icon}
+                    className="size-8 shrink-0 text-[#3d4c5e]"
+                  />
                 )}
                 <span className="font-body-alt text-lg tracking-[-0.04em] text-[#3d4c5e]">
                   {selectedMethod.label}
@@ -319,7 +352,9 @@ export default function Checkout() {
           <StepShell
             n={3}
             title="Payment Amount"
-            onChange={maxDone >= 3 && openStep !== 3 ? () => setOpenStep(3) : undefined}
+            onChange={
+              maxDone >= 3 && openStep !== 3 ? () => setOpenStep(3) : undefined
+            }
           >
             {openStep === 3 ? (
               <>
@@ -372,10 +407,14 @@ export default function Checkout() {
               aria-label="Agree to terms and conditions"
               className={clsx(
                 "flex size-6 shrink-0 items-center justify-center rounded border",
-                agreed ? "border-primary-accent bg-primary-accent" : "border-[#a3adbb]"
+                agreed
+                  ? "border-primary-accent bg-primary-accent"
+                  : "border-[#a3adbb]",
               )}
             >
-              {agreed && <Icon icon="charm:tick" className="size-4 text-foreground" />}
+              {agreed && (
+                <Icon icon="charm:tick" className="size-4 text-foreground" />
+              )}
             </button>
             <span className="font-body-alt text-lg tracking-[-0.04em] text-[#3d4c5e]">
               I agree to terms &amp; conditions of{" "}
@@ -389,19 +428,24 @@ export default function Checkout() {
             disabled={!allDone || !agreed}
             onClick={() => {
               if (!selectedAmount) return;
-              router.push(`/checkout/success?simulation=1&amount=${selectedAmount.amount}`);
+              router.push(
+                `/checkout/success?simulation=1&amount=${selectedAmount.amount}`,
+              );
             }}
             className={clsx(
               "w-full rounded-lg px-5 py-3 font-body-alt text-lg font-medium tracking-[-0.04em] transition-transform",
               allDone && agreed
                 ? "bg-foreground text-background hover:scale-[1.01] active:scale-95"
-                : "cursor-not-allowed bg-border text-[#909dad]"
+                : "cursor-not-allowed bg-border text-[#909dad]",
             )}
           >
-            {allDone && selectedAmount ? `Simulate payment $${selectedAmount.amount}` : "Next"}
+            {allDone && selectedAmount
+              ? `Simulate payment $${selectedAmount.amount}`
+              : "Next"}
           </button>
           <p className="text-sm text-text-muted">
-            Demo mode only — no card details are requested and no payment is charged.
+            Demo mode only — no card details are requested and no payment is
+            charged.
           </p>
         </div>
 
@@ -434,14 +478,20 @@ export default function Checkout() {
           <div className="flex items-center justify-between gap-2 border-b border-border py-4">
             <div className="flex flex-wrap items-center gap-3">
               <span className="flex items-center gap-2">
-                <Icon icon="iconoir:calendar" className="size-4 text-text-secondary" />
+                <Icon
+                  icon="iconoir:calendar"
+                  className="size-4 text-text-secondary"
+                />
                 <span className="font-body-alt text-lg tracking-[-0.04em] text-text-secondary">
                   Tuesday, May 24
                 </span>
               </span>
               <span className="size-1 rounded-full bg-text-secondary" />
               <span className="flex items-center gap-2">
-                <Icon icon="ion:people-outline" className="size-4 text-text-secondary" />
+                <Icon
+                  icon="ion:people-outline"
+                  className="size-4 text-text-secondary"
+                />
                 <span className="font-body-alt text-lg tracking-[-0.04em] text-text-secondary">
                   2 Adults, 1 Child
                 </span>

@@ -20,7 +20,7 @@ export type ExperienceCard = {
   image?: CmsImage;
   href?: string;
   description?: string;
-  subtitle?: string
+  subtitle?: string;
 };
 
 function slugifyTitle(title: string) {
@@ -54,11 +54,10 @@ export default function ExperienceSection({
     ...(small_cards ?? []),
   ];
 
-
-
   const queryCards: ExperienceCard[] = (destinations ?? []).map((dest) => ({
     title: dest.title,
-    description: dest.subtitle || (dest.price ? `Starting from ${dest.price}` : undefined),
+    description:
+      dest.subtitle || (dest.price ? `Starting from ${dest.price}` : undefined),
     image: dest.image ? { url: dest.image } : undefined,
     href: dest.href || `/destinations/${dest.slug}`,
   }));
@@ -108,7 +107,7 @@ export default function ExperienceSection({
     (destinations ?? []).map((destination) => [
       destination.title.trim().toLowerCase(),
       destination,
-    ])
+    ]),
   );
 
   const resolveDestinationHref = (card?: ExperienceCard) => {
@@ -142,7 +141,11 @@ export default function ExperienceSection({
             </h2>
             {description && (
               <p className="font-body-alt text-[clamp(1.05rem,2vw,24px)] leading-snug tracking-[-0.04em] text-text-secondary">
-                {withHighlight(description, description_highlight, "italic text-[#909dad]")}
+                {withHighlight(
+                  description,
+                  description_highlight,
+                  "italic text-[#909dad]",
+                )}
               </p>
             )}
             {show_arrows && cardsList.length > 0 && (
@@ -181,11 +184,14 @@ export default function ExperienceSection({
                           "relative flex h-[180px] sm:h-[210px] cursor-pointer items-end justify-center overflow-hidden rounded-2xl p-4 transition-all duration-300",
                           isActive
                             ? "ring-2 ring-primary-accent scale-[1.02] shadow-xl grayscale-0"
-                            : "grayscale opacity-75 hover:grayscale-0 hover:opacity-100 hover:scale-[1.01]"
+                            : "grayscale opacity-75 hover:grayscale-0 hover:opacity-100 hover:scale-[1.01]",
                         )}
                       >
                         <Image
-                          src={card.image?.url || "/images/destination-card-default.png"}
+                          src={
+                            card.image?.url ||
+                            "/images/destination-card-default.png"
+                          }
                           alt={card.title}
                           fill
                           sizes="(max-width: 768px) 80vw, 220px"
@@ -194,7 +200,7 @@ export default function ExperienceSection({
                         <div
                           className={clsx(
                             "absolute inset-0 transition-opacity duration-300",
-                            isActive ? "bg-black/20" : "bg-black/45"
+                            isActive ? "bg-black/20" : "bg-black/45",
                           )}
                         />
                         <span className="relative z-10 truncate text-center text-base font-semibold tracking-[-0.04em] text-text-inverse sm:text-lg">
@@ -231,7 +237,10 @@ export default function ExperienceSection({
                   className="relative flex h-full min-h-[420px] flex-col justify-end overflow-hidden rounded-2xl p-6 shadow-2xl"
                 >
                   <Image
-                    src={activeCard.image?.url || "/images/destination-card-default.png"}
+                    src={
+                      activeCard.image?.url ||
+                      "/images/destination-card-default.png"
+                    }
                     alt={activeCard.title}
                     fill
                     priority
@@ -246,10 +255,15 @@ export default function ExperienceSection({
                         {activeCard.title}
                       </h3>
                       <Link
-                        href={resolveDestinationHref(activeCard) ?? "/destinations"}
+                        href={
+                          resolveDestinationHref(activeCard) ?? "/destinations"
+                        }
                         className="flex size-10 shrink-0 items-center justify-center rounded-full bg-foreground text-background transition-transform hover:scale-110"
                       >
-                        <Icon icon="iconoir:arrow-up-right" className="size-5 text-background" />
+                        <Icon
+                          icon="iconoir:arrow-up-right"
+                          className="size-5 text-background"
+                        />
                       </Link>
                     </div>
                     {activeCard.description && (

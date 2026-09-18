@@ -10,14 +10,14 @@ The public travel-agency website. Editorial pages are assembled from **blocks** 
 
 ## 1. Stack
 
-| Concern | Choice |
-|---------|--------|
-| Framework | **Next.js (App Router) + TypeScript** |
-| Styling | **Tailwind CSS** |
-| CMS data | Native `fetch` (server components), Wagtail API v2 |
-| Motion | Figma motion reproduced in code (**Motion / `framer-motion`** — TBD) |
-| Images | `next/image` |
-| Lint/format | ESLint + Prettier |
+| Concern     | Choice                                                               |
+| ----------- | -------------------------------------------------------------------- |
+| Framework   | **Next.js (App Router) + TypeScript**                                |
+| Styling     | **Tailwind CSS**                                                     |
+| CMS data    | Native `fetch` (server components), Wagtail API v2                   |
+| Motion      | Figma motion reproduced in code (**Motion / `framer-motion`** — TBD) |
+| Images      | `next/image`                                                         |
+| Lint/format | ESLint + Prettier                                                    |
 
 ---
 
@@ -71,25 +71,27 @@ frontend/
 Wagtail's **StreamField** returns a page body as an ordered array of blocks, each shaped `{ type, value, id }` (e.g. `{ type: "hero", value: {...}, id: "..." }`). The renderer maps `type` → a React component and passes `value` as its props.
 
 `src/lib/block-registry.ts`:
+
 ```ts
-import Hero from '@/blocks/Hero';
-import PackageGrid from '@/blocks/PackageGrid';
-import Testimonials from '@/blocks/Testimonials';
-import CTABanner from '@/blocks/CTABanner';
+import Hero from "@/blocks/Hero";
+import PackageGrid from "@/blocks/PackageGrid";
+import Testimonials from "@/blocks/Testimonials";
+import CTABanner from "@/blocks/CTABanner";
 // ...import every registered block
 
 export const blockRegistry = {
   hero: Hero,
-  'package-grid': PackageGrid,
+  "package-grid": PackageGrid,
   testimonials: Testimonials,
-  'cta-banner': CTABanner,
+  "cta-banner": CTABanner,
   // ...one entry per Wagtail StreamField block (key = block type)
 } as const;
 ```
 
 `src/components/BlockRenderer.tsx`:
+
 ```tsx
-import { blockRegistry } from '@/lib/block-registry';
+import { blockRegistry } from "@/lib/block-registry";
 
 export default function BlockRenderer({ blocks }: { blocks: any[] }) {
   return (
@@ -105,9 +107,10 @@ export default function BlockRenderer({ blocks }: { blocks: any[] }) {
 ```
 
 Rendering a CMS page (`app/[slug]/page.tsx`):
+
 ```tsx
-import { fetchAPI } from '@/lib/wagtail';
-import BlockRenderer from '@/components/BlockRenderer';
+import { fetchAPI } from "@/lib/wagtail";
+import BlockRenderer from "@/components/BlockRenderer";
 
 export default async function Page({ params }: { params: { slug: string } }) {
   const { items } = await fetchAPI(`pages/?slug=${params.slug}&fields=*`);
@@ -121,6 +124,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
 ---
 
 ## 5. CMS API client — `src/lib/wagtail.ts`
+
 ```ts
 const WAGTAIL = process.env.NEXT_PUBLIC_WAGTAIL_URL;
 export async function fetchAPI(path: string) {
@@ -132,16 +136,17 @@ export async function fetchAPI(path: string) {
   return res.json();
 }
 ```
+
 > Wagtail API v2 lives under `/api/v2/`. Use the **`fields`** param to pull nested block/relation/image data (e.g. `fields=*` for everything, or an explicit list). StreamField blocks come back as `{ type, value, id }`.
 
 ---
 
 ## 6. Pages / routes
 
-| Route | Source | Purpose |
-|-------|--------|---------|
-| `/` | CMS page `home` | blocks-composed homepage |
-| `/[slug]` | CMS page | about, landing pages, etc. |
+| Route     | Source          | Purpose                    |
+| --------- | --------------- | -------------------------- |
+| `/`       | CMS page `home` | blocks-composed homepage   |
+| `/[slug]` | CMS page        | about, landing pages, etc. |
 
 Navbar/Footer: static or from a CMS "global" single type.
 

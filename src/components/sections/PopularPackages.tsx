@@ -25,7 +25,11 @@ import type { PackageCardData } from "@/types";
 
 export default function PopularPackages({
   initialItems,
-  heading = { heading: "Our Packages", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ." },
+  heading = {
+    heading: "Our Packages",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do .",
+  },
   resolved_packages,
 }: {
   initialItems?: PackageCardData[];
@@ -36,7 +40,9 @@ export default function PopularPackages({
   const { data, isLoading, isError, refetch } = usePopularPackagesQuery();
   const packages = hasCmsPackages
     ? resolved_packages!.map(adaptCmsPackage)
-    : (data && data.length > 0) ? data : (initialItems ?? []);
+    : data && data.length > 0
+      ? data
+      : (initialItems ?? []);
   const loading = !hasCmsPackages && isLoading && !initialItems && !data;
   const errored = !hasCmsPackages && isError && !initialItems && !data;
 

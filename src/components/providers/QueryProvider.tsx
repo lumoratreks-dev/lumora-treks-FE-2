@@ -16,7 +16,7 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
             refetchOnWindowFocus: false,
           },
         },
-      })
+      }),
   );
 
   return (

@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+} from "react";
 import { Icon } from "@iconify/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -64,7 +70,11 @@ function OnboardingForm({ user }: { user: TravelerProfile }) {
         interests,
       });
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : "Your profile could not be saved.");
+      setError(
+        saveError instanceof Error
+          ? saveError.message
+          : "Your profile could not be saved.",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -89,17 +99,19 @@ function OnboardingForm({ user }: { user: TravelerProfile }) {
         </div>
 
         <div className="relative mt-10 space-y-0 font-body-alt text-xs text-background/70">
-          {["Your name", "Your travel style", "Your interests"].map((label, index) => (
-            <div key={label} className="flex min-h-14 items-start gap-3">
-              <div className="flex flex-col items-center">
-                <span className="flex size-6 items-center justify-center rounded-full bg-primary-accent text-[10px] font-bold text-foreground">
-                  {index + 1}
-                </span>
-                {index < 2 && <span className="h-8 w-px bg-background/20" />}
+          {["Your name", "Your travel style", "Your interests"].map(
+            (label, index) => (
+              <div key={label} className="flex min-h-14 items-start gap-3">
+                <div className="flex flex-col items-center">
+                  <span className="flex size-6 items-center justify-center rounded-full bg-primary-accent text-[10px] font-bold text-foreground">
+                    {index + 1}
+                  </span>
+                  {index < 2 && <span className="h-8 w-px bg-background/20" />}
+                </div>
+                <span className="pt-1">{label}</span>
               </div>
-              <span className="pt-1">{label}</span>
-            </div>
-          ))}
+            ),
+          )}
         </div>
       </aside>
 
@@ -133,7 +145,10 @@ function OnboardingForm({ user }: { user: TravelerProfile }) {
         </button>
 
         <div className="lg:-mt-2">
-          <label htmlFor="traveler-full-name" className="font-body-alt text-sm font-semibold text-foreground">
+          <label
+            htmlFor="traveler-full-name"
+            className="font-body-alt text-sm font-semibold text-foreground"
+          >
             Full name
           </label>
           <input
@@ -147,7 +162,9 @@ function OnboardingForm({ user }: { user: TravelerProfile }) {
             placeholder="Your full name"
             className="mt-2 w-full rounded-xl border border-border bg-white px-4 py-3.5 font-body-alt text-base text-foreground outline-none transition-shadow placeholder:text-text-muted focus:border-foreground focus:ring-2 focus:ring-primary-accent/50"
           />
-          <p className="mt-2 font-body-alt text-xs text-text-muted">Signed in as {user.email}</p>
+          <p className="mt-2 font-body-alt text-xs text-text-muted">
+            Signed in as {user.email}
+          </p>
         </div>
 
         <fieldset className="mt-7">
@@ -180,7 +197,9 @@ function OnboardingForm({ user }: { user: TravelerProfile }) {
           <legend className="font-body-alt text-sm font-semibold text-foreground">
             What are you interested in?
           </legend>
-          <p className="mt-1 font-body-alt text-xs text-text-muted">Choose one or more.</p>
+          <p className="mt-1 font-body-alt text-xs text-text-muted">
+            Choose one or more.
+          </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {INTERESTS.map(([value, label, icon]) => {
               const selected = interests.includes(value);
@@ -206,7 +225,10 @@ function OnboardingForm({ user }: { user: TravelerProfile }) {
         </fieldset>
 
         {error && (
-          <p role="alert" className="mt-5 rounded-xl bg-red-50 px-4 py-3 font-body-alt text-sm font-medium text-red-700">
+          <p
+            role="alert"
+            className="mt-5 rounded-xl bg-red-50 px-4 py-3 font-body-alt text-sm font-medium text-red-700"
+          >
             {error}
           </p>
         )}

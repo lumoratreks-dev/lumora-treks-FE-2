@@ -26,7 +26,12 @@ export type SiteSettings = {
     site_name: string;
     tagline: string;
     logo: { url: string; alt?: string } | null;
-    contact: { email: string; phone: string; whatsapp: string; address: string };
+    contact: {
+      email: string;
+      phone: string;
+      whatsapp: string;
+      address: string;
+    };
   };
   navigation: {
     sticky: boolean;
@@ -36,8 +41,16 @@ export type SiteSettings = {
   };
   footer: {
     description: string;
-    columns: { type: string; value: { heading: string; links: CmsLink[] }; id: string }[];
-    socials: { type: string; value: { platform: string; icon: string; url: string }; id: string }[];
+    columns: {
+      type: string;
+      value: { heading: string; links: CmsLink[] };
+      id: string;
+    }[];
+    socials: {
+      type: string;
+      value: { platform: string; icon: string; url: string };
+      id: string;
+    }[];
     copyright_text: string;
   };
 };

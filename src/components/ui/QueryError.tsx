@@ -16,7 +16,7 @@ export default function QueryError({
     <div
       className={clsx(
         "flex flex-col items-center gap-4 py-16 text-center",
-        className
+        className,
       )}
     >
       <p className="font-body-alt text-lg tracking-[-0.04em] text-text-secondary">
