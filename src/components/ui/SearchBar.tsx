@@ -15,12 +15,19 @@ type DateInputWithPicker = HTMLInputElement & {
   showPicker?: () => void;
 };
 
+function localISODate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export default function SearchBar({ className }: SearchBarProps) {
   const router = useRouter();
   const dateInputRef = useRef<HTMLInputElement>(null);
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
-  const today = new Date().toISOString().split("T")[0];
+  const today = localISODate(new Date());
 
   const formattedDate = date
     ? new Intl.DateTimeFormat("en-US", {
