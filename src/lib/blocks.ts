@@ -88,8 +88,6 @@ export type CmsPackageDetail = {
     image: CmsImage;
   }>;
   gallery: Array<{ image: CmsImage; caption: string }>;
-  includes: string[];
-  excludes: string[];
   included_items: Array<{ kind: "included" | "excluded"; text: string }>;
   testimonials: CmsTestimonial[];
 };

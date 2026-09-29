@@ -51,25 +51,39 @@ function FooterLink({ link, className }: { link: CmsLink; className: string }) {
 export default function Footer() {
   const { data: site } = useSiteSettingsQuery();
 
+  const officialSocialUrls: Record<string, string> = {
+    facebook: "https://www.facebook.com/LumoraTreks",
+    instagram: "https://www.instagram.com/lumoratreks/",
+    whatsapp: "https://wa.me/9779847259352",
+  };
+
   const siteName = site?.brand.site_name || "Lumora Treks";
+  const email = site?.brand.contact.email || "hello@lumoratreks.com";
   const description =
     site?.footer?.description ||
     "Your trusted travel partner in Nepal. We curate authentic experiences, breathtaking destinations, and unforgettable memories.";
 
   const cmsSocials = site?.footer?.socials
+    ?.filter((s) =>
+      ["facebook", "instagram", "whatsapp"].includes(
+        s.value.platform.toLowerCase(),
+      ),
+    )
     ?.map((s) => ({
       icon: s.value.icon,
       label: s.value.platform,
-      href: s.value.url,
+      href:
+        s.value.url && s.value.url !== "#"
+          ? s.value.url
+          : officialSocialUrls[s.value.platform.toLowerCase()] || "",
     }))
     .filter((s) => s.icon && s.href);
   const socials = cmsSocials?.length
     ? cmsSocials
     : [
-        { icon: "mdi:facebook", label: "Facebook", href: "#" },
-        { icon: "mdi:instagram", label: "Instagram", href: "#" },
-        { icon: "prime:twitter", label: "X", href: "#" },
-        { icon: "mdi:whatsapp", label: "WhatsApp", href: "#" },
+        { icon: "mdi:facebook", label: "Facebook", href: officialSocialUrls.facebook },
+        { icon: "mdi:instagram", label: "Instagram", href: officialSocialUrls.instagram },
+        { icon: "mdi:whatsapp", label: "WhatsApp", href: officialSocialUrls.whatsapp },
       ];
 
   const adminUrl = `${process.env.NEXT_PUBLIC_WAGTAIL_URL || ""}/admin/`;
@@ -79,13 +93,14 @@ export default function Footer() {
       links: (c.value.links || []).filter((l) => l.label && l.href),
     }))
     .filter((c) => c.links.length);
-  const columns = cmsColumns?.length
+  const configuredColumns = cmsColumns?.length
     ? cmsColumns
     : [
         {
           heading: "Company",
           links: [
             { label: "Contact Us", href: "/contact" },
+            { label: "FAQs", href: "/contact#faq" },
             { label: "Privacy Policy", href: "/privacy" },
             { label: "Terms & Conditions", href: "/terms" },
             {
@@ -96,6 +111,23 @@ export default function Footer() {
           ] as CmsLink[],
         },
       ];
+  const hasFaqLink = configuredColumns.some((column) =>
+    column.links.some((link) => link.href === "/contact#faq"),
+  );
+  const columns = hasFaqLink
+    ? configuredColumns
+    : configuredColumns.map((column, index) =>
+        index === 0
+          ? {
+              ...column,
+              links: [
+                ...column.links.slice(0, 1),
+                { label: "FAQs", href: "/contact#faq" },
+                ...column.links.slice(1),
+              ],
+            }
+          : column,
+      );
 
   const copyright =
     site?.footer?.copyright_text ||
@@ -125,15 +157,21 @@ export default function Footer() {
             <p className="font-body-alt text-xl tracking-[-0.04em] text-text-secondary">
               {description}
             </p>
+            <a
+              href={`mailto:${email}`}
+              className="flex w-fit items-center gap-2 font-body-alt text-lg font-medium text-foreground transition-colors hover:text-primary-active"
+            >
+              <Icon icon="iconoir:mail" className="size-5" />
+              {email}
+            </a>
             <div className="flex items-center gap-5">
               {socials.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  {...(social.href !== "#"
-                    ? { target: "_blank", rel: "noopener noreferrer" }
-                    : {})}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-foreground transition-transform hover:scale-110"
                 >
                   <Icon icon={social.icon} className="size-8" />
