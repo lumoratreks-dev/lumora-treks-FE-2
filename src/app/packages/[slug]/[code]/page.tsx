@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BlockRenderer from "@/components/BlockRenderer";
+import { getPackageBySlug } from "@/lib/catalog";
 import { getPageByPath } from "@/lib/cms";
 import { absoluteAssetUrl, absoluteSiteUrl } from "@/lib/siteUrl";
 
@@ -52,8 +53,15 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function CanonicalPackageDetailPage({ params }: Params) {
   const { slug, code } = await params;
-  const page = await getPageByPath(`/packages/${slug}/${code}`);
-  if (!page?.body?.length || !page.package) notFound();
+  const path = `/packages/${slug}/${code}`;
+  const page = await getPageByPath(path);
+  if (!page?.body?.length || !page.package) {
+    // An outdated code (e.g. a shared or bookmarked link) for a package that
+    // still exists: send visitors — and search engines — to its current URL.
+    const current = await getPackageBySlug(slug);
+    if (current?.href && current.href !== path) permanentRedirect(current.href);
+    notFound();
+  }
   const packageContext = {
     PackageHeader: { packageData: page.package },
     PackageOverview: { packageData: page.package },
