@@ -65,18 +65,25 @@ function keyFacts(packageData: CmsPackageDetail) {
         : "",
     },
     {
-      icon: "iconoir:home-simple-door",
-      label: "Accommodation",
-      value: packageData.accommodation,
+      icon: "iconoir:sun-light",
+      label: "Best season",
+      value: packageData.destination?.best_season,
     },
-    {
-      icon: "mdi:silverware-fork-knife",
-      label: "Meals",
-      value: packageData.meals,
-    },
-    { icon: "iconoir:car", label: "Transport", value: packageData.transport },
   ];
   return facts.filter((fact) => fact.value);
+}
+
+/** Where travellers sleep, eat and how they travel on one itinerary day. */
+function dayFacts(day: CmsPackageDetail["itinerary"][number]) {
+  return [
+    {
+      icon: "iconoir:home-simple-door",
+      label: "Stay",
+      value: day.accommodation,
+    },
+    { icon: "mdi:silverware-fork-knife", label: "Meals", value: day.meals },
+    { icon: "iconoir:car", label: "Transport", value: day.transport },
+  ].filter((fact) => fact.value);
 }
 
 function formatPrice(currency: string, amount: number) {
@@ -201,7 +208,7 @@ export function PackageOverview({ packageData }: PackageSectionProps) {
           )}
           <div className="flex flex-col gap-5">
             <h2 className={sectionHeading}>Key Facts</h2>
-            <dl className="grid gap-3 sm:grid-cols-2">
+            <dl className="grid gap-3 sm:grid-cols-2 sm:[&>*:last-child:nth-child(odd)]:col-span-2">
               {facts.map((fact) => (
                 <div
                   key={fact.label}
@@ -451,6 +458,26 @@ export function PackageItinerary({ packageData }: PackageSectionProps) {
               {current?.description}
             </p>
           </div>
+          {current && dayFacts(current).length > 0 && (
+            <dl className="grid gap-3 border-t border-border pt-5 sm:grid-cols-3">
+              {dayFacts(current).map((fact) => (
+                <div key={fact.label} className="flex items-start gap-3">
+                  <Icon
+                    icon={fact.icon}
+                    className="mt-0.5 size-5 shrink-0 text-text-secondary"
+                  />
+                  <div>
+                    <dt className="font-body-alt text-sm text-text-secondary">
+                      {fact.label}
+                    </dt>
+                    <dd className="mt-0.5 font-body-alt text-base text-foreground">
+                      {fact.value}
+                    </dd>
+                  </div>
+                </div>
+              ))}
+            </dl>
+          )}
         </div>
       </div>
       {current?.image && (

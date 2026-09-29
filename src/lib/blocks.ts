@@ -79,9 +79,6 @@ export type CmsPackageDetail = {
   difficulty: string;
   /** Highest point in metres; null for low-altitude tours. */
   max_altitude?: number | null;
-  accommodation?: string;
-  meals?: string;
-  transport?: string;
   href?: string;
   booking_url?: string;
   destination?: CmsDestinationDetail | null;
@@ -90,6 +87,10 @@ export type CmsPackageDetail = {
     day_label: string;
     title: string;
     description: string;
+    /** Optional per day — e.g. no stay on the final day. */
+    accommodation?: string;
+    meals?: string;
+    transport?: string;
     image: CmsImage;
   }>;
   gallery: Array<{ image: CmsImage; caption: string }>;
