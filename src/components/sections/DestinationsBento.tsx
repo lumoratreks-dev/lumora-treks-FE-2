@@ -94,7 +94,7 @@ export default function DestinationsBento({
             ))
           : cards.map((card, i) => (
               <motion.div
-                key={card.title}
+                key={`${i}-${card.title}`}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}

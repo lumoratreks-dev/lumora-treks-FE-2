@@ -49,7 +49,10 @@ export default function FAQSection({
   );
 
   return (
-    <section id="faq" className="mx-auto max-w-[1400px] scroll-mt-24 px-6 py-16 lg:px-10 lg:py-24">
+    <section
+      id="faq"
+      className="mx-auto max-w-[1400px] scroll-mt-24 px-6 py-16 lg:px-10 lg:py-24"
+    >
       <div className="mb-12 flex flex-col items-center gap-4 text-center">
         {heading.heading && (
           <h2 className="text-[clamp(1.75rem,3vw,32px)] font-bold tracking-[-0.06em] text-foreground">
@@ -79,7 +82,7 @@ export default function FAQSection({
                 const open = openIndex === i;
                 return (
                   <div
-                    key={faq.question}
+                    key={`${i}-${faq.question}`}
                     className="border-b border-border pb-7"
                   >
                     <button

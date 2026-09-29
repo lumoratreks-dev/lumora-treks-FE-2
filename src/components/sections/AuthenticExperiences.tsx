@@ -110,7 +110,7 @@ export default function AuthenticExperiences({
                   </div>
                 ))
               : listItems.map((item, index) => (
-                  <div key={item.title} className="flex gap-4">
+                  <div key={`${index}-${item.title}`} className="flex gap-4">
                     <span className="text-2xl font-bold tracking-[-0.04em] text-foreground">
                       {item.number || String(index + 1).padStart(2, "0")}
                     </span>

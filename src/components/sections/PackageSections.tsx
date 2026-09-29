@@ -191,9 +191,9 @@ export function PackageOverview({ packageData }: PackageSectionProps) {
             <div className="flex flex-col gap-5 border-b border-border pb-6">
               <h2 className={sectionHeading}>Highlights</h2>
               <ul className="grid gap-3 sm:grid-cols-2">
-                {packageData.highlights.map((highlight) => (
+                {packageData.highlights.map((highlight, highlightIndex) => (
                   <li
-                    key={highlight.text}
+                    key={`${highlightIndex}-${highlight.text}`}
                     className="flex items-start gap-3 rounded-xl bg-[#f4f8ef] p-4 font-body-alt text-base leading-snug text-foreground"
                   >
                     <Icon
@@ -337,8 +337,11 @@ export function PackageBooking({
             <div className="rounded-2xl bg-[#f4f8ef] p-5">
               <p className="font-semibold text-foreground">Included</p>
               <ul className="mt-4 space-y-3 font-body-alt text-sm leading-relaxed text-text-secondary">
-                {included.map((item) => (
-                  <li key={item.text} className="flex gap-2.5">
+                {included.map((item, itemIndex) => (
+                  <li
+                    key={`${itemIndex}-${item.text}`}
+                    className="flex gap-2.5"
+                  >
                     <Icon
                       icon="iconoir:check-circle-solid"
                       className="mt-0.5 size-4 shrink-0 text-primary-active"
@@ -351,8 +354,11 @@ export function PackageBooking({
             <div className="rounded-2xl border border-border p-5">
               <p className="font-semibold text-foreground">Not included</p>
               <ul className="mt-4 space-y-3 font-body-alt text-sm leading-relaxed text-text-secondary">
-                {excluded.map((item) => (
-                  <li key={item.text} className="flex gap-2.5">
+                {excluded.map((item, itemIndex) => (
+                  <li
+                    key={`${itemIndex}-${item.text}`}
+                    className="flex gap-2.5"
+                  >
                     <Icon
                       icon="iconoir:cancel"
                       className="mt-0.5 size-4 shrink-0 text-text-muted"

@@ -157,9 +157,9 @@ export default function ContactForm({
               Social Media :
             </p>
             <div className="flex items-center gap-5">
-              {socialLinks.map((social) => (
+              {socialLinks.map((social, socialIndex) => (
                 <a
-                  key={social.label}
+                  key={`${socialIndex}-${social.label}`}
                   href={social.url || "#"}
                   aria-label={social.label}
                   className="text-foreground transition-transform hover:scale-110"

@@ -72,9 +72,9 @@ export default function IntroStats({
                   <div className="h-5 w-32 rounded bg-muted" />
                 </div>
               ))
-            : statItems.map((stat) => (
+            : statItems.map((stat, statIndex) => (
                 <div
-                  key={stat.label}
+                  key={`${statIndex}-${stat.label}`}
                   className="flex flex-col items-center gap-1"
                 >
                   <span className="text-[40px] font-bold leading-tight tracking-[-0.04em] text-foreground">

@@ -373,8 +373,11 @@ export default function PackageDetail({
                   <p className="font-semibold text-foreground">Included</p>
                 </div>
                 <ul className="mt-4 space-y-3 font-body-alt text-sm leading-relaxed text-text-secondary">
-                  {includedItems.map((item) => (
-                    <li key={item.text} className="flex gap-2.5">
+                  {includedItems.map((item, itemIndex) => (
+                    <li
+                      key={`${itemIndex}-${item.text}`}
+                      className="flex gap-2.5"
+                    >
                       <Icon
                         icon="iconoir:check-circle-solid"
                         className="mt-0.5 size-4 shrink-0 text-primary-active"
@@ -392,8 +395,11 @@ export default function PackageDetail({
                   <p className="font-semibold text-foreground">Not included</p>
                 </div>
                 <ul className="mt-4 space-y-3 font-body-alt text-sm leading-relaxed text-text-secondary">
-                  {excludedItems.map((item) => (
-                    <li key={item.text} className="flex gap-2.5">
+                  {excludedItems.map((item, itemIndex) => (
+                    <li
+                      key={`${itemIndex}-${item.text}`}
+                      className="flex gap-2.5"
+                    >
                       <Icon
                         icon="iconoir:cancel"
                         className="mt-0.5 size-4 shrink-0 text-text-muted"

@@ -181,16 +181,19 @@ export default function Footer() {
           </div>
 
           <nav className="flex flex-col gap-10 sm:flex-row sm:gap-16 md:justify-end">
-            {columns.map((column) => (
-              <div key={column.heading} className="flex flex-col gap-3">
+            {columns.map((column, columnIndex) => (
+              <div
+                key={`${columnIndex}-${column.heading}`}
+                className="flex flex-col gap-3"
+              >
                 {column.heading && (
                   <h3 className="font-body-alt text-base font-semibold uppercase tracking-[0.08em] text-text-secondary">
                     {column.heading}
                   </h3>
                 )}
-                {column.links.map((link) => (
+                {column.links.map((link, linkIndex) => (
                   <FooterLink
-                    key={link.label}
+                    key={`${linkIndex}-${link.label}`}
                     link={link}
                     className="font-body-alt text-lg tracking-[-0.04em] text-foreground transition-colors hover:text-primary-active"
                   />
