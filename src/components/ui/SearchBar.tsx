@@ -9,9 +9,19 @@ import clsx from "clsx";
  * and page heroes; submits to `/packages?location=`. */
 type SearchBarProps = {
   className?: string;
+  /** Accessible name of the location field. */
+  label?: string;
+  placeholder?: string;
+  /** Accessible name of the icon-only submit button. */
+  buttonLabel?: string;
 };
 
-export default function SearchBar({ className }: SearchBarProps) {
+export default function SearchBar({
+  className,
+  label = "Location",
+  placeholder = "Location",
+  buttonLabel = "Search",
+}: SearchBarProps) {
   const router = useRouter();
   const [location, setLocation] = useState("");
 
@@ -34,7 +44,8 @@ export default function SearchBar({ className }: SearchBarProps) {
       <label className="flex h-[56px] flex-1 items-center justify-between rounded-xl border border-border bg-white px-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] transition-colors focus-within:border-primary-active">
         <input
           type="text"
-          placeholder="Location"
+          aria-label={label}
+          placeholder={placeholder}
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           className="w-full bg-transparent font-body-alt text-lg font-medium tracking-[-0.04em] text-foreground placeholder:text-foreground/70 focus:outline-none"
@@ -47,7 +58,7 @@ export default function SearchBar({ className }: SearchBarProps) {
 
       <button
         type="submit"
-        aria-label="Search"
+        aria-label={buttonLabel}
         className="flex h-[56px] items-center justify-center rounded-xl bg-primary-accent px-5 text-foreground transition-transform hover:scale-[1.03] active:scale-95"
       >
         <Icon icon="mingcute:search-line" className="size-6" />
