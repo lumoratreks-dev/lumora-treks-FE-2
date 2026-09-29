@@ -77,6 +77,11 @@ export type CmsPackageDetail = {
     price_per_person: number;
   }>;
   difficulty: string;
+  /** Highest point in metres; null for low-altitude tours. */
+  max_altitude?: number | null;
+  accommodation?: string;
+  meals?: string;
+  transport?: string;
   href?: string;
   booking_url?: string;
   destination?: CmsDestinationDetail | null;

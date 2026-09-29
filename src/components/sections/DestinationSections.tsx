@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import PackageCard from "@/components/ui/PackageCard";
+import ShowMore from "@/components/ui/ShowMore";
 import type { CmsDestinationDetail } from "@/lib/blocks";
 
 type DestinationSectionProps = { destination: CmsDestinationDetail };
@@ -72,9 +73,11 @@ export function DestinationOverview({ destination }: DestinationSectionProps) {
           <h2 className="text-2xl font-semibold tracking-[-0.04em] text-foreground">
             Why go
           </h2>
-          <p className="font-body-alt text-lg leading-[1.65] tracking-[-0.02em] text-text-secondary">
-            {destination.description || destination.subtitle}
-          </p>
+          <ShowMore>
+            <p className="font-body-alt text-lg leading-[1.65] tracking-[-0.02em] text-text-secondary">
+              {destination.description || destination.subtitle}
+            </p>
+          </ShowMore>
         </div>
         {destination.highlights.length > 0 && (
           <div className="rounded-2xl bg-[#f4f8ef] p-6">

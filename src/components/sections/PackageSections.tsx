@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import PackageReviews from "@/components/reviews/PackageReviews";
 import StarRating from "@/components/ui/StarRating";
+import ShowMore from "@/components/ui/ShowMore";
 import SocialShare from "@/components/ui/SocialShare";
 import type { CmsPackageDetail } from "@/lib/blocks";
 import { sanitizePackageDescription } from "@/lib/richText";
@@ -37,6 +38,45 @@ function groupSizeLabel(minPeople: number, maxPeople: number | null) {
   if (minPeople === maxPeople)
     return `Group of ${minPeople} ${minPeople === 1 ? "person" : "people"}`;
   return `Group of ${minPeople} – ${maxPeople} people`;
+}
+
+/** The package's trip facts, skipping any the editor left empty. */
+function keyFacts(packageData: CmsPackageDetail) {
+  const facts = [
+    { icon: "bi:suitcase", label: "Trip style", value: packageData.category },
+    { icon: "lucide:calendar", label: "Duration", value: packageData.duration },
+    {
+      icon: "lets-icons:speed",
+      label: "Difficulty",
+      value: packageData.difficulty,
+    },
+    {
+      icon: "tabler:mountain",
+      label: "Max altitude",
+      value: packageData.max_altitude
+        ? `${new Intl.NumberFormat("en-US").format(packageData.max_altitude)} m`
+        : "",
+    },
+    {
+      icon: "iconoir:group",
+      label: "Group size",
+      value: packageData.people_count
+        ? `Up to ${packageData.people_count} people`
+        : "",
+    },
+    {
+      icon: "iconoir:home-simple-door",
+      label: "Accommodation",
+      value: packageData.accommodation,
+    },
+    {
+      icon: "mdi:silverware-fork-knife",
+      label: "Meals",
+      value: packageData.meals,
+    },
+    { icon: "iconoir:car", label: "Transport", value: packageData.transport },
+  ];
+  return facts.filter((fact) => fact.value);
 }
 
 function formatPrice(currency: string, amount: number) {
@@ -94,19 +134,7 @@ export function PackageOverview({ packageData }: PackageSectionProps) {
   const items = galleryItems(packageData);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const activeItem = activeIndex === null ? null : items[activeIndex];
-  const keyFacts = [
-    { icon: "bi:suitcase", label: "Trip Style", value: packageData.category },
-    {
-      icon: "lets-icons:speed",
-      label: "Difficulty",
-      value: packageData.difficulty,
-    },
-    {
-      icon: "lucide:calendar",
-      label: "Number of days",
-      value: packageData.duration,
-    },
-  ];
+  const facts = keyFacts(packageData);
 
   useEffect(() => {
     if (activeIndex === null) return;
@@ -137,40 +165,63 @@ export function PackageOverview({ packageData }: PackageSectionProps) {
         <div className="flex flex-col gap-6 lg:w-[644px]">
           <div className="flex flex-col gap-5 border-b border-border pb-6">
             <h2 className={sectionHeading}>Overview</h2>
-            {packageData.description ? (
-              <div
-                className="font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary [&_p+p]:mt-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li+li]:mt-2 [&_a]:underline [&_strong]:font-semibold [&_em]:italic"
-                dangerouslySetInnerHTML={{
-                  __html: sanitizePackageDescription(packageData.description),
-                }}
-              />
-            ) : (
-              <p className="font-body-alt text-lg leading-[1.6] text-text-secondary">
-                {packageData.summary}
-              </p>
-            )}
+            <ShowMore>
+              {packageData.description ? (
+                <div
+                  className="font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary [&_p+p]:mt-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li+li]:mt-2 [&_a]:underline [&_strong]:font-semibold [&_em]:italic"
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizePackageDescription(packageData.description),
+                  }}
+                />
+              ) : (
+                <p className="font-body-alt text-lg leading-[1.6] text-text-secondary">
+                  {packageData.summary}
+                </p>
+              )}
+            </ShowMore>
           </div>
+          {packageData.highlights.length > 0 && (
+            <div className="flex flex-col gap-5 border-b border-border pb-6">
+              <h2 className={sectionHeading}>Highlights</h2>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {packageData.highlights.map((highlight) => (
+                  <li
+                    key={highlight.text}
+                    className="flex items-start gap-3 rounded-xl bg-[#f4f8ef] p-4 font-body-alt text-base leading-snug text-foreground"
+                  >
+                    <Icon
+                      icon={highlight.icon || "iconoir:star-solid"}
+                      className="mt-0.5 size-5 shrink-0 text-primary-active"
+                    />
+                    {highlight.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="flex flex-col gap-5">
             <h2 className={sectionHeading}>Key Facts</h2>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {keyFacts.map((fact) => (
+            <dl className="grid gap-3 sm:grid-cols-2">
+              {facts.map((fact) => (
                 <div
                   key={fact.label}
-                  className="rounded-xl border border-border p-4"
+                  className="flex items-start gap-3 rounded-xl border border-border p-4"
                 >
                   <Icon
                     icon={fact.icon}
-                    className="size-5 text-text-secondary"
+                    className="mt-0.5 size-5 shrink-0 text-text-secondary"
                   />
-                  <p className="mt-3 font-body-alt text-sm text-text-secondary">
-                    {fact.label}
-                  </p>
-                  <p className="mt-1 font-body-alt text-base capitalize text-foreground">
-                    {fact.value}
-                  </p>
+                  <div>
+                    <dt className="font-body-alt text-sm text-text-secondary">
+                      {fact.label}
+                    </dt>
+                    <dd className="mt-0.5 font-body-alt text-base text-foreground first-letter:uppercase">
+                      {fact.value}
+                    </dd>
+                  </div>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
         </div>
         {items.length > 0 && (
@@ -262,9 +313,6 @@ export function PackageBooking({
   reserveHref,
   reserve_href,
 }: PackageSectionProps) {
-  const [pricingOpen, setPricingOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
   const included = packageData.included_items.filter(
     (item) => item.kind === "included",
   );
@@ -272,22 +320,6 @@ export function PackageBooking({
     (item) => item.kind === "excluded",
   );
   const groupPricing = packageData.group_pricing || [];
-
-  useEffect(() => {
-    if (!pricingOpen) return;
-    const previousOverflow = document.body.style.overflow;
-    const trigger = triggerRef.current;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setPricingOpen(false);
-    };
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-      trigger?.focus();
-    };
-  }, [pricingOpen]);
 
   return (
     <>
@@ -326,28 +358,42 @@ export function PackageBooking({
           </div>
         </div>
         <aside className="flex w-full flex-col gap-6 rounded-lg border border-border bg-surface p-6 lg:w-[494px] lg:shrink-0">
-          <div className="flex items-start justify-between gap-4 border-b border-border pb-3">
-            <span className="font-body-alt text-base text-text-secondary">
-              Price per adult
-            </span>
-            <div className="flex flex-col items-end gap-1">
-              <span className="font-body-alt text-xl text-foreground">
-                {packageData.currency} {packageData.price}
-              </span>
-              {groupPricing.length > 0 && (
-                <button
-                  ref={triggerRef}
-                  type="button"
-                  aria-haspopup="dialog"
-                  aria-expanded={pricingOpen}
-                  onClick={() => setPricingOpen(true)}
-                  className="font-body-alt text-sm font-semibold text-primary-active underline underline-offset-4"
-                >
-                  Pricing details
-                </button>
-              )}
+          {groupPricing.length > 0 ? (
+            <div className="flex flex-col gap-4 border-b border-border pb-5">
+              <div>
+                <p className="font-body-alt text-base font-semibold text-foreground">
+                  Price per person
+                </p>
+                <p className="mt-1 font-body-alt text-sm text-text-secondary">
+                  The larger your group, the less each person pays.
+                </p>
+              </div>
+              <ul className="divide-y divide-border rounded-xl border border-border">
+                {groupPricing.map((tier, index) => (
+                  <li
+                    key={`${tier.min_people}-${tier.max_people ?? "plus"}-${index}`}
+                    className="flex items-center justify-between gap-4 px-4 py-3 font-body-alt"
+                  >
+                    <span className="text-text-secondary">
+                      {groupSizeLabel(tier.min_people, tier.max_people)}
+                    </span>
+                    <span className="shrink-0 text-lg font-semibold text-foreground">
+                      {formatPrice(packageData.currency, tier.price_per_person)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
+          ) : (
+            <div className="flex items-start justify-between gap-4 border-b border-border pb-3">
+              <span className="font-body-alt text-base text-text-secondary">
+                Price per person
+              </span>
+              <span className="font-body-alt text-xl text-foreground">
+                {formatPrice(packageData.currency, packageData.price)}
+              </span>
+            </div>
+          )}
           <div className="rounded-xl bg-background p-4 font-body-alt text-sm leading-relaxed text-text-secondary">
             Choose your dates and group size with our travel team. This trip is
             limited to {packageData.people_count} guests.
@@ -367,63 +413,6 @@ export function PackageBooking({
           </p>
         </aside>
       </section>
-      {pricingOpen && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/55 p-4"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setPricingOpen(false);
-          }}
-        >
-          <div
-            ref={dialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="package-pricing-title"
-            className="max-h-[calc(100dvh-2rem)] w-full max-w-[650px] overflow-y-auto rounded-2xl bg-surface p-5 shadow-2xl sm:p-8"
-          >
-            <div className="flex items-start justify-between gap-5">
-              <div>
-                <h2
-                  id="package-pricing-title"
-                  className="text-[28px] font-semibold tracking-[-0.04em] text-[#00000]"
-                >
-                  Pricing Details
-                </h2>
-                <p className="mt-2 font-body-alt text-base text-text-secondary">
-                  Prices vary based on group size. All prices are per person.
-                </p>
-              </div>
-              <button
-                type="button"
-                autoFocus
-                onClick={() => setPricingOpen(false)}
-                aria-label="Close pricing details"
-                className="rounded-full p-2"
-              >
-                <Icon icon="iconoir:xmark" className="size-8" />
-              </button>
-            </div>
-            <h3 className="mt-8 text-xl font-semibold text-[#00000]">
-              Group Size Pricing Per Person:
-            </h3>
-            <ul className="mt-5 space-y-3">
-              {groupPricing.map((tier, index) => (
-                <li
-                  key={`${tier.min_people}-${tier.max_people ?? "plus"}-${index}`}
-                  className="flex flex-col gap-1 rounded-lg border border-border px-4 py-4 font-body-alt sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <span className="text-text-secondary">
-                    {groupSizeLabel(tier.min_people, tier.max_people)}
-                  </span>
-                  <span className="shrink-0 text-lg font-semibold text-[#00000]">
-                    {formatPrice(packageData.currency, tier.price_per_person)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
     </>
   );
 }

@@ -46,9 +46,10 @@ export default function PopularPackages({
   const loading = !hasCmsPackages && isLoading && !initialItems && !data;
   const errored = !hasCmsPackages && isError && !initialItems && !data;
 
-  const { emblaRef, scrollPrev, scrollNext, canPrev, canNext } = useCarousel({
-    loop: true,
-  });
+  const { emblaRef, scrollPrev, scrollNext, canPrev, canNext, canScroll } =
+    useCarousel({
+      loop: true,
+    });
 
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10">
@@ -65,13 +66,15 @@ export default function PopularPackages({
             </p>
           )}
         </div>
-        <CarouselNav
-          className="shrink-0"
-          onPrev={scrollPrev}
-          onNext={scrollNext}
-          prevDisabled={!canPrev}
-          nextDisabled={!canNext}
-        />
+        {canScroll && (
+          <CarouselNav
+            className="shrink-0"
+            onPrev={scrollPrev}
+            onNext={scrollNext}
+            prevDisabled={!canPrev}
+            nextDisabled={!canNext}
+          />
+        )}
       </div>
 
       {errored ? (

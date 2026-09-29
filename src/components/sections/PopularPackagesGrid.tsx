@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import PackageCard from "@/components/ui/PackageCard";
-import CarouselNav from "@/components/ui/CarouselNav";
 import FilterTabs from "@/components/ui/FilterTabs";
 import Pagination from "@/components/ui/Pagination";
 import CardSkeleton from "@/components/ui/CardSkeleton";
@@ -12,7 +12,7 @@ import { usePackagesQuery } from "@/features/packages/packageQueries";
 import type { PackageListResult } from "@/types";
 
 /** Popular Packages — Figma node 83:656. Header + filter tabs + card grid +
- * pagination. Tabs filter by category; a `searchLocation` (from the SearchBar)
+ * pagination (shown only when there is more than one page). Tabs filter by category; a `searchLocation` (from the SearchBar)
  * overrides the tabs and filters by title. `initialData` (server-provided) gives
  * SSR content for the first render. Dummy data. */
 
@@ -105,18 +105,9 @@ export default function PopularPackagesGrid({
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10">
       <div className="mb-10 flex flex-col gap-6">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-[clamp(1.75rem,3vw,32px)] font-bold tracking-[-0.04em] text-foreground">
-            {heading}
-          </h2>
-          <CarouselNav
-            className="shrink-0"
-            onPrev={() => setPage((p) => Math.max(1, p - 1))}
-            onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
-            prevDisabled={page === 1}
-            nextDisabled={page >= totalPages}
-          />
-        </div>
+        <h2 className="text-[clamp(1.75rem,3vw,32px)] font-bold tracking-[-0.04em] text-foreground">
+          {heading}
+        </h2>
         {show_filters ? (
           <FilterTabs
             tabs={categories}
@@ -191,14 +182,36 @@ export default function PopularPackagesGrid({
           ))}
         </div>
       ) : (
-        <p className="py-16 text-center font-body-alt text-lg text-text-secondary">
-          No packages found
-          {activeSearchLocation ? ` for “${activeSearchLocation}”` : ""}
-          {!activeSearchLocation && activeSearchDate
-            ? ` for ${activeSearchDateLabel}`
-            : ""}
-          .
-        </p>
+        <div className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-border px-6 py-14 text-center">
+          <p className="text-xl font-semibold tracking-[-0.03em] text-foreground">
+            {activeSearchLocation
+              ? `No trips match “${activeSearchLocation}” yet`
+              : activeSearchDate
+                ? `No trips found for ${activeSearchDateLabel}`
+                : `No ${category} trips yet`}
+          </p>
+          <p className="max-w-md font-body-alt text-base text-text-secondary">
+            Tell us where and when you would like to travel — our team plans
+            custom trips across Nepal.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link
+              href="/enquiry"
+              className="rounded-lg bg-foreground px-5 py-3 font-body-alt text-sm font-medium text-background"
+            >
+              Plan a custom trip
+            </Link>
+            {(activeSearchLocation || activeSearchDate) && (
+              <button
+                type="button"
+                onClick={clearSearchMode}
+                className="rounded-lg border border-border px-5 py-3 font-body-alt text-sm font-medium text-foreground"
+              >
+                Show all packages
+              </button>
+            )}
+          </div>
+        </div>
       )}
 
       <Pagination

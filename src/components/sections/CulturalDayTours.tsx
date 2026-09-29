@@ -29,9 +29,10 @@ export default function CulturalDayTours({
   const loading = isLoading && !cmsItems && !data;
   const errored = isError && !cmsItems && !data;
 
-  const { emblaRef, scrollPrev, scrollNext, canPrev, canNext } = useCarousel({
-    loop: true,
-  });
+  const { emblaRef, scrollPrev, scrollNext, canPrev, canNext, canScroll } =
+    useCarousel({
+      loop: true,
+    });
 
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10">
@@ -44,13 +45,15 @@ export default function CulturalDayTours({
             {description}
           </p>
         </div>
-        <CarouselNav
-          className="shrink-0"
-          onPrev={scrollPrev}
-          onNext={scrollNext}
-          prevDisabled={!canPrev}
-          nextDisabled={!canNext}
-        />
+        {canScroll && (
+          <CarouselNav
+            className="shrink-0"
+            onPrev={scrollPrev}
+            onNext={scrollNext}
+            prevDisabled={!canPrev}
+            nextDisabled={!canNext}
+          />
+        )}
       </div>
 
       {errored ? (

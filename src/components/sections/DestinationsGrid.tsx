@@ -56,9 +56,10 @@ export default function DestinationsGrid({
   const loading = isLoading && !data && !cmsItems;
   const errored = isError && !data && !cmsItems;
 
-  const { emblaRef, scrollPrev, scrollNext, canPrev, canNext } = useCarousel({
-    loop: true,
-  });
+  const { emblaRef, scrollPrev, scrollNext, canPrev, canNext, canScroll } =
+    useCarousel({
+      loop: true,
+    });
 
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10">
@@ -67,13 +68,15 @@ export default function DestinationsGrid({
           <h2 className="text-[clamp(1.75rem,3vw,32px)] font-bold tracking-[-0.04em] text-foreground">
             {heading}
           </h2>
-          <CarouselNav
-            className="shrink-0"
-            onPrev={scrollPrev}
-            onNext={scrollNext}
-            prevDisabled={!canPrev}
-            nextDisabled={!canNext}
-          />
+          {canScroll && (
+            <CarouselNav
+              className="shrink-0"
+              onPrev={scrollPrev}
+              onNext={scrollNext}
+              prevDisabled={!canPrev}
+              nextDisabled={!canNext}
+            />
+          )}
         </div>
       </div>
 
