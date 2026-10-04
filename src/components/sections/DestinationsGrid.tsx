@@ -24,8 +24,10 @@ export default function DestinationsGrid({
 }) {
   const { data, isLoading, isError, refetch } = useDestinationsQuery();
   const cmsItems = resolved_items ?? initialItems;
-  const destinations: DestinationCardData[] = (cmsItems ?? data ?? []).map(
-    (item) => {
+  // A hand-picked destination deleted later arrives as `null`.
+  const destinations: DestinationCardData[] = (cmsItems ?? data ?? [])
+    .filter(Boolean)
+    .map((item) => {
       const cmsItem = item as unknown as {
         id: string | number;
         slug?: string;
@@ -51,8 +53,7 @@ export default function DestinationsGrid({
             : undefined),
         href: cmsItem.href,
       };
-    },
-  );
+    });
   const loading = isLoading && !data && !cmsItems;
   const errored = isError && !data && !cmsItems;
 

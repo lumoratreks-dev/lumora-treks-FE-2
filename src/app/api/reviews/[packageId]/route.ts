@@ -30,19 +30,41 @@ async function proxy(request: NextRequest, context: Context) {
   const headers: Record<string, string> = {};
   if (token) headers.Authorization = `Token ${token}`;
   if (method !== "GET") headers["Content-Type"] = "application/json";
+  const path = reviewPath(packageId, request.nextUrl.searchParams);
+  const body =
+    method === "GET" || method === "DELETE" ? undefined : await request.text();
 
-  const { response, data } = await requestBackendApi(
-    reviewPath(packageId, request.nextUrl.searchParams),
-    {
+  try {
+    let { response, data } = await requestBackendApi(path, {
       method,
       headers,
-      ...(method === "GET" || method === "DELETE"
-        ? {}
-        : { body: await request.text() }),
-    },
-  );
-  if (response.status === 204) return new NextResponse(null, { status: 204 });
-  return NextResponse.json(data, { status: response.status });
+      ...(body === undefined ? {} : { body }),
+    });
+
+    // Reading reviews is public, but the backend rejects a revoked/expired
+    // token even there. Retry anonymously and drop the dead session cookie
+    // so the list still loads.
+    let clearSession = false;
+    if (method === "GET" && token && response.status === 401) {
+      ({ response, data } = await requestBackendApi(path, {
+        method,
+        headers: {},
+      }));
+      clearSession = true;
+    }
+
+    const result =
+      response.status === 204
+        ? new NextResponse(null, { status: 204 })
+        : NextResponse.json(data, { status: response.status });
+    if (clearSession) result.cookies.delete(AUTH_COOKIE_NAME);
+    return result;
+  } catch {
+    return NextResponse.json(
+      { detail: "We could not reach the reviews service. Please try again." },
+      { status: 502 },
+    );
+  }
 }
 
 export async function GET(request: NextRequest, context: Context) {

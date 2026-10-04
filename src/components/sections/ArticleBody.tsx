@@ -38,6 +38,7 @@ function Block({ block }: { block: BlogBodyBlock }) {
         </figure>
       );
     case "image":
+      if (!block.src) return null;
       return (
         <motion.figure
           initial={{ opacity: 0, scale: 0.98 }}

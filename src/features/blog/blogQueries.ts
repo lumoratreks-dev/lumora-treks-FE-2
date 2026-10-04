@@ -21,26 +21,25 @@ import {
 
 const WAGTAIL_URL = process.env.NEXT_PUBLIC_WAGTAIL_URL;
 
+/** `null` only when no CMS is configured (local dev → dummy data). With a CMS
+ * configured, a failed request throws: production must never swap real posts
+ * for the dummy dataset, and a thrown error lets ISR keep the last good page. */
 async function cmsBlogList(
   qs: string,
 ): Promise<CmsListResponse<CmsBlogPost> | null> {
   if (!WAGTAIL_URL) return null;
-  try {
-    const res = await fetch(`${WAGTAIL_URL}/api/v2/blog/${qs}`, {
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as CmsListResponse<CmsBlogPost>;
-  } catch {
-    return null;
-  }
+  const res = await fetch(`${WAGTAIL_URL}/api/v2/blog/${qs}`, {
+    next: { revalidate: 60 },
+  });
+  if (!res.ok) throw new Error(`Blog API responded ${res.status}`);
+  return (await res.json()) as CmsListResponse<CmsBlogPost>;
 }
 
 // ------------------------------------------------------------------ featured
 
 export async function fetchFeaturedPost(): Promise<BlogPostData | null> {
   const featured = await cmsBlogList("?featured=1&limit=1");
-  // `null` = CMS unreachable (dev/offline) → dummy. A response with an empty
+  // `null` = no CMS configured (local dev) → dummy. A response with an empty
   // items array = CMS reachable but no posts yet → show nothing (no dummy on
   // production).
   if (featured === null) return selectFeaturedPost();
@@ -123,29 +122,31 @@ export async function fetchBlogPost(
   slug: string,
 ): Promise<BlogPostData | undefined> {
   if (WAGTAIL_URL) {
-    try {
-      const res = await fetch(
-        `${WAGTAIL_URL}/api/v2/blog/${encodeURIComponent(slug)}/`,
-        {
-          next: { revalidate: 60 },
-        },
-      );
-      if (res.ok) return adaptCmsBlogPost((await res.json()) as CmsBlogPost);
-      // Reachable but no such post → genuinely not found (don't mask a 404 with
-      // a dummy article on production).
-      if (res.status === 404) return undefined;
-    } catch {
-      // Network error / CMS unreachable → dummy fallback (dev/offline).
-      return selectBlogPost(slug);
-    }
-    return undefined;
+    // A network error propagates: with a CMS configured, the error boundary /
+    // ISR's last good page beats serving a dummy article on production.
+    const res = await fetch(
+      `${WAGTAIL_URL}/api/v2/blog/${encodeURIComponent(slug)}/`,
+      {
+        next: { revalidate: 60 },
+      },
+    );
+    if (res.ok) return adaptCmsBlogPost((await res.json()) as CmsBlogPost);
+    // Reachable but no such post → genuinely not found.
+    if (res.status === 404) return undefined;
+    throw new Error(`Blog API responded ${res.status}`);
   }
   return selectBlogPost(slug);
 }
 
 /** All known slugs for static generation (CMS list, falling back to dummy). */
 export async function fetchBlogSlugs(): Promise<string[]> {
-  const data = await cmsBlogList("?limit=200");
+  let data: CmsListResponse<CmsBlogPost> | null;
+  try {
+    data = await cmsBlogList("?limit=200");
+  } catch {
+    // CMS down at build time: prerender nothing, pages render on demand.
+    return [];
+  }
   if (data) return data.items.map((post) => post.slug);
   const { BLOG_POSTS } = await import("./blogData");
   return BLOG_POSTS.map((post) => post.slug);

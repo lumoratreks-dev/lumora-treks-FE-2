@@ -147,6 +147,9 @@ export type CmsPage = {
   body: CmsBlock[];
   destination?: CmsDestinationDetail;
   package?: CmsPackageDetail;
+  /** Wagtail's "Title tag" field as the editor typed it ("" when unset —
+   * `seo.title` then falls back to the page title). */
+  seoTitle?: string;
   seo?: {
     title?: string;
     description?: string;

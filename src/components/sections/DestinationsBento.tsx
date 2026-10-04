@@ -50,10 +50,13 @@ export default function DestinationsBento({
   items?: BentoItem[];
   resolved_items?: BentoItem[];
 } = {}) {
-  const { data: apiDestinations, isLoading } = useDestinationsQuery();
-
   const cmsItems =
     resolved_items && resolved_items.length > 0 ? resolved_items : items;
+  const hasCmsItems = !!cmsItems?.length;
+  // Editors' hand-picked bento wins; the API list is only a fallback.
+  const { data: apiDestinations, isLoading } = useDestinationsQuery(undefined, {
+    enabled: !hasCmsItems,
+  });
   const apiCards: BentoItem[] = (apiDestinations ?? [])
     .slice(0, 5)
     .map((d) => ({
@@ -62,10 +65,11 @@ export default function DestinationsBento({
       href: d.href || `/destinations/${d.slug || d.id}`,
       price: d.price,
     }));
-  const cards: BentoItem[] =
-    apiCards.length > 0 ? apiCards : (cmsItems || []).slice(0, 5);
+  const cards: BentoItem[] = hasCmsItems
+    ? (cmsItems || []).filter(Boolean).slice(0, 5)
+    : apiCards;
 
-  const showSkeleton = isLoading && !cmsItems && cards.length === 0;
+  const showSkeleton = !hasCmsItems && isLoading && cards.length === 0;
 
   return (
     <section className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10">

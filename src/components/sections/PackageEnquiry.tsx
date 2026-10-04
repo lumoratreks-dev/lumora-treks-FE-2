@@ -2,10 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { Icon } from "@iconify/react";
 import StarRating from "@/components/ui/StarRating";
 import { useSubmitLeadMutation } from "@/features/leads/leadsApi";
+import { leadErrorMessage } from "@/features/leads/leadErrors";
 import {
   buildWhatsAppEnquiryUrl,
   openWhatsAppEnquiry,
@@ -39,10 +46,15 @@ export default function PackageEnquiry({
   package?: CmsPackageDetail;
 }) {
   const selectedPackage = packageData || packageFromCms;
-  const [formStartedAt] = useState(() => Date.now() / 1000);
+  // Set after mount (not during render) so server and client markup match;
+  // the backend uses it to drop instant bot submissions.
+  const formStartedAt = useRef(0);
+  useEffect(() => {
+    formStartedAt.current = Date.now() / 1000;
+  }, []);
   const [sent, setSent] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState("");
-  const [submitLead, { isLoading, isError }] = useSubmitLeadMutation();
+  const [submitLead, { isLoading, isError, error }] = useSubmitLeadMutation();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,9 +75,7 @@ export default function PackageEnquiry({
       travelers,
       package_id: selectedPackage ? Number(selectedPackage.id) : undefined,
       consent: data.get("privacy_consent") === "yes",
-      form_started_at: Number(
-        e.currentTarget.dataset.startedAt || formStartedAt,
-      ),
+      form_started_at: formStartedAt.current,
       source_url: window.location.href,
     })
       .unwrap()
@@ -146,7 +156,6 @@ export default function PackageEnquiry({
           ) : (
             <form
               onSubmit={handleSubmit}
-              data-started-at={formStartedAt}
               className="flex flex-col gap-6 rounded-lg border border-border p-6"
             >
               <div className="grid gap-5 sm:grid-cols-2">
@@ -219,7 +228,7 @@ export default function PackageEnquiry({
               </label>
               {isError && (
                 <p className="font-body-alt text-sm font-medium text-red-600">
-                  Something went wrong — please try again.
+                  {leadErrorMessage(error)}
                 </p>
               )}
               <button

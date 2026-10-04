@@ -36,7 +36,7 @@ function groupSizeLabel(minPeople: number, maxPeople: number | null) {
 }
 
 export default function PackageDetail({
-  reserveHref: reserveHrefProp = "/checkout",
+  reserveHref: reserveHrefProp,
   packageData: packageDataProp,
   package: packageFromCms,
   reserve_href,
@@ -49,7 +49,10 @@ export default function PackageDetail({
   // A Wagtail PackageDetail block always supplies `package`; direct callers
   // supply `packageData`. Keep this resolved before hooks so hook order is stable.
   const packageData = (packageDataProp || packageFromCms) as CmsPackageDetail;
-  const reserveHref = reserve_href || reserveHrefProp;
+  const reserveHref =
+    reserve_href ||
+    reserveHrefProp ||
+    `/enquiry?package=${encodeURIComponent(packageData?.slug ?? "")}`;
   const [day, setDay] = useState(0);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState<number | null>(
     null,

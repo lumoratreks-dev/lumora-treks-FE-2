@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
-import { formatBlogDate } from "@/components/ui/BlogCard";
+import { formatBlogMeta } from "@/components/ui/BlogCard";
 import type { BlogPostData } from "@/types";
 
 /** FeaturedStory — the oversized hero card at the top of the blog index
@@ -39,9 +39,11 @@ export default function FeaturedStory({ post }: { post: BlogPostData }) {
         </div>
 
         <div className="flex flex-col justify-center gap-5 p-8 lg:p-12">
-          <span className="text-sm font-semibold uppercase tracking-[0.08em] text-primary-active">
-            {post.category}
-          </span>
+          {post.category ? (
+            <span className="text-sm font-semibold uppercase tracking-[0.08em] text-primary-active">
+              {post.category}
+            </span>
+          ) : null}
           <h2 className="text-[clamp(1.75rem,3vw,2.5rem)] font-bold leading-tight tracking-[-0.05em] text-foreground">
             {post.title}
           </h2>
@@ -61,9 +63,7 @@ export default function FeaturedStory({ post }: { post: BlogPostData }) {
               <p className="text-sm font-semibold tracking-[-0.02em] text-foreground">
                 {post.author.name}
               </p>
-              <p className="text-xs text-text-muted">
-                {formatBlogDate(post.date)} · {post.readTime}
-              </p>
+              <p className="text-xs text-text-muted">{formatBlogMeta(post)}</p>
             </div>
           </div>
 

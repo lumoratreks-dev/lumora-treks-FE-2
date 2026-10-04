@@ -15,7 +15,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const page = await getPageByPath(path);
   if (!page?.package) return { robots: { index: false } };
 
-  const title = page.seo?.title || page.package.title || page.title;
+  // The detail page's own title is copied from the package once at creation,
+  // so prefer the live package title unless an explicit SEO title was set.
+  const title = page.seoTitle || page.package.title || page.title;
   const description = page.seo?.description || page.package.summary;
   const imageData = page.seo?.og_image || page.package.image;
   const image = absoluteAssetUrl(

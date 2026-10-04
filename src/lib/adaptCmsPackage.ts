@@ -17,6 +17,7 @@ export type CmsPackage = {
   rating?: number;
   duration?: string;
   price?: number;
+  discount_price?: number | null;
   currency?: string;
   href?: string;
 };
@@ -27,15 +28,23 @@ export function adaptCmsPackage(pkg: CmsPackage): PackageCardData {
     title: pkg.title,
     image: pkg.image?.url || "",
     description: pkg.summary || "",
-    price:
-      pkg.price != null
-        ? `${formatCurrency(pkg.currency)}${pkg.price} per person`
-        : "",
+    price: formatCardPrice(pkg),
     duration: pkg.duration || "",
     rating: pkg.rating != null ? pkg.rating.toFixed(1) : "",
     category: pkg.category,
     href: pkg.href,
   };
+}
+
+/** "$400 per person" (the discount when one applies), or "Price on request"
+ * for a package saved without a price (the backend default is 0). */
+function formatCardPrice(pkg: CmsPackage): string {
+  const price = pkg.price ?? 0;
+  const discount = pkg.discount_price;
+  const amount =
+    discount != null && discount > 0 && discount < price ? discount : price;
+  if (amount <= 0) return "Price on request";
+  return `${formatCurrency(pkg.currency)}${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(amount)} per person`;
 }
 
 function formatCurrency(currency: string | undefined): string {

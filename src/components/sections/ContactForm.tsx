@@ -1,9 +1,16 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import { useSubmitLeadMutation } from "@/features/leads/leadsApi";
+import { leadErrorMessage } from "@/features/leads/leadErrors";
 import {
   buildWhatsAppEnquiryUrl,
   openWhatsAppEnquiry,
@@ -70,9 +77,14 @@ export default function ContactForm({
   destinations?: { title: string }[];
   submit_label?: string;
 } = {}) {
-  const [formStartedAt] = useState(() => Date.now() / 1000);
+  // Set after mount (not during render) so server and client markup match;
+  // the backend uses it to drop instant bot submissions.
+  const formStartedAt = useRef(0);
+  useEffect(() => {
+    formStartedAt.current = Date.now() / 1000;
+  }, []);
   const [whatsappUrl, setWhatsappUrl] = useState("");
-  const [submitLead, { isLoading, isSuccess, isError }] =
+  const [submitLead, { isLoading, isSuccess, isError, error }] =
     useSubmitLeadMutation();
 
   const headingParts = highlightSplit(heading, heading_highlight);
@@ -98,7 +110,7 @@ export default function ContactForm({
       message,
       destination,
       consent: data.get("privacy_consent") === "yes",
-      form_started_at: Number(form.dataset.startedAt || formStartedAt),
+      form_started_at: formStartedAt.current,
       source_url: window.location.href,
     })
       .unwrap()
@@ -173,7 +185,6 @@ export default function ContactForm({
 
         {/* Right — form */}
         <motion.form
-          data-started-at={formStartedAt}
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -297,7 +308,7 @@ export default function ContactForm({
             )}
             {isError && (
               <p className="font-body-alt text-base font-medium text-red-600">
-                Something went wrong — please try again.
+                {leadErrorMessage(error)}
               </p>
             )}
           </div>

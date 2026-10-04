@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   useSubmitLeadMutation,
   type SubmitLeadInput,
 } from "@/features/leads/leadsApi";
+import { leadErrorMessage } from "@/features/leads/leadErrors";
 import type { CmsImage } from "@/lib/blocks";
 
 type Heading = { eyebrow?: string; heading?: string; description?: string };
@@ -233,8 +234,13 @@ export function LeadForm({
   submit_label?: string;
   success_message?: string;
 }) {
-  const [formStartedAt] = useState(() => Date.now() / 1000);
-  const [submitLead, { isLoading, isSuccess, isError }] =
+  // Set after mount (not during render) so server and client markup match;
+  // the backend uses it to drop instant bot submissions.
+  const formStartedAt = useRef(0);
+  useEffect(() => {
+    formStartedAt.current = Date.now() / 1000;
+  }, []);
+  const [submitLead, { isLoading, isSuccess, isError, error: submitError }] =
     useSubmitLeadMutation();
   const [error, setError] = useState(false);
   const submit = async (event: FormEvent<HTMLFormElement>) => {
@@ -245,9 +251,7 @@ export function LeadForm({
       form_key,
       source_url: window.location.href,
       consent: form.get("privacy_consent") === "yes",
-      form_started_at: Number(
-        event.currentTarget.dataset.startedAt || formStartedAt,
-      ),
+      form_started_at: formStartedAt.current,
     };
     fields.forEach((field) => {
       payload[field.name] = String(form.get(field.name) || "");
@@ -275,7 +279,6 @@ export function LeadForm({
       ) : (
         <form
           onSubmit={submit}
-          data-started-at={formStartedAt}
           className="grid gap-5 rounded-2xl border border-border bg-surface p-6"
         >
           {fields.map((field) =>
@@ -341,7 +344,7 @@ export function LeadForm({
           </label>
           {(isError || error) && (
             <p className="text-sm text-red-600">
-              Something went wrong. Please try again.
+              {leadErrorMessage(submitError)}
             </p>
           )}
           <button
@@ -593,9 +596,10 @@ export function TestimonialsCarousel({
     rating?: number;
   }>;
 }) {
-  const items = resolved_testimonials.length
-    ? resolved_testimonials
-    : testimonials;
+  // A hand-picked testimonial deleted later arrives as `null`.
+  const items = (
+    resolved_testimonials.length ? resolved_testimonials : testimonials
+  ).filter(Boolean);
   return (
     <section className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
       <SectionHeading heading={heading} />

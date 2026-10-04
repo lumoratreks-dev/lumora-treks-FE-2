@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Icon } from "@iconify/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -141,7 +142,9 @@ export default function PackageReviews({
     () => data?.items.find((review) => review.is_mine),
     [data],
   );
-  const callbackUrl = `/packages/${packageSlug}#reviews`;
+  // Package pages live at /packages/<slug>/<code>; there is no /packages/<slug>.
+  const pathname = usePathname();
+  const callbackUrl = `${pathname || `/packages/${packageSlug}`}#reviews`;
   const summary = data?.summary ?? {
     total: initialCount,
     average: initialAverage,
@@ -420,7 +423,7 @@ export default function PackageReviews({
             </article>
           ))}
           {data &&
-            data.meta.offset + data.items.length < data.meta.total_count && (
+            data.items.length < data.meta.total_count && (
               <button
                 type="button"
                 disabled={loadingMore}

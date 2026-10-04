@@ -63,6 +63,9 @@ export const destinationsQueryOptions = (params?: DestinationQueryParams) =>
     queryFn: () => fetchDestinations(params),
   });
 
-export function useDestinationsQuery(params?: DestinationQueryParams) {
-  return useQuery(destinationsQueryOptions(params));
+export function useDestinationsQuery(
+  params?: DestinationQueryParams,
+  options?: { enabled?: boolean },
+) {
+  return useQuery({ ...destinationsQueryOptions(params), ...options });
 }

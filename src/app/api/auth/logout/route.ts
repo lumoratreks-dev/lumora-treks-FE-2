@@ -14,27 +14,25 @@ export async function POST(request: NextRequest) {
   }
 
   const token = request.cookies.get(AUTH_COOKIE_NAME)?.value;
+  let backendFailed = false;
   if (token) {
     try {
-      const { response: backendResponse, data } = await requestAccountsApi(
+      const { response: backendResponse } = await requestAccountsApi(
         "logout/",
         {
           method: "POST",
           headers: { Authorization: `Token ${token}` },
         },
       );
-      if (!backendResponse.ok && backendResponse.status !== 401) {
-        return NextResponse.json(data, { status: backendResponse.status });
-      }
+      backendFailed = !backendResponse.ok && backendResponse.status !== 401;
     } catch {
-      return NextResponse.json(
-        { detail: "Sign out could not be completed. Please try again." },
-        { status: 502 },
-      );
+      backendFailed = true;
     }
   }
 
-  const response = NextResponse.json({ ok: true });
+  // Always end the session in this browser, even if the backend could not
+  // revoke the token (it still expires server-side).
+  const response = NextResponse.json({ ok: true, revoked: !backendFailed });
   response.cookies.delete(AUTH_COOKIE_NAME);
   return response;
 }

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Icon } from "@iconify/react";
-import { formatBlogDate } from "@/components/ui/BlogCard";
+import { formatBlogMeta } from "@/components/ui/BlogCard";
 import type { BlogPostData } from "@/types";
 
 const EASE_EXPO_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -49,9 +49,11 @@ export default function ArticleHero({ post }: { post: BlogPostData }) {
               All stories
             </Link>
 
-            <span className="w-fit rounded-full bg-primary-accent px-4 py-1.5 text-sm font-bold tracking-[-0.02em] text-foreground">
-              {post.category}
-            </span>
+            {post.category ? (
+              <span className="w-fit rounded-full bg-primary-accent px-4 py-1.5 text-sm font-bold tracking-[-0.02em] text-foreground">
+                {post.category}
+              </span>
+            ) : null}
 
             <h1 className="max-w-3xl text-[clamp(1.9rem,4.5vw,3.25rem)] font-bold leading-[1.05] tracking-[-0.05em]">
               {post.title}
@@ -76,7 +78,7 @@ export default function ArticleHero({ post }: { post: BlogPostData }) {
                   ) : null}
                 </p>
                 <p className="text-xs text-background/70">
-                  {formatBlogDate(post.date)} · {post.readTime}
+                  {formatBlogMeta(post)}
                 </p>
               </div>
             </div>

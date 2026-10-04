@@ -28,13 +28,18 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function PackagesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ location?: string; date?: string }>;
+  searchParams: Promise<{
+    location?: string;
+    date?: string;
+    destination?: string;
+  }>;
 }) {
-  const { location, date } = await searchParams;
+  const { location, date, destination } = await searchParams;
   const queryParams = {
-    category: location ? undefined : "Trekking",
+    category: location || destination ? undefined : "Trekking",
     location,
     date,
+    destination: location ? undefined : destination,
     page: 1,
     pageSize: 6,
   };
@@ -52,7 +57,16 @@ export default async function PackagesPage({
       <main className="flex-1">
         <Navbar />
         {page?.body && page.body.length > 0 ? (
-          <BlockRenderer blocks={page.body} />
+          <BlockRenderer
+            blocks={page.body}
+            contextProps={{
+              PackageListing: {
+                searchLocation: location,
+                searchDate: date,
+                searchDestination: destination,
+              },
+            }}
+          />
         ) : null}
       </main>
       <Footer />

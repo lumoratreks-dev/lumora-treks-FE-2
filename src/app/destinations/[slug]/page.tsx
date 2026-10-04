@@ -12,7 +12,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const page = await getPageByPath(`/destinations/${slug}`);
   return page
     ? {
-        title: page.seo?.title || page.title,
+        title:
+          page.seoTitle ||
+          page.destination?.title ||
+          page.seo?.title ||
+          page.title,
         description: page.seo?.description,
       }
     : { robots: { index: false } };

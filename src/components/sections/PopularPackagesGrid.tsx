@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import PackageCard from "@/components/ui/PackageCard";
 import FilterTabs from "@/components/ui/FilterTabs";
@@ -28,6 +29,16 @@ const CATEGORIES = [
   "Paragliding",
 ];
 
+/** "annapurna-circuit" -> "Annapurna Circuit" for the results label. */
+function formatDestination(slug?: string) {
+  if (!slug) return "";
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 function formatSearchDate(date?: string) {
   if (!date) return "";
   const parsed = new Date(`${date}T00:00:00`);
@@ -42,6 +53,7 @@ function formatSearchDate(date?: string) {
 export default function PopularPackagesGrid({
   searchLocation,
   searchDate,
+  searchDestination,
   initialData,
   heading = "Popular Packages",
   categories = CATEGORIES,
@@ -51,6 +63,7 @@ export default function PopularPackagesGrid({
 }: {
   searchLocation?: string;
   searchDate?: string;
+  searchDestination?: string;
   initialData?: PackageListResult;
   heading?: string;
   categories?: string[];
@@ -62,14 +75,28 @@ export default function PopularPackagesGrid({
     default_category || categories[0] || "Trekking",
   );
   const [page, setPage] = useState(1);
+  const router = useRouter();
   const [searchCleared, setSearchCleared] = useState(false);
+
+  // A new search from the URL re-activates search mode after a "clear".
+  const incomingSearchKey = `${searchLocation || ""}|${searchDate || ""}|${searchDestination || ""}`;
+  const [prevIncomingSearchKey, setPrevIncomingSearchKey] =
+    useState(incomingSearchKey);
+  if (prevIncomingSearchKey !== incomingSearchKey) {
+    setPrevIncomingSearchKey(incomingSearchKey);
+    setSearchCleared(false);
+  }
+
   const activeSearchLocation = searchCleared ? undefined : searchLocation;
   const activeSearchDate = searchCleared ? undefined : searchDate;
+  const activeSearchDestination =
+    searchCleared || activeSearchLocation ? undefined : searchDestination;
   const activeSearchDateLabel = formatSearchDate(activeSearchDate);
+  const activeDestinationLabel = formatDestination(activeSearchDestination);
 
   // Reset to page 1 the moment a new search arrives — render-phase, so the query
   // never runs with a stale page (no empty-state flash).
-  const searchKey = `${activeSearchLocation || ""}|${activeSearchDate || ""}`;
+  const searchKey = `${activeSearchLocation || ""}|${activeSearchDate || ""}|${activeSearchDestination || ""}`;
   const [prevSearchKey, setPrevSearchKey] = useState(searchKey);
   if (prevSearchKey !== searchKey) {
     setPrevSearchKey(searchKey);
@@ -77,9 +104,11 @@ export default function PopularPackagesGrid({
   }
 
   const { data, isLoading, isError, refetch } = usePackagesQuery({
-    category: activeSearchLocation ? undefined : category,
+    category:
+      activeSearchLocation || activeSearchDestination ? undefined : category,
     location: activeSearchLocation,
     date: activeSearchDate,
+    destination: activeSearchDestination,
     page,
     pageSize: page_size,
   });
@@ -93,13 +122,16 @@ export default function PopularPackagesGrid({
   const clearSearchMode = () => {
     setSearchCleared(true);
     setPage(1);
-    window.history.replaceState(null, "", "/packages");
+    // Navigate (not history.replaceState) so the route's search params reset
+    // and the same search can be run again afterwards.
+    router.replace("/packages", { scroll: false });
   };
 
   const handleCategory = (next: string) => {
     setCategory(next);
     setPage(1);
-    if (activeSearchLocation || activeSearchDate) clearSearchMode();
+    if (activeSearchLocation || activeSearchDate || activeSearchDestination)
+      clearSearchMode();
   };
 
   return (
@@ -138,11 +170,11 @@ export default function PopularPackagesGrid({
             </button>
           </p>
         )}
-        {!activeSearchLocation && activeSearchDate && (
+        {!activeSearchLocation && activeSearchDestination && (
           <p className="font-body-alt text-base text-text-secondary">
-            Showing results for{" "}
+            Showing packages in{" "}
             <span className="font-semibold text-foreground">
-              {activeSearchDateLabel}
+              {activeDestinationLabel}
             </span>{" "}
             <button
               type="button"
@@ -153,6 +185,23 @@ export default function PopularPackagesGrid({
             </button>
           </p>
         )}
+        {!activeSearchLocation &&
+          !activeSearchDestination &&
+          activeSearchDate && (
+            <p className="font-body-alt text-base text-text-secondary">
+              Showing results for{" "}
+              <span className="font-semibold text-foreground">
+                {activeSearchDateLabel}
+              </span>{" "}
+              <button
+                type="button"
+                onClick={clearSearchMode}
+                className="text-primary underline"
+              >
+                clear
+              </button>
+            </p>
+          )}
       </div>
 
       {errored ? (
@@ -186,9 +235,11 @@ export default function PopularPackagesGrid({
           <p className="text-xl font-semibold tracking-[-0.03em] text-foreground">
             {activeSearchLocation
               ? `No trips match “${activeSearchLocation}” yet`
-              : activeSearchDate
-                ? `No trips found for ${activeSearchDateLabel}`
-                : `No ${category} trips yet`}
+              : activeSearchDestination
+                ? `No trips in ${activeDestinationLabel} yet`
+                : activeSearchDate
+                  ? `No trips found for ${activeSearchDateLabel}`
+                  : `No ${category} trips yet`}
           </p>
           <p className="max-w-md font-body-alt text-base text-text-secondary">
             Tell us where and when you would like to travel — our team plans
@@ -201,7 +252,9 @@ export default function PopularPackagesGrid({
             >
               Plan a custom trip
             </Link>
-            {(activeSearchLocation || activeSearchDate) && (
+            {(activeSearchLocation ||
+              activeSearchDate ||
+              activeSearchDestination) && (
               <button
                 type="button"
                 onClick={clearSearchMode}

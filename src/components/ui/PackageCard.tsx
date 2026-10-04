@@ -43,12 +43,16 @@ export default function PackageCard({
           {description}
         </p>
         <div className="flex flex-wrap gap-2">
-          <span className="rounded bg-background px-2.5 py-2 text-sm font-semibold tracking-[-0.04em] text-foreground">
-            {price}
-          </span>
-          <span className="rounded bg-background px-2.5 py-2 text-sm font-semibold tracking-[-0.04em] text-foreground">
-            {duration}
-          </span>
+          {price ? (
+            <span className="rounded bg-background px-2.5 py-2 text-sm font-semibold tracking-[-0.04em] text-foreground">
+              {price}
+            </span>
+          ) : null}
+          {duration ? (
+            <span className="rounded bg-background px-2.5 py-2 text-sm font-semibold tracking-[-0.04em] text-foreground">
+              {duration}
+            </span>
+          ) : null}
           {Number(rating) > 0 ? (
             <span className="flex items-center gap-1 rounded bg-background px-2.5 py-2 text-sm font-medium tracking-[-0.04em] text-foreground">
               <Icon

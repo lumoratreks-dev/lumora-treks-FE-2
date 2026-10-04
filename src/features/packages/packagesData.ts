@@ -87,6 +87,8 @@ export type SelectPackagesParams = {
   category?: string;
   location?: string;
   date?: string;
+  /** Destination slug (e.g. from a destination page's "View all packages"). */
+  destination?: string;
   page?: number;
   pageSize?: number;
 };

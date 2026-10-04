@@ -33,6 +33,26 @@ function galleryItems(packageData: CmsPackageDetail) {
   });
 }
 
+function plural(count: number, one: string, many: string) {
+  return `${count} ${count === 1 ? one : many}`;
+}
+
+/** An empty Draftail field still serialises as `<p data-block-key="…"></p>`. */
+function hasRichText(html?: string | null) {
+  return !!html
+    ?.replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+}
+
+/** Discount applies only when it is set and actually lower than the price. */
+function discountedPrice(packageData: CmsPackageDetail) {
+  const { price, discount_price } = packageData;
+  return discount_price != null && discount_price > 0 && discount_price < price
+    ? discount_price
+    : null;
+}
+
 function groupSizeLabel(minPeople: number, maxPeople: number | null) {
   if (maxPeople === null) return `Group of ${minPeople}+ people`;
   if (minPeople === maxPeople)
@@ -61,7 +81,7 @@ function keyFacts(packageData: CmsPackageDetail) {
       icon: "iconoir:group",
       label: "Group size",
       value: packageData.people_count
-        ? `Up to ${packageData.people_count} people`
+        ? `Up to ${plural(packageData.people_count, "person", "people")}`
         : "",
     },
     {
@@ -173,7 +193,7 @@ export function PackageOverview({ packageData }: PackageSectionProps) {
           <div className="flex flex-col gap-5 border-b border-border pb-6">
             <h2 className={sectionHeading}>Overview</h2>
             <ShowMore>
-              {packageData.description ? (
+              {hasRichText(packageData.description) ? (
                 <div
                   className="font-body-alt text-lg leading-[1.6] tracking-[-0.02em] text-text-secondary [&_p+p]:mt-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:text-xl [&_h3]:font-semibold [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_li+li]:mt-2 [&_a]:underline [&_strong]:font-semibold [&_em]:italic"
                   dangerouslySetInnerHTML={{
@@ -327,49 +347,61 @@ export function PackageBooking({
     (item) => item.kind === "excluded",
   );
   const groupPricing = packageData.group_pricing || [];
+  const hasInclusions = included.length > 0 || excluded.length > 0;
+  const discount = discountedPrice(packageData);
 
   return (
     <>
       <section className="mx-auto flex min-h-[65vh] w-full max-w-[1440px] flex-col gap-8 border-b border-border px-6 py-12 lg:flex-row lg:items-start lg:px-20 lg:py-16">
-        <div className="flex flex-1 flex-col gap-6">
-          <h2 className={sectionHeading}>What’s included</h2>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div className="rounded-2xl bg-[#f4f8ef] p-5">
-              <p className="font-semibold text-foreground">Included</p>
-              <ul className="mt-4 space-y-3 font-body-alt text-sm leading-relaxed text-text-secondary">
-                {included.map((item, itemIndex) => (
-                  <li
-                    key={`${itemIndex}-${item.text}`}
-                    className="flex gap-2.5"
-                  >
-                    <Icon
-                      icon="iconoir:check-circle-solid"
-                      className="mt-0.5 size-4 shrink-0 text-primary-active"
-                    />
-                    {item.text}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-2xl border border-border p-5">
-              <p className="font-semibold text-foreground">Not included</p>
-              <ul className="mt-4 space-y-3 font-body-alt text-sm leading-relaxed text-text-secondary">
-                {excluded.map((item, itemIndex) => (
-                  <li
-                    key={`${itemIndex}-${item.text}`}
-                    className="flex gap-2.5"
-                  >
-                    <Icon
-                      icon="iconoir:cancel"
-                      className="mt-0.5 size-4 shrink-0 text-text-muted"
-                    />
-                    {item.text}
-                  </li>
-                ))}
-              </ul>
+        {hasInclusions ? (
+          <div className="flex flex-1 flex-col gap-6">
+            <h2 className={sectionHeading}>What’s included</h2>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="rounded-2xl bg-[#f4f8ef] p-5">
+                <p className="font-semibold text-foreground">Included</p>
+                <ul className="mt-4 space-y-3 font-body-alt text-sm leading-relaxed text-text-secondary">
+                  {included.map((item, itemIndex) => (
+                    <li
+                      key={`${itemIndex}-${item.text}`}
+                      className="flex gap-2.5"
+                    >
+                      <Icon
+                        icon="iconoir:check-circle-solid"
+                        className="mt-0.5 size-4 shrink-0 text-primary-active"
+                      />
+                      {item.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-2xl border border-border p-5">
+                <p className="font-semibold text-foreground">Not included</p>
+                <ul className="mt-4 space-y-3 font-body-alt text-sm leading-relaxed text-text-secondary">
+                  {excluded.map((item, itemIndex) => (
+                    <li
+                      key={`${itemIndex}-${item.text}`}
+                      className="flex gap-2.5"
+                    >
+                      <Icon
+                        icon="iconoir:cancel"
+                        className="mt-0.5 size-4 shrink-0 text-text-muted"
+                      />
+                      {item.text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-1 flex-col gap-6">
+            <h2 className={sectionHeading}>Plan this trip</h2>
+            <p className="font-body-alt text-lg leading-[1.6] text-text-secondary">
+              Talk to our travel team about dates, group size and what&apos;s
+              included — we tailor every trip.
+            </p>
+          </div>
+        )}
         <aside className="flex w-full flex-col gap-6 rounded-lg border border-border bg-surface p-6 lg:w-[494px] lg:shrink-0">
           {groupPricing.length > 0 ? (
             <div className="flex flex-col gap-4 border-b border-border pb-5">
@@ -402,14 +434,30 @@ export function PackageBooking({
               <span className="font-body-alt text-base text-text-secondary">
                 Price per person
               </span>
-              <span className="font-body-alt text-xl text-foreground">
-                {formatPrice(packageData.currency, packageData.price)}
-              </span>
+              {packageData.price > 0 ? (
+                <span className="flex items-baseline gap-2 font-body-alt text-xl text-foreground">
+                  {discount != null ? (
+                    <s className="text-base text-text-muted">
+                      {formatPrice(packageData.currency, packageData.price)}
+                    </s>
+                  ) : null}
+                  {formatPrice(
+                    packageData.currency,
+                    discount ?? packageData.price,
+                  )}
+                </span>
+              ) : (
+                <span className="font-body-alt text-xl text-foreground">
+                  Price on request
+                </span>
+              )}
             </div>
           )}
           <div className="rounded-xl bg-background p-4 font-body-alt text-sm leading-relaxed text-text-secondary">
-            Choose your dates and group size with our travel team. This trip is
-            limited to {packageData.people_count} guests.
+            Choose your dates and group size with our travel team.
+            {packageData.people_count
+              ? ` This trip is limited to ${plural(packageData.people_count, "guest", "guests")}.`
+              : null}
           </div>
           <Link
             href={

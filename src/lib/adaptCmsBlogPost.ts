@@ -31,6 +31,8 @@ export type CmsBlogPost = {
 };
 
 const FALLBACK_AVATAR = "/images/avatar-1.png";
+// Used when an editor publishes a post without a hero image (it is optional).
+const FALLBACK_IMAGE = "/images/hero-bg.png";
 
 function imageUrl(image: CmsImage): string {
   return image?.src || image?.url || "";
@@ -71,7 +73,7 @@ export function adaptCmsBlogPost(post: CmsBlogPost): BlogPostData {
     slug: post.slug,
     title: post.title,
     excerpt: post.excerpt || "",
-    image: imageUrl(post.image),
+    image: imageUrl(post.image) || FALLBACK_IMAGE,
     category: post.category || "",
     author: {
       name: post.author?.name || "Lumora Treks",

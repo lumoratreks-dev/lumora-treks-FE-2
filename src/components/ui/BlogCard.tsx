@@ -7,13 +7,23 @@ import { Icon } from "@iconify/react";
 import clsx from "clsx";
 import type { BlogPostData } from "@/types";
 
-/** Format an ISO date as e.g. "28 Aug 2026". */
+/** Format an ISO date as e.g. "28 Aug 2026". Date-only values ("2026-08-28")
+ * are formatted in UTC so every viewer (and the server) sees the same day. */
 export function formatBlogDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-GB", {
+  if (!iso) return "";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
+    ...(/^\d{4}-\d{2}-\d{2}$/.test(iso) ? { timeZone: "UTC" } : {}),
   });
+}
+
+/** "28 Aug 2026 · 6 min read", skipping whichever part is missing. */
+export function formatBlogMeta(post: { date: string; readTime: string }) {
+  return [formatBlogDate(post.date), post.readTime].filter(Boolean).join(" · ");
 }
 
 /** BlogCard — image + category chip + title + excerpt + author/date/read-time.
@@ -63,9 +73,11 @@ export default function BlogCard({
             }
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
-          <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold tracking-[-0.02em] text-foreground backdrop-blur-sm">
-            {post.category}
-          </span>
+          {post.category ? (
+            <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold tracking-[-0.02em] text-foreground backdrop-blur-sm">
+              {post.category}
+            </span>
+          ) : null}
         </div>
 
         <div className="flex flex-1 flex-col gap-3 p-6">
@@ -94,12 +106,14 @@ export default function BlogCard({
                 {post.author.name}
               </p>
               <p className="flex items-center gap-1.5 text-xs text-text-muted">
-                <span>{formatBlogDate(post.date)}</span>
-                <span aria-hidden>·</span>
-                <span className="inline-flex items-center gap-1">
-                  <Icon icon="iconoir:clock" className="size-3.5" />
-                  {post.readTime}
-                </span>
+                {post.date ? <span>{formatBlogDate(post.date)}</span> : null}
+                {post.date && post.readTime ? <span aria-hidden>·</span> : null}
+                {post.readTime ? (
+                  <span className="inline-flex items-center gap-1">
+                    <Icon icon="iconoir:clock" className="size-3.5" />
+                    {post.readTime}
+                  </span>
+                ) : null}
               </p>
             </div>
             <Icon

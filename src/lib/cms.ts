@@ -35,6 +35,7 @@ export async function getPageByPath(path: string): Promise<CmsPage | null> {
       body: data.body ?? [],
       destination: data.destination_data,
       package: data.package_data,
+      seoTitle: data.meta?.seo_title || "",
       seo: data.seo,
     };
   } catch {

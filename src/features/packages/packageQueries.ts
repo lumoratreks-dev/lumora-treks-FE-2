@@ -37,12 +37,20 @@ export function usePopularPackagesQuery() {
 export async function fetchPackages(
   params?: SelectPackagesParams,
 ): Promise<PackageListResult> {
-  const { category, location, date, page = 1, pageSize = 6 } = params ?? {};
+  const {
+    category,
+    location,
+    date,
+    destination,
+    page = 1,
+    pageSize = 6,
+  } = params ?? {};
   const queryParams = new URLSearchParams({
     limit: String(pageSize),
     offset: String((page - 1) * pageSize),
   });
   if (location) queryParams.set("search", location);
+  else if (destination) queryParams.set("destination", destination);
   else if (category) queryParams.set("category", category);
   if (date) queryParams.set("date", date);
 

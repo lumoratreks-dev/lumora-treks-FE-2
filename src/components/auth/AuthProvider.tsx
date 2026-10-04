@@ -136,10 +136,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    const response = await fetch("/api/auth/logout", { method: "POST" }).catch(
-      () => null,
-    );
-    if (!response?.ok) return;
+    // The route clears the session cookie even when the backend can't be
+    // reached; either way the visitor asked to sign out, so reflect it here.
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
     setUser(null);
     setDismissedUserId(null);
     setStatus("unauthenticated");
