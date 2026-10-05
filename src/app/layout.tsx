@@ -10,6 +10,7 @@ import {
 import { siteSettingsQueryOptions } from "@/features/site/siteQueries";
 import AuthProvider from "@/components/auth/AuthProvider";
 import OnboardingPrompt from "@/components/auth/OnboardingPrompt";
+import SearchModal from "@/components/search/SearchModal";
 import { siteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default async function RootLayout({
               <AuthProvider>
                 {children}
                 <OnboardingPrompt />
+                <SearchModal />
               </AuthProvider>
             </StoreProvider>
           </HydrationBoundary>

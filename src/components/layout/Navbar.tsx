@@ -32,6 +32,7 @@ export default function Navbar() {
   const isMobileNavOpen = useUIStore((s) => s.isMobileNavOpen);
   const toggleMobileNav = useUIStore((s) => s.toggleMobileNav);
   const closeMobileNav = useUIStore((s) => s.closeMobileNav);
+  const openSearch = useUIStore((s) => s.openSearch);
   const { data: site, isLoading } = useSiteSettingsQuery();
 
   const siteName = site?.brand.site_name || "Lumora Treks";
@@ -128,11 +129,23 @@ export default function Navbar() {
           )}
         </nav>
 
-        {/* Traveler account action (desktop) */}
-        <AuthNavAction />
+        <div className="flex items-center gap-2">
+          {/* Universal search (also ⌘K / Ctrl+K) */}
+          <button
+            type="button"
+            onClick={() => openSearch()}
+            aria-label="Search"
+            title="Search (⌘K)"
+            className="flex size-11 items-center justify-center rounded-full bg-background text-foreground transition-colors hover:bg-[#ebffe8]"
+          >
+            <Icon icon="mingcute:search-line" className="size-[22px]" />
+          </button>
 
-        {/* Mobile toggle */}
-        <button
+          {/* Traveler account action (desktop) */}
+          <AuthNavAction />
+
+          {/* Mobile toggle */}
+          <button
           type="button"
           onClick={toggleMobileNav}
           aria-label={isMobileNavOpen ? "Close menu" : "Open menu"}
@@ -143,7 +156,8 @@ export default function Navbar() {
             icon={isMobileNavOpen ? "iconoir:xmark" : "iconoir:menu"}
             className="size-6"
           />
-        </button>
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}

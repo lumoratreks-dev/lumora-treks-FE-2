@@ -75,12 +75,18 @@ Reuse these before building anything new. Update this table whenever a new reusa
 | `PackageCard`     | Image + white info box (title, desc, `$/Days/★rating` badges)                                                                                                                                       | `image, title, description, price, duration, rating`             |
 | `DestinationCard` | Image + bottom gradient + title/arrow + "Starting from $X"                                                                                                                                          | `image, title, price?, className?`                               |
 | `CarouselNav`     | Prev (`bg-background`) / next (`bg-primary-accent`) circular arrows                                                                                                                                 | `onPrev?, onNext?, className?`                                   |
-| `SearchBar`       | Location + Date fields + neon search button (shared by landing + packages hero)                                                                                                                     | `className?`                                                     |
+| `SearchBar`       | Hero search trigger (rotating "Try …" destination hints + neon button) — opens the universal `SearchModal`                                                                                         | `className?`                                                     |
 | `FilterTabs`      | Pill tabs, active = dark; presentational                                                                                                                                                            | `tabs, defaultTab?, onChange?, className?`                       |
 | `Pagination`      | `‹ 1 2 3 ›`; presentational                                                                                                                                                                         | `pages?, className?`                                             |
 | `StarRating`      | Row of `ic:round-star` glyphs, `rating` of `max` filled (dark filled / light-gray empty)                                                                                                            | `rating, max?, starSize?, className?, filledClass?, emptyClass?` |
 | `ReviewCard`      | Avatar + name/time + `StarRating` + text + "View reply"/"No reply yet"                                                                                                                              | `name, avatar, timeAgo, rating, text, reply?`                    |
 | `BlogCard`        | Image (hover scale) + category chip + title + excerpt + author/date/read-time; links to `/blog/[slug]`. `wide` variant = image+text side-by-side (editorial accent tile). Exports `formatBlogDate`. | `post, variant?("default"\|"wide"), className?`                  |
+
+### Search (`src/components/search/`)
+
+- `SearchModal` — site-wide universal search (command palette), mounted once in `layout.tsx`; opened via navbar search button, any `SearchBar`, ⌘K/Ctrl+K or "/" (`useUIStore.openSearch(seed?)`). Empty: recent searches (localStorage) + trending trips + popular destinations. Typing: debounced live results grouped Destinations / Packages / Stories with highlighted matches; ↑↓ ↵ esc.
+- `SearchResults` — `/search?q=` page body: query header + field, tabs with counts (All/Packages/Destinations/Stories), card grids. `/packages?location=` redirects here.
+- Data: `src/features/search/searchQueries.ts` (`fetchSearchResults`, `useSearchQuery`) — packages/blog via backend `?search=` (word-by-word across title/summary/destination, BE `search_filter`), destinations matched client-side.
 
 ### Sections (`src/components/sections/`)
 

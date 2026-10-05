@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BlockRenderer from "@/components/BlockRenderer";
@@ -35,6 +36,11 @@ export default async function PackagesPage({
   }>;
 }) {
   const { location, date, destination } = await searchParams;
+  // Free-text searches get the universal results page (packages,
+  // destinations and stories) instead of the packages hero.
+  if (location?.trim()) {
+    redirect(`/search?q=${encodeURIComponent(location.trim())}`);
+  }
   const queryParams = {
     category: location || destination ? undefined : "Trekking",
     location,
